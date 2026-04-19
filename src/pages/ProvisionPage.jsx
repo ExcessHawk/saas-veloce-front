@@ -47,8 +47,8 @@ export default function ProvisionPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-muted">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader>
           <CardTitle>Registrar Escuela</CardTitle>
           <CardDescription>Crea tu escuela y obtén acceso como director</CardDescription>

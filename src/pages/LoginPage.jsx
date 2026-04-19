@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 export default function LoginPage() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
+  const setSchoolId = useAuthStore((s) => s.setSchoolId);
   const login = useLogin();
 
   const {
@@ -28,6 +29,7 @@ export default function LoginPage() {
     try {
       const result = await login.mutateAsync(data);
       setAuth(result);
+      if (result.schoolId) setSchoolId(result.schoolId);
       navigate('/dashboard');
     } catch (error) {
       showApiError(error);
@@ -35,8 +37,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-muted">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader>
           <CardTitle>Iniciar Sesión</CardTitle>
           <CardDescription>Ingresa tus credenciales para acceder</CardDescription>

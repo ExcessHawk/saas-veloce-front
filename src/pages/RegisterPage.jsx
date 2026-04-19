@@ -37,8 +37,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-muted">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader>
           <CardTitle>Registro</CardTitle>
           <CardDescription>Crea tu cuenta para acceder a la plataforma</CardDescription>

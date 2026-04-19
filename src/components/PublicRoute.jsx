@@ -5,8 +5,10 @@ export function PublicRoute({ children }) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const user = useAuthStore((s) => s.user);
 
-  // Si ya está logueado, mandarlo al dashboard
-  if (accessToken && user) {
+  const schoolId = useAuthStore((s) => s.schoolId);
+
+  // Sesión completa (token + usuario + escuela) → dashboard
+  if (accessToken && user && schoolId) {
     return <Navigate to="/dashboard" replace />;
   }
 

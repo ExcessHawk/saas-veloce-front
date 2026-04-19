@@ -3,6 +3,12 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
+@keyframes slide {
+  0%   { transform: translateX(-100%); }
+  50%  { transform: translateX(150%); }
+  100% { transform: translateX(400%); }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
