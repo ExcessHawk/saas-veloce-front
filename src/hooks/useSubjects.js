@@ -7,7 +7,7 @@ const KEY = ['subjects'];
 export function useSubjects() {
   return useQuery({
     queryKey: KEY,
-    queryFn: () => api.get('/api/subjects').then((res) => res.data),
+    queryFn: () => api.get('/api/subjects?limit=200').then((res) => res.data.data),
   });
 }
 

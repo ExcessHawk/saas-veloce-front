@@ -7,7 +7,7 @@ const KEY = ['members'];
 export function useMembers() {
   return useQuery({
     queryKey: KEY,
-    queryFn: () => api.get('/api/members').then((res) => res.data),
+    queryFn: () => api.get('/api/members?limit=200').then((res) => res.data.data),
   });
 }
 

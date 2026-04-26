@@ -7,7 +7,7 @@ const KEY = ['courses'];
 export function useCourses() {
   return useQuery({
     queryKey: KEY,
-    queryFn: () => api.get('/api/courses').then((res) => res.data),
+    queryFn: () => api.get('/api/courses?limit=200').then((res) => res.data.data),
   });
 }
 
@@ -41,6 +41,28 @@ export function useUpdateCourse() {
     },
     onSettled: () => queryClient.invalidateQueries({ queryKey: KEY }),
     onSuccess: () => showSuccess('Curso actualizado exitosamente'),
+  });
+}
+
+export function useAssignTeacher() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, teacherMemberId }) =>
+      api.patch(`/api/courses/${id}/teacher`, { teacherMemberId }).then((res) => res.data),
+    onMutate: async ({ id, teacherMemberId }) => {
+      await queryClient.cancelQueries({ queryKey: KEY });
+      const previous = queryClient.getQueryData(KEY);
+      queryClient.setQueryData(KEY, (old) =>
+        old?.map((c) => (c.id === id ? { ...c, teacherMemberId } : c)) ?? [],
+      );
+      return { previous };
+    },
+    onError: (error, _vars, context) => {
+      if (context?.previous) queryClient.setQueryData(KEY, context.previous);
+      showApiError(error);
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: KEY }),
+    onSuccess: () => showSuccess('Docente asignado exitosamente'),
   });
 }
 

@@ -27,3 +27,27 @@ export function useLogout() {
     mutationFn: () => api.post('/api/auth/logout'),
   });
 }
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (data) => api.post('/api/auth/forgot-password', data).then((r) => r.data),
+  });
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (data) => api.post('/api/auth/reset-password', data).then((r) => r.data),
+  });
+}
+
+export function useVerifyEmail(token) {
+  return useMutation({
+    mutationFn: () => api.get(`/api/auth/verify-email?token=${token}`).then((r) => r.data),
+  });
+}
+
+export function useResendVerification() {
+  return useMutation({
+    mutationFn: () => api.post('/api/auth/resend-verification').then((r) => r.data),
+  });
+}

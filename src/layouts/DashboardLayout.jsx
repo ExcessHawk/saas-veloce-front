@@ -3,22 +3,74 @@ import { Outlet, Link, useLocation, useNavigate, useNavigation } from 'react-rou
 import { useAuthStore } from '@/stores/authStore';
 import { useLogout } from '@/hooks/useAuth';
 import { ModeToggle } from '@/components/ModeToggle';
+import { getInitials, avatarColor } from '@/lib/materia-colors';
 import {
   LayoutDashboard, DoorOpen, BookOpen, GraduationCap,
-  Calendar, School, UserCircle, Users, LogOut, Menu, X,
+  Calendar, School, UserCircle, Users, UserPlus,
+  LogOut, Menu, X, Bell, Search, CreditCard,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
-const allNavItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: null },
-  { path: '/dashboard/classrooms', label: 'Aulas', icon: DoorOpen, roles: null },
-  { path: '/dashboard/subjects', label: 'Materias', icon: BookOpen, roles: null },
-  { path: '/dashboard/courses', label: 'Cursos', icon: GraduationCap, roles: null },
-  { path: '/dashboard/academic-years', label: 'Años Académicos', icon: Calendar, roles: ['director', 'teacher'] },
-  { path: '/dashboard/members', label: 'Miembros', icon: Users, roles: ['director'] },
-  { path: '/dashboard/school', label: 'Mi Escuela', icon: School, roles: null },
-  { path: '/dashboard/profile', label: 'Mi Perfil', icon: UserCircle, roles: null },
-];
+/* ── Nav por rol ── */
+const NAV_BY_ROLE = {
+  director: [
+    { path: '/dashboard',               label: 'Dashboard',        icon: LayoutDashboard },
+    { path: '/dashboard/classrooms',    label: 'Aulas',            icon: DoorOpen        },
+    { path: '/dashboard/subjects',      label: 'Materias',         icon: BookOpen        },
+    { path: '/dashboard/courses',       label: 'Cursos',           icon: GraduationCap   },
+    { path: '/dashboard/academic-years',label: 'Años Académicos',  icon: Calendar        },
+    { path: '/dashboard/inscriptions',  label: 'Inscripciones',    icon: UserPlus        },
+    { path: '/dashboard/members',       label: 'Miembros',         icon: Users           },
+    { divider: true },
+    { path: '/dashboard/billing',       label: 'Facturación',      icon: CreditCard      },
+    { path: '/dashboard/school',        label: 'Mi Escuela',       icon: School          },
+    { path: '/dashboard/profile',       label: 'Mi Perfil',        icon: UserCircle      },
+  ],
+  teacher: [
+    { path: '/dashboard',               label: 'Dashboard',        icon: LayoutDashboard },
+    { path: '/dashboard/mis-cursos',    label: 'Mis Cursos',       icon: GraduationCap   },
+    { divider: true },
+    { path: '/dashboard/profile',       label: 'Mi Perfil',        icon: UserCircle      },
+  ],
+  student: [
+    { path: '/dashboard',               label: 'Dashboard',        icon: LayoutDashboard },
+    { path: '/dashboard/mis-cursos',    label: 'Mis Cursos',       icon: GraduationCap   },
+    { divider: true },
+    { path: '/dashboard/profile',       label: 'Mi Perfil',        icon: UserCircle      },
+  ],
+  parent: [
+    { path: '/dashboard',               label: 'Dashboard',        icon: LayoutDashboard },
+    { path: '/dashboard/mis-hijos',     label: 'Mis Hijos',        icon: Users           },
+    { divider: true },
+    { path: '/dashboard/profile',       label: 'Mi Perfil',        icon: UserCircle      },
+  ],
+};
+
+const NavItem = ({ item, isActive, onClick }) => {
+  const [hov, setHov] = useState(false);
+  const Icon = item.icon;
+  return (
+    <Link
+      to={item.path}
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 10,
+        padding: '7px 12px', borderRadius: 10,
+        background: isActive ? 'var(--p-sidebar-active)' : hov ? 'var(--p-sidebar-hover)' : 'transparent',
+        color: isActive || hov ? 'var(--p-sidebar-text-active)' : 'var(--p-sidebar-text)',
+        fontSize: 13.5, fontWeight: isActive ? 500 : 400,
+        textDecoration: 'none', transition: 'all 0.1s',
+      }}
+    >
+      <Icon size={15} />
+      <span style={{ flex: 1 }}>{item.label}</span>
+      {isActive && (
+        <span style={{ width: 5, height: 5, borderRadius: '99px', background: 'var(--p-sidebar-text-active)', opacity: 0.4 }} />
+      )}
+    </Link>
+  );
+};
 
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,113 +78,207 @@ export default function DashboardLayout() {
   const navigate = useNavigate();
   const navigation = useNavigation();
   const isNavigating = navigation.state !== 'idle';
+
   const user = useAuthStore((s) => s.user);
   const clearAuth = useAuthStore((s) => s.clearAuth);
   const logout = useLogout();
 
-  const navItems = allNavItems.filter(
-    (item) => item.roles === null || item.roles.includes(user?.role)
-  );
+  const role = user?.role ?? 'student';
+  const navItems = NAV_BY_ROLE[role] ?? NAV_BY_ROLE.student;
+
+  const isActive = (path) =>
+    path === '/dashboard' ? location.pathname === '/dashboard' : location.pathname.startsWith(path);
 
   const handleLogout = async () => {
-    try {
-      await logout.mutateAsync();
-    } catch {
-      // Aunque falle, limpiar sesión local
-    }
+    try { await logout.mutateAsync(); } catch { /* ignored */ }
     clearAuth();
     navigate('/login');
   };
 
-  const isActive = (path) => {
-    if (path === '/dashboard') return location.pathname === '/dashboard';
-    return location.pathname.startsWith(path);
-  };
+  const userInitials = getInitials(user?.fullName || user?.email || '');
+  const userAvatarBg = avatarColor(user?.fullName || user?.email || '');
+
+  const SidebarContent = ({ onItemClick }) => (
+    <>
+      {/* Logo */}
+      <div style={{
+        padding: '14px 18px 12px',
+        borderBottom: '1px solid oklch(99% 0 0 / 0.07)',
+        display: 'flex', flexDirection: 'column', gap: 6,
+      }}>
+        <img src="/logo-pensum.png" alt="Pensum" style={{ height: 30, filter: 'brightness(0) invert(1)', objectFit: 'contain', objectPosition: 'left' }} />
+        <div style={{ fontSize: 10.5, color: 'var(--p-sidebar-text)', paddingLeft: 2 }}>
+          {user?.schoolName || 'Instituto Demo'}
+        </div>
+      </div>
+
+      {/* Nav */}
+      <nav style={{ flex: 1, padding: '10px 8px', display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'auto' }}>
+        {navItems.map((item, i) =>
+          item.divider ? (
+            <div key={i} style={{ margin: '8px 0', borderTop: '1px solid oklch(99% 0 0 / 0.07)' }} />
+          ) : (
+            <NavItem
+              key={item.path}
+              item={item}
+              isActive={isActive(item.path)}
+              onClick={() => { setSidebarOpen(false); onItemClick?.(); }}
+            />
+          )
+        )}
+      </nav>
+
+      {/* User */}
+      <div style={{
+        margin: 8, padding: '10px 12px',
+        background: 'oklch(99% 0 0 / 0.06)',
+        borderRadius: 10,
+        display: 'flex', alignItems: 'center', gap: 10,
+      }}>
+        <div style={{
+          width: 30, height: 30, borderRadius: '99px',
+          background: userAvatarBg,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 11, fontWeight: 700, color: 'white', flexShrink: 0,
+        }}>
+          {userInitials}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 12.5, fontWeight: 500, color: 'var(--p-sidebar-text-active)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {user?.fullName || user?.email || 'Usuario'}
+          </div>
+          <div style={{ fontSize: 10.5, color: 'var(--p-sidebar-text)', textTransform: 'capitalize' }}>
+            {role}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 
   return (
-    <div className="flex h-screen bg-background">
+    <div style={{ display: 'flex', height: '100vh', background: 'var(--p-bg-app)', overflow: 'hidden' }}>
+
+      {/* Navigation loading bar */}
       {isNavigating && (
-        <div className="fixed top-0 left-0 right-0 z-50 h-0.5 overflow-hidden bg-transparent">
-          <div className="h-full w-1/3 animate-[slide_0.8s_ease-in-out_infinite] bg-primary" />
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, height: 2, overflow: 'hidden', background: 'transparent' }}>
+          <div style={{ height: '100%', width: '33%', background: 'var(--p-accent)', animation: 'slide 0.8s ease-in-out infinite' }} />
         </div>
       )}
+
       {/* Sidebar — desktop */}
-      <aside className="hidden md:flex md:w-64 md:flex-col bg-card border-r">
-        <div className="p-4 border-b">
-          <h1 className="text-xl font-bold">Pensum</h1>
-        </div>
-        <nav className="flex-1 p-4 space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
-                isActive(item.path)
-                  ? 'bg-primary/10 text-primary font-medium'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-              }`}
-            >
-              <item.icon className="w-5 h-5" />
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+      <aside style={{
+        width: 256, flexShrink: 0, height: '100vh',
+        background: 'var(--p-sidebar-bg)',
+        display: 'none',
+        flexDirection: 'column',
+        borderRight: '1px solid oklch(99% 0 0 / 0.06)',
+        position: 'sticky', top: 0,
+      }}
+        className="md-sidebar"
+      >
+        <SidebarContent />
       </aside>
 
       {/* Sidebar — mobile overlay */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
-          <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white z-50">
-            <div className="p-4 border-b flex justify-between items-center">
-              <h1 className="text-xl font-bold">Pensum</h1>
-              <button onClick={() => setSidebarOpen(false)}>
-                <X className="w-5 h-5" />
+        <div style={{ position: 'fixed', inset: 0, zIndex: 50 }} className="md:hidden">
+          <div style={{ position: 'fixed', inset: 0, background: 'oklch(0% 0 0 / 0.5)' }} onClick={() => setSidebarOpen(false)} />
+          <aside style={{
+            position: 'fixed', left: 0, top: 0, bottom: 0, width: 256,
+            background: 'var(--p-sidebar-bg)',
+            display: 'flex', flexDirection: 'column', zIndex: 50,
+          }}>
+            <div style={{ padding: '12px 16px', display: 'flex', justifyContent: 'flex-end', borderBottom: '1px solid oklch(99% 0 0 / 0.07)' }}>
+              <button onClick={() => setSidebarOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--p-sidebar-text)', cursor: 'pointer', display: 'flex', padding: 4 }}>
+                <X size={18} />
               </button>
             </div>
-            <nav className="p-4 space-y-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors ${
-                    isActive(item.path)
-                      ? 'bg-primary/10 text-primary font-medium'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                  }`}
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+            <SidebarContent onItemClick={() => setSidebarOpen(false)} />
           </aside>
         </div>
       )}
 
       {/* Main */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-card border-b px-4 py-3 flex items-center justify-between">
-          <button className="md:hidden" onClick={() => setSidebarOpen(true)}>
-            <Menu className="w-6 h-6" />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
+
+        {/* Header */}
+        <header style={{
+          height: 54, flexShrink: 0,
+          background: 'var(--p-bg-base)',
+          borderBottom: '1px solid var(--p-border)',
+          display: 'flex', alignItems: 'center',
+          padding: '0 20px', gap: 10,
+          position: 'sticky', top: 0, zIndex: 10,
+        }}>
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setSidebarOpen(true)}
+            style={{ background: 'transparent', border: 'none', color: 'var(--p-text-secondary)', cursor: 'pointer', display: 'flex', padding: 4 }}
+            className="md:hidden"
+          >
+            <Menu size={20} />
           </button>
-          <div className="flex items-center gap-2 ml-auto">
-            <span className="text-sm text-muted-foreground hidden sm:inline">
-              {user?.fullName || user?.email}
-            </span>
-            <ModeToggle />
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Salir
-            </Button>
+
+          {/* Search */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '6px 11px',
+            background: 'var(--p-bg-subtle)',
+            border: '1px solid var(--p-border)',
+            borderRadius: 10,
+            color: 'var(--p-text-tertiary)', fontSize: 13,
+            cursor: 'text', width: 210,
+          }}>
+            <Search size={13} />
+            <span>Buscar…</span>
+            <span style={{ marginLeft: 'auto', fontSize: 10, padding: '1px 5px', background: 'var(--p-bg-muted)', borderRadius: 4 }}>⌘K</span>
           </div>
+
+          <div style={{ flex: 1 }} />
+
+          {/* Bell */}
+          <button style={{
+            width: 34, height: 34, borderRadius: 10,
+            border: '1px solid var(--p-border)', background: 'transparent',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', color: 'var(--p-text-secondary)', position: 'relative',
+          }}>
+            <Bell size={15} />
+            <span style={{ position: 'absolute', top: 6, right: 6, width: 6, height: 6, borderRadius: '99px', background: 'var(--p-d-500)', border: '1.5px solid var(--p-bg-base)' }} />
+          </button>
+
+          <ModeToggle />
+
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '6px 12px',
+              border: '1px solid var(--p-border)', borderRadius: 10,
+              background: 'transparent', color: 'var(--p-text-secondary)',
+              fontSize: 13, fontFamily: 'inherit', fontWeight: 500,
+              cursor: 'pointer', transition: 'all 0.1s',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--p-bg-subtle)'; e.currentTarget.style.color = 'var(--p-text-primary)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--p-text-secondary)'; }}
+          >
+            <LogOut size={13} />
+            Salir
+          </button>
         </header>
 
-        <main className="flex-1 overflow-auto p-6">
+        <main style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
           <Outlet />
         </main>
       </div>
+
+      <style>{`
+        @media (min-width: 768px) {
+          .md-sidebar { display: flex !important; }
+          .md\\:hidden { display: none !important; }
+        }
+      `}</style>
     </div>
   );
 }

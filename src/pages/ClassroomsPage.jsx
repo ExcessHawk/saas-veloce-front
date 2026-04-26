@@ -1,38 +1,167 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, GraduationCap } from 'lucide-react';
+import { toast } from 'sonner';
 import { useClassrooms, useCreateClassroom, useUpdateClassroom, useDeleteClassroom } from '@/hooks/useClassrooms';
-import { createClassroomSchema, updateClassroomSchema } from '@/schemas/classrooms';
+import { useGradeLevels, useCreateGradeLevel, useUpdateGradeLevel, useDeleteGradeLevel } from '@/hooks/useGradeLevels';
 import { showApiError } from '@/lib/errors';
-import { usePagination } from '@/hooks/usePagination';
-import { useSorting } from '@/hooks/useSorting';
-import { RoleGate } from '@/components/RoleGate';
-import { SortableHead } from '@/components/SortableHead';
-import { ConfirmDeleteDialog } from '@/components/ConfirmDeleteDialog';
-import { SearchInput } from '@/components/SearchInput';
-import { DataTablePagination } from '@/components/DataTablePagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ConfirmDeleteDialog } from '@/components/ConfirmDeleteDialog';
+import { SearchInput } from '@/components/SearchInput';
+import { DataTablePagination } from '@/components/DataTablePagination';
+import { RoleGate } from '@/components/RoleGate';
+import { SortableHead } from '@/components/SortableHead';
+import { usePagination } from '@/hooks/usePagination';
+import { useSorting } from '@/hooks/useSorting';
+import { format } from 'date-fns';
 
+/* ── Grade Level selector ── */
+function GradeLevelSelect({ value, onChange, levels }) {
+  return (
+    <select
+      value={value ?? ''}
+      onChange={(e) => onChange(e.target.value || null)}
+      style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid hsl(var(--border))', background: 'hsl(var(--background))', color: 'hsl(var(--foreground))', fontSize: 14, fontFamily: 'inherit' }}
+    >
+      <option value="">— Sin nivel —</option>
+      {(levels ?? []).map((l) => (
+        <option key={l.id} value={l.id}>{l.name}</option>
+      ))}
+    </select>
+  );
+}
+
+/* ── Classroom form ── */
+function ClassroomForm({ initial, levels, onSave, onCancel, loading, submitLabel }) {
+  const [name, setName] = useState(initial?.name ?? '');
+  const [gradeLevelId, setGradeLevelId] = useState(initial?.gradeLevelId ?? null);
+  const [capacity, setCapacity] = useState(initial?.capacity ?? '');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!name.trim()) { toast.error('El nombre es requerido'); return; }
+    onSave({ name: name.trim(), gradeLevelId: gradeLevelId || null, capacity: capacity ? Number(capacity) : null });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <Label>Nombre</Label>
+        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Ej: Aula 1-A" />
+      </div>
+      <div>
+        <Label>Nivel de Grado</Label>
+        <GradeLevelSelect value={gradeLevelId} onChange={setGradeLevelId} levels={levels} />
+        {levels?.length === 0 && (
+          <p className="text-xs text-muted-foreground mt-1">No hay niveles creados. Crea uno en la sección "Niveles de Grado".</p>
+        )}
+      </div>
+      <div>
+        <Label>Capacidad (alumnos)</Label>
+        <Input type="number" min={1} value={capacity} onChange={(e) => setCapacity(e.target.value)} placeholder="Ej: 30" />
+      </div>
+      <div className="flex gap-2">
+        <Button type="submit" className="flex-1" disabled={loading}>
+          {loading ? 'Guardando…' : submitLabel}
+        </Button>
+        {onCancel && <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>}
+      </div>
+    </form>
+  );
+}
+
+/* ── Grade Level management panel ── */
+function GradeLevelsPanel() {
+  const { data: levels, isLoading } = useGradeLevels();
+  const createLevel = useCreateGradeLevel();
+  const updateLevel = useUpdateGradeLevel();
+  const deleteLevel = useDeleteGradeLevel();
+
+  const [newName, setNewName] = useState('');
+  const [newOrder, setNewOrder] = useState('');
+  const [editId, setEditId] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [editOrder, setEditOrder] = useState('');
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    if (!newName.trim()) return;
+    try {
+      await createLevel.mutateAsync({ name: newName.trim(), order: newOrder ? Number(newOrder) : 0 });
+      setNewName(''); setNewOrder('');
+    } catch { /* handled */ }
+  };
+
+  const handleUpdate = async (id) => {
+    try {
+      await updateLevel.mutateAsync({ id, name: editName, order: editOrder ? Number(editOrder) : 0 });
+      setEditId(null);
+    } catch { /* handled */ }
+  };
+
+  return (
+    <div style={{ background: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: 12, padding: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+        <GraduationCap size={15} />
+        <span style={{ fontSize: 14, fontWeight: 600 }}>Niveles de Grado</span>
+      </div>
+
+      <form onSubmit={handleCreate} style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+        <Input
+          value={newName} onChange={(e) => setNewName(e.target.value)}
+          placeholder="Ej: 1° Primaria" style={{ flex: 1 }}
+        />
+        <Input
+          type="number" min={0} value={newOrder} onChange={(e) => setNewOrder(e.target.value)}
+          placeholder="Orden" style={{ width: 72 }}
+        />
+        <Button type="submit" size="sm" disabled={!newName.trim() || createLevel.isPending}>
+          <Plus size={14} />
+        </Button>
+      </form>
+
+      {isLoading ? (
+        <Skeleton className="h-8 w-full" />
+      ) : levels?.length === 0 ? (
+        <p style={{ fontSize: 13, color: 'hsl(var(--muted-foreground))' }}>Sin niveles. Crea el primero arriba.</p>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {levels.map((l) => (
+            <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: 'hsl(var(--muted))', borderRadius: 8 }}>
+              {editId === l.id ? (
+                <>
+                  <Input value={editName} onChange={(e) => setEditName(e.target.value)} style={{ flex: 1, height: 28, fontSize: 13 }} />
+                  <Input type="number" min={0} value={editOrder} onChange={(e) => setEditOrder(e.target.value)} style={{ width: 60, height: 28, fontSize: 13 }} />
+                  <Button size="sm" variant="outline" style={{ height: 28, fontSize: 12 }} onClick={() => handleUpdate(l.id)} disabled={updateLevel.isPending}>OK</Button>
+                  <Button size="sm" variant="ghost" style={{ height: 28 }} onClick={() => setEditId(null)}>✕</Button>
+                </>
+              ) : (
+                <>
+                  <span style={{ flex: 1, fontSize: 13 }}>{l.name}</span>
+                  <span style={{ fontSize: 11, color: 'hsl(var(--muted-foreground))' }}>orden {l.order}</span>
+                  <Button size="sm" variant="ghost" style={{ height: 26, width: 26, padding: 0 }}
+                    onClick={() => { setEditId(l.id); setEditName(l.name); setEditOrder(String(l.order)); }}>
+                    <Pencil size={12} />
+                  </Button>
+                  <Button size="sm" variant="ghost" style={{ height: 26, width: 26, padding: 0, color: 'hsl(var(--destructive))' }}
+                    onClick={() => deleteLevel.mutateAsync(l.id)}>
+                    <Trash2 size={12} />
+                  </Button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ══ Page ══ */
 export default function ClassroomsPage() {
   const [open, setOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -40,29 +169,14 @@ export default function ClassroomsPage() {
   const [query, setQuery] = useState('');
 
   const classrooms = useClassrooms();
+  const { data: levels } = useGradeLevels();
   const createClassroom = useCreateClassroom();
   const updateClassroom = useUpdateClassroom();
   const deleteClassroom = useDeleteClassroom();
 
-  const createForm = useForm({
-    resolver: zodResolver(createClassroomSchema),
-    defaultValues: { name: '', gradeLevel: '' },
-  });
+  useEffect(() => { if (classrooms.error) showApiError(classrooms.error); }, [classrooms.error]);
 
-  const editForm = useForm({
-    resolver: zodResolver(updateClassroomSchema),
-    defaultValues: { name: '', gradeLevel: '' },
-  });
-
-  useEffect(() => {
-    if (classrooms.error) showApiError(classrooms.error);
-  }, [classrooms.error]);
-
-  useEffect(() => {
-    if (editingItem) {
-      editForm.reset({ name: editingItem.name, gradeLevel: editingItem.gradeLevel || '' });
-    }
-  }, [editingItem]);
+  const levelMap = useMemo(() => Object.fromEntries((levels ?? []).map((l) => [l.id, l.name])), [levels]);
 
   const sorting = useSorting('name');
 
@@ -70,161 +184,128 @@ export default function ClassroomsPage() {
     const data = classrooms.data ?? [];
     if (!query.trim()) return data;
     const q = query.toLowerCase();
-    return data.filter(
-      (c) => c.name.toLowerCase().includes(q) || (c.gradeLevel || '').toLowerCase().includes(q),
+    return data.filter((c) =>
+      c.name.toLowerCase().includes(q) ||
+      (levelMap[c.gradeLevelId] || '').toLowerCase().includes(q)
     );
-  }, [classrooms.data, query]);
+  }, [classrooms.data, query, levelMap]);
 
   const sorted = useMemo(() => sorting.sort(filtered), [filtered, sorting.sort]);
   const pagination = usePagination(sorted);
 
-  const onSubmitCreate = async (data) => {
-    try {
-      await createClassroom.mutateAsync(data);
-      createForm.reset();
-      setOpen(false);
-    } catch { /* handled by hook */ }
+  const handleCreate = async (data) => {
+    try { await createClassroom.mutateAsync(data); setOpen(false); } catch { /* handled */ }
   };
 
-  const onSubmitEdit = async (data) => {
-    try {
-      await updateClassroom.mutateAsync({ id: editingItem.id, ...data });
-      setEditingItem(null);
-    } catch { /* handled by hook */ }
+  const handleUpdate = async (data) => {
+    try { await updateClassroom.mutateAsync({ id: editingItem.id, ...data }); setEditingItem(null); } catch { /* handled */ }
   };
 
-  const onConfirmDelete = async () => {
-    try {
-      await deleteClassroom.mutateAsync(deletingItem.id);
-      setDeletingItem(null);
-    } catch { /* handled by hook */ }
+  const handleDelete = async () => {
+    try { await deleteClassroom.mutateAsync(deletingItem.id); setDeletingItem(null); } catch { /* handled */ }
   };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Aulas</h1>
-
+        <div>
+          <h1 className="text-2xl font-bold">Aulas</h1>
+          <p className="text-sm text-muted-foreground mt-1">Espacios físicos donde ocurren los cursos. Asigna nivel de grado y capacidad.</p>
+        </div>
         <RoleGate roles={['director']}>
-          <Dialog open={open} onOpenChange={(v) => { if (!v) createForm.reset(); setOpen(v); }}>
+          <Dialog open={open} onOpenChange={(v) => setOpen(v)}>
             <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-1 h-4 w-4" />
-                Crear Aula
-              </Button>
+              <Button><Plus className="mr-1 h-4 w-4" />Crear Aula</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader><DialogTitle>Crear Aula</DialogTitle></DialogHeader>
-              <form onSubmit={createForm.handleSubmit(onSubmitCreate)} className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Nombre</Label>
-                  <Input id="name" placeholder="Ej: Aula 101" {...createForm.register('name')} />
-                  {createForm.formState.errors.name && (
-                    <p className="text-sm text-red-500 mt-1">{createForm.formState.errors.name.message}</p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="gradeLevel">Nivel de Grado</Label>
-                  <Input id="gradeLevel" placeholder="Ej: 1° Primaria" {...createForm.register('gradeLevel')} />
-                </div>
-                <Button type="submit" className="w-full" disabled={createClassroom.isPending}>
-                  {createClassroom.isPending ? 'Creando...' : 'Crear Aula'}
-                </Button>
-              </form>
+              <ClassroomForm levels={levels} onSave={handleCreate} loading={createClassroom.isPending} submitLabel="Crear Aula" />
             </DialogContent>
           </Dialog>
         </RoleGate>
       </div>
 
-      <SearchInput value={query} onChange={setQuery} placeholder="Buscar por nombre o nivel..." />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 20, alignItems: 'start' }}>
+        <div className="space-y-4">
+          <SearchInput value={query} onChange={setQuery} placeholder="Buscar por nombre o nivel…" />
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <SortableHead field="name" label="Nombre" sorting={sorting} />
-            <SortableHead field="gradeLevel" label="Nivel de Grado" sorting={sorting} />
-            <SortableHead field="createdAt" label="Fecha de Creación" sorting={sorting} />
-            <RoleGate roles={['director']}>
-              <TableHead className="w-24">Acciones</TableHead>
-            </RoleGate>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {classrooms.isLoading ? (
-            Array.from({ length: 3 }).map((_, i) => (
-              <TableRow key={i}>
-                <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <SortableHead field="name" label="Nombre" sorting={sorting} />
+                <TableHead>Nivel de Grado</TableHead>
+                <TableHead>Capacidad</TableHead>
+                <SortableHead field="createdAt" label="Creada" sorting={sorting} />
+                <RoleGate roles={['director']}><TableHead className="w-24">Acciones</TableHead></RoleGate>
               </TableRow>
-            ))
-          ) : filtered.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                {query ? `Sin resultados para "${query}"` : 'No hay aulas registradas'}
-              </TableCell>
-            </TableRow>
-          ) : (
-            pagination.paginated.map((classroom) => (
-              <TableRow key={classroom.id}>
-                <TableCell>{classroom.name}</TableCell>
-                <TableCell>{classroom.gradeLevel || '—'}</TableCell>
-                <TableCell>
-                  {classroom.createdAt ? format(new Date(classroom.createdAt), 'dd/MM/yyyy') : '—'}
-                </TableCell>
-                <TableCell>
-                  <RoleGate roles={['director']}>
-                    <div className="flex gap-1">
-                      <Button variant="ghost" size="icon" onClick={() => setEditingItem(classroom)}>
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => setDeletingItem(classroom)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </RoleGate>
-                </TableCell>
-              </TableRow>
-            ))
+            </TableHeader>
+            <TableBody>
+              {classrooms.isLoading ? (
+                Array.from({ length: 3 }).map((_, i) => (
+                  <TableRow key={i}>
+                    {[1,2,3,4].map((j) => <TableCell key={j}><Skeleton className="h-4 w-24" /></TableCell>)}
+                  </TableRow>
+                ))
+              ) : filtered.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                    {query ? `Sin resultados para "${query}"` : 'No hay aulas registradas'}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                pagination.paginated.map((c) => (
+                  <TableRow key={c.id}>
+                    <TableCell className="font-medium">{c.name}</TableCell>
+                    <TableCell>{levelMap[c.gradeLevelId] ?? '—'}</TableCell>
+                    <TableCell>{c.capacity ? `${c.capacity} alumnos` : '—'}</TableCell>
+                    <TableCell>{c.createdAt ? format(new Date(c.createdAt), 'dd/MM/yyyy') : '—'}</TableCell>
+                    <TableCell>
+                      <RoleGate roles={['director']}>
+                        <div className="flex gap-1">
+                          <Button variant="ghost" size="icon" onClick={() => setEditingItem(c)}><Pencil className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="icon" onClick={() => setDeletingItem(c)}><Trash2 className="h-4 w-4" /></Button>
+                        </div>
+                      </RoleGate>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+
+          {!classrooms.isLoading && filtered.length > 0 && (
+            <DataTablePagination {...pagination} total={filtered.length} />
           )}
-        </TableBody>
-      </Table>
+        </div>
 
-      {!classrooms.isLoading && filtered.length > 0 && (
-        <DataTablePagination {...pagination} total={filtered.length} />
-      )}
+        <RoleGate roles={['director']}>
+          <GradeLevelsPanel />
+        </RoleGate>
+      </div>
 
-      <Dialog
-        open={!!editingItem}
-        onOpenChange={(v) => { if (!v) { editForm.reset(); setEditingItem(null); } }}
-      >
+      {/* Edit dialog */}
+      <Dialog open={!!editingItem} onOpenChange={(v) => !v && setEditingItem(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>Editar Aula</DialogTitle></DialogHeader>
-          <form onSubmit={editForm.handleSubmit(onSubmitEdit)} className="space-y-4">
-            <div>
-              <Label htmlFor="edit-name">Nombre</Label>
-              <Input id="edit-name" {...editForm.register('name')} />
-              {editForm.formState.errors.name && (
-                <p className="text-sm text-red-500 mt-1">{editForm.formState.errors.name.message}</p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="edit-gradeLevel">Nivel de Grado</Label>
-              <Input id="edit-gradeLevel" {...editForm.register('gradeLevel')} />
-            </div>
-            <Button type="submit" className="w-full" disabled={updateClassroom.isPending}>
-              {updateClassroom.isPending ? 'Guardando...' : 'Guardar Cambios'}
-            </Button>
-          </form>
+          {editingItem && (
+            <ClassroomForm
+              initial={editingItem}
+              levels={levels}
+              onSave={handleUpdate}
+              onCancel={() => setEditingItem(null)}
+              loading={updateClassroom.isPending}
+              submitLabel="Guardar Cambios"
+            />
+          )}
         </DialogContent>
       </Dialog>
 
       <ConfirmDeleteDialog
         open={!!deletingItem}
         onOpenChange={(v) => !v && setDeletingItem(null)}
-        onConfirm={onConfirmDelete}
+        onConfirm={handleDelete}
         title="Eliminar Aula"
-        description={`¿Estás seguro de que deseas eliminar "${deletingItem?.name}"? Esta acción no se puede deshacer.`}
+        description={`¿Eliminar "${deletingItem?.name}"? Se desvinculará de los cursos que la usan.`}
         isPending={deleteClassroom.isPending}
       />
     </div>

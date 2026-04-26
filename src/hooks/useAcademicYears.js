@@ -7,7 +7,7 @@ const KEY = ['academic-years'];
 export function useAcademicYears() {
   return useQuery({
     queryKey: KEY,
-    queryFn: () => api.get('/api/academic-years').then((res) => res.data),
+    queryFn: () => api.get('/api/academic-years?limit=200').then((res) => res.data.data),
   });
 }
 

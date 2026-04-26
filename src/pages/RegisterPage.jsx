@@ -1,32 +1,43 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate, Link } from 'react-router';
+import { useNavigate } from 'react-router';
+import { Mail, Lock, Eye, EyeOff, Building2, ArrowRight, Check } from 'lucide-react';
+
 import { registerSchema } from '@/schemas/auth';
 import { useAuthStore } from '@/stores/authStore';
 import { useRegister } from '@/hooks/useAuth';
 import { showApiError } from '@/lib/errors';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import AuthLayout from '@/layouts/AuthLayout';
+import {
+  AuthHeader, AuthTabs, AuthInput, AuthButton, Tooltip, PwStrengthMeter,
+} from '@/components/AuthFormParts';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
   const { setAuth, setSchoolId } = useAuthStore();
   const registerMutation = useRegister();
 
+  const [showPw, setShowPw] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
   const {
     register: formRegister,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: { email: '', password: '', confirmPassword: '', schoolId: '' },
   });
 
+  const password = watch('password');
+  const confirm = watch('confirmPassword');
+  const passwordsMatch = confirm && confirm === password;
+
   const onSubmit = async (data) => {
     try {
-      const { confirmPassword, ...apiData } = data;
+      const { confirmPassword: _confirm, ...apiData } = data;
       const result = await registerMutation.mutateAsync(apiData);
       setAuth(result);
       setSchoolId(data.schoolId);
@@ -37,49 +48,119 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader>
-          <CardTitle>Registro</CardTitle>
-          <CardDescription>Crea tu cuenta para acceder a la plataforma</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" {...formRegister('email')} />
-              {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>}
-            </div>
+    <AuthLayout>
+      <AuthHeader
+        title="Crea tu cuenta"
+        subtitle="Únete a tu institución educativa en Pensum"
+      />
 
-            <div>
-              <Label htmlFor="password">Contraseña</Label>
-              <Input id="password" type="password" {...formRegister('password')} />
-              {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>}
-            </div>
+      <AuthTabs active="register" />
 
-            <div>
-              <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
-              <Input id="confirmPassword" type="password" {...formRegister('confirmPassword')} />
-              {errors.confirmPassword && <p className="text-sm text-red-500 mt-1">{errors.confirmPassword.message}</p>}
-            </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="tab-content" style={{ animation: 'fadeUp 0.22s ease' }}>
+        <AuthInput
+          label="Correo electrónico"
+          type="email"
+          placeholder="usuario@escuela.mx"
+          icon={Mail}
+          autoComplete="email"
+          error={errors.email?.message}
+          {...formRegister('email')}
+        />
 
-            <div>
-              <Label htmlFor="schoolId">ID de Escuela (UUID)</Label>
-              <Input id="schoolId" placeholder="550e8400-e29b-41d4-a716-446655440000" {...formRegister('schoolId')} />
-              {errors.schoolId && <p className="text-sm text-red-500 mt-1">{errors.schoolId.message}</p>}
-            </div>
+        {/* Password + medidor de fuerza */}
+        <div style={{ marginBottom: 14 }}>
+          <AuthInput
+            label="Contraseña"
+            type={showPw ? 'text' : 'password'}
+            placeholder="Mínimo 8 caracteres"
+            icon={Lock}
+            autoComplete="new-password"
+            error={errors.password?.message}
+            suffix={
+              <button
+                type="button"
+                onClick={() => setShowPw(!showPw)}
+                style={{
+                  border: 'none', background: 'transparent', cursor: 'pointer',
+                  color: 'oklch(68% 0.010 80)', display: 'flex', padding: 0,
+                }}
+              >
+                {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
+            }
+            {...formRegister('password')}
+          />
+          <div style={{ marginTop: -8 }}>
+            <PwStrengthMeter password={password} />
+          </div>
+        </div>
 
-            <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
-              {registerMutation.isPending ? 'Registrando...' : 'Crear Cuenta'}
-            </Button>
-          </form>
+        {/* Confirm password */}
+        <AuthInput
+          label="Confirmar contraseña"
+          type={showConfirm ? 'text' : 'password'}
+          placeholder="Repite tu contraseña"
+          icon={Lock}
+          autoComplete="new-password"
+          error={errors.confirmPassword?.message}
+          suffix={
+            <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+              {passwordsMatch && (
+                <span style={{ color: 'oklch(55% 0.140 150)', display: 'flex' }}>
+                  <Check size={14} />
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => setShowConfirm(!showConfirm)}
+                style={{
+                  border: 'none', background: 'transparent', cursor: 'pointer',
+                  color: 'oklch(68% 0.010 80)', display: 'flex', padding: 0,
+                }}
+              >
+                {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
+            </span>
+          }
+          {...formRegister('confirmPassword')}
+        />
 
-          <p className="mt-4 text-center text-sm">
-            ¿Ya tienes cuenta?{' '}
-            <Link to="/login" className="text-blue-600 hover:underline">Inicia sesión</Link>
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+        {/* School ID con tooltip */}
+        <div style={{ marginBottom: 22 }}>
+          <AuthInput
+            label={
+              <>
+                ID de Escuela
+                <Tooltip text="UUID único de tu institución. Solicítalo a tu director." />
+              </>
+            }
+            placeholder="550e8400-e29b-41d4-a716-446655440000"
+            icon={Building2}
+            autoComplete="off"
+            mono
+            error={errors.schoolId?.message}
+            {...formRegister('schoolId')}
+          />
+        </div>
+
+        <AuthButton
+          type="submit"
+          loading={registerMutation.isPending}
+          icon={!registerMutation.isPending ? ArrowRight : undefined}
+        >
+          {registerMutation.isPending ? 'Creando cuenta…' : 'Crear cuenta'}
+        </AuthButton>
+
+        <p style={{
+          textAlign: 'center', fontSize: 12,
+          color: 'oklch(68% 0.010 80)', marginTop: 16, marginBottom: 0, lineHeight: 1.6,
+        }}>
+          Al registrarte aceptas nuestros{' '}
+          <a href="#" style={{ color: 'oklch(30% 0.009 80)', fontWeight: 500 }}>Términos y Condiciones</a>{' '}
+          y{' '}
+          <a href="#" style={{ color: 'oklch(30% 0.009 80)', fontWeight: 500 }}>Política de Privacidad</a>.
+        </p>
+      </form>
+    </AuthLayout>
   );
 }

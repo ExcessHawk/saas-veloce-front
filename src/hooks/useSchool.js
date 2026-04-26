@@ -15,8 +15,8 @@ export function useUpdateSchool() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data) => api.patch('/api/schools/me', data).then((res) => res.data),
-    onSuccess: (updated) => {
-      queryClient.setQueryData(KEY, updated);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: KEY });
       showSuccess('Escuela actualizada exitosamente');
     },
     onError: (error) => showApiError(error),

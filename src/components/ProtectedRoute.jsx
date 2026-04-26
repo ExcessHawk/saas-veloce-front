@@ -6,7 +6,12 @@ export function ProtectedRoute() {
   const user = useAuthStore((s) => s.user);
   const schoolId = useAuthStore((s) => s.schoolId);
 
-  if (!accessToken || !user || !schoolId) {
+  if (!accessToken || !user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Superadmin has no schoolId — allow through to /admin
+  if (!schoolId && !user.isGlobalAdmin) {
     return <Navigate to="/login" replace />;
   }
 

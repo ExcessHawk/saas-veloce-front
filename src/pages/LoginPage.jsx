@@ -1,20 +1,28 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate, Link } from 'react-router';
+import { useNavigate, Link, useLocation } from 'react-router';
+import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { loginSchema } from '@/schemas/auth';
 import { useAuthStore } from '@/stores/authStore';
 import { useLogin } from '@/hooks/useAuth';
 import { showApiError } from '@/lib/errors';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import AuthLayout from '@/layouts/AuthLayout';
+import {
+  AuthHeader, AuthTabs, AuthInput, AuthButton, AuthCheckbox,
+  Divider, GoogleBtn,
+} from '@/components/AuthFormParts';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
   const setSchoolId = useAuthStore((s) => s.setSchoolId);
   const login = useLogin();
+
+  const [showPw, setShowPw] = useState(false);
+  const [remember, setRemember] = useState(false);
 
   const {
     register,
@@ -30,54 +38,90 @@ export default function LoginPage() {
       const result = await login.mutateAsync(data);
       setAuth(result);
       if (result.schoolId) setSchoolId(result.schoolId);
-      navigate('/dashboard');
+      navigate(result.user?.isGlobalAdmin ? '/admin' : '/dashboard');
     } catch (error) {
       showApiError(error);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader>
-          <CardTitle>Iniciar Sesión</CardTitle>
-          <CardDescription>Ingresa tus credenciales para acceder</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="tu@email.com" {...register('email')} />
-              {errors.email && (
-                <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
-              )}
-            </div>
+    <AuthLayout>
+      <AuthHeader
+        title="Bienvenido de nuevo"
+        subtitle="Accede a tu plataforma educativa"
+      />
 
-            <div>
-              <Label htmlFor="password">Contraseña</Label>
-              <Input id="password" type="password" placeholder="Mínimo 8 caracteres" {...register('password')} />
-              {errors.password && (
-                <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>
-              )}
-            </div>
+      <AuthTabs active="login" />
 
-            <Button type="submit" className="w-full" disabled={login.isPending}>
-              {login.isPending ? 'Ingresando...' : 'Iniciar Sesión'}
-            </Button>
-          </form>
+      <form onSubmit={handleSubmit(onSubmit)} className="tab-content" style={{ animation: 'fadeUp 0.22s ease' }}>
+        <AuthInput
+          label="Correo electrónico"
+          type="email"
+          placeholder="director@escuela.mx"
+          icon={Mail}
+          autoComplete="email"
+          error={errors.email?.message}
+          {...register('email')}
+        />
 
-          <div className="mt-4 text-center text-sm space-y-1">
-            <p>
-              ¿No tienes cuenta?{' '}
-              <Link to="/register" className="text-blue-600 hover:underline">Regístrate</Link>
-            </p>
-            <p>
-              ¿Nueva escuela?{' '}
-              <Link to="/provision" className="text-blue-600 hover:underline">Registra tu escuela</Link>
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        <AuthInput
+          label="Contraseña"
+          type={showPw ? 'text' : 'password'}
+          placeholder="••••••••"
+          icon={Lock}
+          autoComplete="current-password"
+          error={errors.password?.message}
+          suffix={
+            <button
+              type="button"
+              onClick={() => setShowPw(!showPw)}
+              style={{
+                border: 'none', background: 'transparent', cursor: 'pointer',
+                color: 'oklch(68% 0.010 80)', display: 'flex', padding: 0,
+              }}
+            >
+              {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+            </button>
+          }
+          {...register('password')}
+        />
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22 }}>
+          <AuthCheckbox checked={remember} onChange={setRemember} label="Recordarme" />
+          <Link
+            to="/forgot-password"
+            style={{
+              fontSize: 13, color: 'oklch(30% 0.009 80)',
+              fontWeight: 500, textDecoration: 'none',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')}
+            onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </div>
+
+        <AuthButton type="submit" loading={login.isPending} icon={!login.isPending ? ArrowRight : undefined}>
+          {login.isPending ? 'Iniciando sesión…' : 'Iniciar sesión'}
+        </AuthButton>
+
+        <Divider>o continúa con</Divider>
+
+        <GoogleBtn label="Continuar con Google" />
+
+        <p style={{ textAlign: 'center', fontSize: 13, color: 'oklch(55% 0.010 80)', marginTop: 22, marginBottom: 0 }}>
+          ¿Eres una nueva escuela?{' '}
+          <Link
+            to="/provision"
+            style={{
+              color: 'oklch(8.5% 0.005 80)', fontWeight: 600,
+              textDecoration: 'underline', fontSize: 13,
+            }}
+          >
+            Regístrala aquí
+          </Link>
+        </p>
+      </form>
+    </AuthLayout>
   );
 }

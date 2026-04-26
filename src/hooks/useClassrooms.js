@@ -7,7 +7,7 @@ const KEY = ['classrooms'];
 export function useClassrooms() {
   return useQuery({
     queryKey: KEY,
-    queryFn: () => api.get('/api/classrooms').then((res) => res.data),
+    queryFn: () => api.get('/api/classrooms?limit=200').then((res) => res.data.data),
   });
 }
 
