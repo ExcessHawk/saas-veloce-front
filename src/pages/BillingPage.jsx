@@ -7,12 +7,12 @@ import { showApiError } from '@/lib/errors';
 import { cn } from '@/lib/utils';
 
 const STATUS_STYLE = {
-  active:    { color: '#16a34a', bg: '#f0fdf4', label: 'Activa' },
-  trialing:  { color: '#2563eb', bg: '#eff6ff', label: 'Prueba' },
-  past_due:  { color: '#d97706', bg: '#fffbeb', label: 'Pago vencido' },
-  canceled:  { color: '#dc2626', bg: '#fef2f2', label: 'Cancelada' },
-  unpaid:    { color: '#dc2626', bg: '#fef2f2', label: 'Sin pagar' },
-  paused:    { color: '#6b7280', bg: '#f9fafb', label: 'Pausada' },
+  active:    { cls: 'bg-p-s-100 text-p-s-700', label: 'Activa' },
+  trialing:  { cls: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300', label: 'Prueba' },
+  past_due:  { cls: 'bg-p-w-100 text-p-w-700', label: 'Pago vencido' },
+  canceled:  { cls: 'bg-p-d-100 text-p-d-700', label: 'Cancelada' },
+  unpaid:    { cls: 'bg-p-d-100 text-p-d-700', label: 'Sin pagar' },
+  paused:    { cls: 'bg-p-bg-muted text-p-text-secondary', label: 'Pausada' },
 };
 
 function fmtDate(d) {
@@ -84,8 +84,7 @@ export default function BillingPage() {
             <div>
               <div className="text-[11px] text-p-text-tertiary mb-[3px]">Estado</div>
               <span
-                className="text-[12px] font-semibold px-2 py-[3px] rounded-full"
-                style={{ color: statusStyle.color, background: statusStyle.bg }}
+                className={cn("text-[12px] font-semibold px-2 py-[3px] rounded-full", statusStyle.cls)}
               >
                 {statusStyle.label}
               </span>
@@ -108,7 +107,7 @@ export default function BillingPage() {
             <button
               onClick={handlePortal}
               disabled={portal.isPending}
-              className="inline-flex items-center gap-[6px] px-[14px] py-[7px] rounded-lg border border-p-border bg-transparent text-p-text-primary text-[13px] font-medium font-sans cursor-pointer"
+              className="inline-flex items-center gap-[6px] px-[14px] py-[7px] rounded-lg border border-p-border bg-p-bg-base text-p-text-primary text-[13px] font-medium font-sans cursor-pointer hover:bg-p-bg-subtle transition-colors"
             >
               <ExternalLink size={13} />
               {portal.isPending ? 'Abriendo…' : 'Gestionar pagos y facturas'}
@@ -140,7 +139,7 @@ export default function BillingPage() {
                     'flex items-center gap-3 px-4 py-3 rounded-[10px] cursor-pointer border-[1.5px] transition-colors',
                     selectedPlan === plan.code
                       ? 'border-p-accent bg-p-bg-subtle'
-                      : 'border-p-border bg-transparent',
+                      : 'border-p-border bg-p-bg-base hover:bg-p-bg-subtle',
                   )}
                 >
                   <input
@@ -181,7 +180,7 @@ export default function BillingPage() {
                 onClick={handleCheckout}
                 disabled={checkout.isPending || !selectedPlan}
                 className={cn(
-                  'inline-flex items-center gap-[6px] px-[18px] py-2 rounded-lg bg-p-accent text-white border-none text-[13.5px] font-semibold font-sans transition-opacity',
+                  'inline-flex items-center gap-[6px] px-[18px] py-2 rounded-lg bg-p-accent text-p-accent-text border-none text-[13.5px] font-semibold font-sans transition-opacity hover:bg-p-accent-hover',
                   checkout.isPending || !selectedPlan ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
                 )}
               >

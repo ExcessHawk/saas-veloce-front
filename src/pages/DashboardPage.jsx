@@ -121,7 +121,15 @@ const ActivityFeed = () => {
 /* ── Director dashboard ── */
 function DirectorDashboard({ user, classrooms, subjects, courses, members }) {
   const classroomMap = Object.fromEntries((classrooms.data ?? []).map((c) => [c.id, c.name]));
+  const subjectMap = Object.fromEntries((subjects.data ?? []).map((s) => [s.id, s.name]));
   const { data: sub } = useSubscription();
+
+  // Resolve course display name: use subject name if c.name looks like a raw ID
+  const getCourseName = (c) => {
+    if (c.name && !c.name.startsWith('course:')) return c.name;
+    const subjectName = subjectMap[c.subjectId];
+    return subjectName ?? c.name ?? '—';
+  };
   return (
     <div className="flex flex-col gap-5">
       {/* Welcome */}
@@ -187,7 +195,7 @@ function DirectorDashboard({ user, classrooms, subjects, courses, members }) {
                       key={c.id}
                       className={cn('hover:bg-p-bg-subtle', i !== 0 && 'border-t border-p-border')}
                     >
-                      <td className="px-5 py-3 text-[13.5px] font-medium text-p-text-primary">{c.name}</td>
+                      <td className="px-5 py-3 text-[13.5px] font-medium text-p-text-primary">{getCourseName(c)}</td>
                       <td className="px-5 py-3 text-[13px] text-p-text-secondary">{classroomMap[c.classroomId] ?? '—'}</td>
                       <td className="px-5 py-3">
                         <span className="text-[12px] font-mono text-p-text-secondary bg-p-bg-subtle px-2 py-[2px] rounded">
