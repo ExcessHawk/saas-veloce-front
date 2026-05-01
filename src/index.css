@@ -1,1 +1,21 @@
 @import "tailwindcss";
+
+@keyframes slide {
+  0%   { transform: translateX(-100%); }
+  50%  { transform: translateX(300%); }
+  100% { transform: translateX(300%); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}

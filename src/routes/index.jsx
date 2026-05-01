@@ -5,6 +5,7 @@ import { PublicRoute } from '@/components/PublicRoute';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import AdminLayout from '@/layouts/AdminLayout';
 
+const LandingPage          = lazy(() => import('@/pages/LandingPage'));
 const LoginPage            = lazy(() => import('@/pages/LoginPage'));
 const RegisterPage         = lazy(() => import('@/pages/RegisterPage'));
 const ProvisionPage        = lazy(() => import('@/pages/ProvisionPage'));
@@ -30,16 +31,15 @@ const AdminPlansPage       = lazy(() => import('@/pages/AdminPlansPage'));
 const AdminSchoolsPage     = lazy(() => import('@/pages/AdminSchoolsPage'));
 
 const PageFallback = () => (
-  <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center', padding: '80px 24px' }}>
-    <div style={{ width: 24, height: 24, borderRadius: '99px', border: '2px solid var(--p-accent)', borderTopColor: 'transparent', animation: 'spin 0.7s linear infinite' }} />
-    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+  <div className="flex h-full items-center justify-center py-20 px-6">
+    <div className="w-6 h-6 rounded-full border-2 border-p-accent border-t-transparent [animation:spin_0.7s_linear_infinite]" />
   </div>
 );
 
 const wrap = (el) => <Suspense fallback={<PageFallback />}>{el}</Suspense>;
 
 export const router = createBrowserRouter([
-  { path: '/', element: <Navigate to="/dashboard" replace /> },
+  { path: '/', element: wrap(<LandingPage />) },
 
   { path: '/login',            element: <PublicRoute>{wrap(<LoginPage />)}</PublicRoute> },
   { path: '/register',         element: <PublicRoute>{wrap(<RegisterPage />)}</PublicRoute> },

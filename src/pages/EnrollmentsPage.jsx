@@ -8,6 +8,7 @@ import { useMembers } from '@/hooks/useMembers';
 import { useEnrollments, useEnrollStudent, useRemoveEnrollment } from '@/hooks/useEnrollments';
 import { showApiError } from '@/lib/errors';
 import { getMateriaColor, avatarColor, getInitials } from '@/lib/materia-colors';
+import { cn } from '@/lib/utils';
 
 function findName(list, id) {
   return list?.find((i) => i.id === id)?.name || '—';
@@ -20,29 +21,50 @@ const CursoCard = ({ curso, subjectName, classroomName, teacherName, totalEnroll
   const full = pct >= 1;
 
   return (
-    <div onClick={onClick}
-      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ background: 'var(--p-bg-base)', border: `1.5px solid ${selected ? mc.color : hov ? 'var(--p-border-strong)' : 'var(--p-border)'}`, borderRadius: 16, padding: '16px 18px', cursor: 'pointer', transition: 'all 0.15s', boxShadow: selected ? `0 0 0 3px ${mc.color}22` : hov ? 'var(--p-shadow-md)' : 'var(--p-shadow-sm)', transform: hov && !selected ? 'translateY(-1px)' : 'none', position: 'relative', overflow: 'hidden' }}>
-      {selected && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: mc.color }} />}
+    <div
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      className={cn(
+        'bg-p-bg-base rounded-2xl p-[16px_18px] cursor-pointer transition-all duration-150 relative overflow-hidden',
+      )}
+      style={{
+        border: `1.5px solid ${selected ? mc.color : hov ? 'var(--p-border-strong)' : 'var(--p-border)'}`,
+        boxShadow: selected ? `0 0 0 3px ${mc.color}22` : hov ? 'var(--p-shadow-md)' : 'var(--p-shadow-sm)',
+        transform: hov && !selected ? 'translateY(-1px)' : 'none',
+      }}
+    >
+      {selected && (
+        <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: mc.color }} />
+      )}
 
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
+      <div className="flex items-start justify-between mb-[10px]">
         <div>
-          <div style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--p-text-primary)', letterSpacing: '-0.02em' }}>{subjectName}</div>
-          <div style={{ fontSize: 12, color: 'var(--p-text-secondary)', marginTop: 2 }}>{classroomName}</div>
+          <div className="text-[14.5px] font-bold text-p-text-primary tracking-[-0.02em]">{subjectName}</div>
+          <div className="text-xs text-p-text-secondary mt-[2px]">{classroomName}</div>
         </div>
-        <span style={{ padding: '2px 8px', borderRadius: '99px', fontSize: 11, fontWeight: 700, background: full ? 'var(--p-d-100)' : mc.bg, color: full ? 'var(--p-d-700)' : mc.color }}>
+        <span
+          className="px-2 py-[2px] rounded-full text-[11px] font-bold"
+          style={{
+            background: full ? 'var(--p-d-100)' : mc.bg,
+            color: full ? 'var(--p-d-700)' : mc.color,
+          }}
+        >
           {full ? 'Lleno' : `${totalEnrolled}/${capacity}`}
         </span>
       </div>
 
-      <div style={{ fontSize: 12.5, color: 'var(--p-text-secondary)', marginBottom: 12 }}>
+      <div className="text-[12.5px] text-p-text-secondary mb-3">
         {teacherName || 'Sin docente asignado'}
       </div>
 
-      <div style={{ height: 4, borderRadius: 99, background: 'var(--p-bg-subtle)' }}>
-        <div style={{ height: 4, borderRadius: 99, width: `${Math.min(pct * 100, 100)}%`, background: full ? 'var(--p-d-500)' : mc.color, transition: 'width 0.4s ease' }} />
+      <div className="h-1 rounded-full bg-p-bg-subtle">
+        <div
+          className="h-1 rounded-full transition-[width] duration-[400ms] ease-in-out"
+          style={{ width: `${Math.min(pct * 100, 100)}%`, background: full ? 'var(--p-d-500)' : mc.color }}
+        />
       </div>
-      <div style={{ fontSize: 11, color: 'var(--p-text-tertiary)', marginTop: 5 }}>{totalEnrolled} inscritos</div>
+      <div className="text-[11px] text-p-text-tertiary mt-[5px]">{totalEnrolled} inscritos</div>
     </div>
   );
 };
@@ -51,17 +73,32 @@ const StudentRow = ({ name, email, onAction, actionLabel, danger, disabled }) =>
   const [hov, setHov] = useState(false);
   const bg = avatarColor(name);
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderBottom: '1px solid var(--p-border)' }}>
-      <div style={{ width: 30, height: 30, borderRadius: '99px', background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: 'white', flexShrink: 0 }}>
+    <div className="flex items-center gap-[10px] py-[9px] border-b border-p-border">
+      <div
+        className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+        style={{ background: bg }}
+      >
         {getInitials(name)}
       </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--p-text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</div>
-        <div style={{ fontSize: 11.5, color: 'var(--p-text-tertiary)' }}>{email}</div>
+      <div className="flex-1 min-w-0">
+        <div className="text-[13.5px] font-medium text-p-text-primary whitespace-nowrap overflow-hidden text-ellipsis">{name}</div>
+        <div className="text-[11.5px] text-p-text-tertiary">{email}</div>
       </div>
-      <button onClick={onAction} disabled={disabled}
-        onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-        style={{ padding: '4px 10px', borderRadius: 8, border: `1px solid ${danger ? 'var(--p-d-500)' : 'var(--p-border)'}`, background: hov ? (danger ? 'var(--p-d-100)' : 'var(--p-bg-subtle)') : 'transparent', color: danger ? 'var(--p-d-500)' : 'var(--p-text-secondary)', fontSize: 12, fontFamily: 'inherit', fontWeight: 500, cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.5 : 1, transition: 'all 0.1s', whiteSpace: 'nowrap' }}>
+      <button
+        onClick={onAction}
+        disabled={disabled}
+        onMouseEnter={() => setHov(true)}
+        onMouseLeave={() => setHov(false)}
+        className={cn(
+          'px-[10px] py-1 rounded-lg text-xs font-medium cursor-pointer transition-all duration-100 whitespace-nowrap font-[inherit]',
+          disabled && 'opacity-50 cursor-not-allowed',
+        )}
+        style={{
+          border: `1px solid ${danger ? 'var(--p-d-500)' : 'var(--p-border)'}`,
+          background: hov ? (danger ? 'var(--p-d-100)' : 'var(--p-bg-subtle)') : 'transparent',
+          color: danger ? 'var(--p-d-500)' : 'var(--p-text-secondary)',
+        }}
+      >
         {actionLabel}
       </button>
     </div>
@@ -141,49 +178,59 @@ export default function EnrollmentsPage() {
   };
 
   return (
-    <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start', minHeight: '100%' }}>
+    <div className="flex gap-5 items-start min-h-full">
       {/* LEFT */}
-      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 18 }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+      <div className="flex-1 min-w-0 flex flex-col gap-[18px]">
+        <div className="flex items-start justify-between flex-wrap gap-[10px]">
           <div>
-            <h1 style={{ fontSize: 21, fontWeight: 700, color: 'var(--p-text-primary)', letterSpacing: '-0.03em', margin: 0 }}>Inscripciones</h1>
-            <p style={{ fontSize: 13, color: 'var(--p-text-secondary)', margin: '4px 0 0' }}>Selecciona un curso para gestionar sus alumnos</p>
+            <h1 className="text-[21px] font-bold text-p-text-primary tracking-[-0.03em] m-0">Inscripciones</h1>
+            <p className="text-[13px] text-p-text-secondary mt-1 mb-0">Selecciona un curso para gestionar sus alumnos</p>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 12.5, color: 'var(--p-text-secondary)', fontWeight: 500 }}>Año</span>
-            <select value={selectedYear} onChange={(e) => { setSelectedYear(e.target.value); setSelected(null); }}
-              style={{ padding: '6px 12px', fontSize: 13, fontWeight: 500, border: '1px solid var(--p-border)', borderRadius: 10, background: 'var(--p-bg-base)', color: 'var(--p-text-primary)', cursor: 'pointer', fontFamily: 'inherit', outline: 'none' }}>
+          <div className="flex items-center gap-2">
+            <span className="text-[12.5px] text-p-text-secondary font-medium">Año</span>
+            <select
+              value={selectedYear}
+              onChange={(e) => { setSelectedYear(e.target.value); setSelected(null); }}
+              className="px-3 py-[6px] text-[13px] font-medium border border-p-border rounded-[10px] bg-p-bg-base text-p-text-primary cursor-pointer font-[inherit] outline-none"
+            >
               <option value="">— Todos —</option>
-              {(academicYears.data ?? []).map((y) => <option key={y.id} value={y.id}>{y.name}{y.isCurrent ? ' (actual)' : ''}</option>)}
+              {(academicYears.data ?? []).map((y) => (
+                <option key={y.id} value={y.id}>{y.name}{y.isCurrent ? ' (actual)' : ''}</option>
+              ))}
             </select>
           </div>
         </div>
 
         {/* Course grid */}
         {courses.isLoading ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
+          <div className="grid gap-[14px] [grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} style={{ height: 140, background: 'var(--p-bg-subtle)', borderRadius: 16, animation: 'pulse 1.5s ease-in-out infinite' }} />
+              <div key={i} className="h-[140px] bg-p-bg-subtle rounded-2xl animate-pulse" />
             ))}
           </div>
         ) : yearCourses.length === 0 ? (
-          <div style={{ padding: '60px 24px', textAlign: 'center', background: 'var(--p-bg-base)', border: '1px solid var(--p-border)', borderRadius: 16, color: 'var(--p-text-tertiary)', fontSize: 14 }}>
+          <div className="py-[60px] px-6 text-center bg-p-bg-base border border-p-border rounded-2xl text-p-text-tertiary text-sm">
             {selectedYear ? 'No hay cursos en este año académico.' : 'Selecciona un año académico.'}
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 14 }}>
+          <div className="grid gap-[14px] [grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]">
             {yearCourses.map((c) => {
               const subjName = findName(subjects.data, c.subjectId);
               const classroomName = findName(classrooms.data, c.classroomId);
               const tMember = members.data?.find((m) => m.id === c.teacherMemberId);
               const tName = tMember ? `Prof. ${tMember.fullName}` : null;
               return (
-                <CursoCard key={c.id} curso={c}
-                  subjectName={subjName} classroomName={classroomName} teacherName={tName}
+                <CursoCard
+                  key={c.id}
+                  curso={c}
+                  subjectName={subjName}
+                  classroomName={classroomName}
+                  teacherName={tName}
                   totalEnrolled={(qc.getQueryData(['enrollments', c.id]) ?? (selected === c.id ? enrolledList : [])).length}
                   capacity={classrooms.data?.find((cl) => cl.id === c.classroomId)?.capacity ?? DEFAULT_CAPACITY}
                   selected={selected === c.id}
-                  onClick={() => { setSelected(c.id); setBusqueda(''); setQueryInsc(''); }} />
+                  onClick={() => { setSelected(c.id); setBusqueda(''); setQueryInsc(''); }}
+                />
               );
             })}
           </div>
@@ -191,84 +238,133 @@ export default function EnrollmentsPage() {
       </div>
 
       {/* RIGHT panel */}
-      <div style={{ width: selected ? 360 : 0, flexShrink: 0, overflow: 'hidden', transition: 'width 0.3s cubic-bezier(0.4,0,0.2,1)' }}>
+      <div
+        className="shrink-0 overflow-hidden transition-[width] duration-300"
+        style={{ width: selected ? 360 : 0, transitionTimingFunction: 'cubic-bezier(0.4,0,0.2,1)' }}
+      >
         {selected && selectedCourse && (
-          <div style={{ width: 360, background: 'var(--p-bg-base)', border: '1px solid var(--p-border)', borderRadius: 20, boxShadow: 'var(--p-shadow-lg)', display: 'flex', flexDirection: 'column', maxHeight: 'calc(100vh - 120px)', overflow: 'hidden', position: 'sticky', top: 0 }}>
-            <div style={{ padding: '16px 20px 14px', borderBottom: '1px solid var(--p-border)' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
+          <div className="w-[360px] bg-p-bg-base border border-p-border rounded-[20px] shadow-p-lg flex flex-col overflow-hidden sticky top-0 max-h-[calc(100vh-120px)]">
+            <div className="px-5 pt-4 pb-[14px] border-b border-p-border">
+              <div className="flex items-start justify-between mb-[10px]">
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--p-text-primary)' }}>{selectedSubject} — {selectedClassroom}</div>
-                  <div style={{ fontSize: 12, color: 'var(--p-text-secondary)', marginTop: 2 }}>{teacherName || 'Sin docente'}</div>
+                  <div className="text-sm font-bold text-p-text-primary">{selectedSubject} — {selectedClassroom}</div>
+                  <div className="text-xs text-p-text-secondary mt-[2px]">{teacherName || 'Sin docente'}</div>
                 </div>
-                <button onClick={() => setSelected(null)} style={{ width: 26, height: 26, borderRadius: 8, border: '1px solid var(--p-border)', background: 'transparent', cursor: 'pointer', color: 'var(--p-text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, flexShrink: 0 }}>×</button>
+                <button
+                  onClick={() => setSelected(null)}
+                  className="w-[26px] h-[26px] rounded-lg border border-p-border bg-transparent cursor-pointer text-p-text-tertiary flex items-center justify-center text-[15px] shrink-0"
+                >
+                  ×
+                </button>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                <span style={{ padding: '3px 10px', borderRadius: '99px', fontSize: 12, fontWeight: 700, background: enrolledList.length >= max ? 'var(--p-d-100)' : 'var(--p-s-100)', color: enrolledList.length >= max ? 'var(--p-d-700)' : 'var(--p-s-700)' }}>
+              <div className="flex items-center justify-between mb-[6px]">
+                <span
+                  className="px-[10px] py-[3px] rounded-full text-xs font-bold"
+                  style={{
+                    background: enrolledList.length >= max ? 'var(--p-d-100)' : 'var(--p-s-100)',
+                    color: enrolledList.length >= max ? 'var(--p-d-700)' : 'var(--p-s-700)',
+                  }}
+                >
                   {enrolledList.length} / {max} alumnos
                 </span>
-                <span style={{ fontSize: 11.5, color: 'var(--p-text-tertiary)' }}>{pct}% capacidad</span>
+                <span className="text-[11.5px] text-p-text-tertiary">{pct}% capacidad</span>
               </div>
-              <div style={{ height: 4, borderRadius: 99, background: 'var(--p-bg-subtle)' }}>
-                <div style={{ height: 4, borderRadius: 99, width: `${Math.min(pct, 100)}%`, background: pct >= 100 ? 'var(--p-d-500)' : mc.color, transition: 'width 0.4s' }} />
+              <div className="h-1 rounded-full bg-p-bg-subtle">
+                <div
+                  className="h-1 rounded-full transition-[width] duration-[400ms]"
+                  style={{ width: `${Math.min(pct, 100)}%`, background: pct >= 100 ? 'var(--p-d-500)' : mc.color }}
+                />
               </div>
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', padding: '14px 20px 0' }}>
-              <div style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--p-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>Alumnos inscritos</div>
-              <div style={{ position: 'relative', marginBottom: 10 }}>
-                <input value={queryInsc} onChange={(e) => setQueryInsc(e.target.value)} placeholder="Filtrar inscritos…"
-                  style={{ width: '100%', padding: '6px 11px', fontSize: 12.5, fontFamily: 'inherit', border: '1px solid var(--p-border)', borderRadius: 10, background: 'var(--p-bg-base)', color: 'var(--p-text-primary)', outline: 'none', boxSizing: 'border-box' }} />
+            <div className="flex-1 overflow-y-auto px-5 pt-[14px]">
+              <div className="text-[11.5px] font-semibold text-p-text-tertiary uppercase tracking-[0.07em] mb-2">Alumnos inscritos</div>
+              <div className="relative mb-[10px]">
+                <input
+                  value={queryInsc}
+                  onChange={(e) => setQueryInsc(e.target.value)}
+                  placeholder="Filtrar inscritos…"
+                  className="w-full px-[11px] py-[6px] text-[12.5px] font-[inherit] border border-p-border rounded-[10px] bg-p-bg-base text-p-text-primary outline-none box-border"
+                />
               </div>
               {enrollments.isLoading ? (
-                <div style={{ padding: '20px 0', textAlign: 'center', color: 'var(--p-text-tertiary)', fontSize: 13 }}>Cargando…</div>
+                <div className="py-5 text-center text-p-text-tertiary text-[13px]">Cargando…</div>
               ) : enrolledFiltered.length === 0 ? (
-                <div style={{ padding: '20px 0', textAlign: 'center', color: 'var(--p-text-tertiary)', fontSize: 13 }}>
+                <div className="py-5 text-center text-p-text-tertiary text-[13px]">
                   {enrolledList.length === 0 ? 'Sin alumnos inscritos' : 'Sin resultados'}
                 </div>
               ) : (
                 enrolledFiltered.map((e) => (
-                  <StudentRow key={e.id} name={e.fullName || e.email} email={e.email} actionLabel="Quitar" danger
+                  <StudentRow
+                    key={e.id}
+                    name={e.fullName || e.email}
+                    email={e.email}
+                    actionLabel="Quitar"
+                    danger
                     disabled={removeEnrollment.isPending}
-                    onAction={() => handleRemove(e.id)} />
+                    onAction={() => handleRemove(e.id)}
+                  />
                 ))
               )}
             </div>
 
-            <div style={{ padding: '14px 20px', borderTop: '1px solid var(--p-border)', background: 'var(--p-bg-subtle)', flexShrink: 0 }}>
-              <div style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--p-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>Agregar alumno</div>
-              <div style={{ position: 'relative', marginBottom: searchResults.length ? 8 : 0 }}>
-                <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar por nombre o email…"
-                  style={{ width: '100%', padding: '6px 11px', fontSize: 12.5, fontFamily: 'inherit', border: '1px solid var(--p-border)', borderRadius: 10, background: 'var(--p-bg-base)', color: 'var(--p-text-primary)', outline: 'none', boxSizing: 'border-box' }} />
-                {busqueda && <button onClick={() => setBusqueda('')} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'transparent', color: 'var(--p-text-tertiary)', cursor: 'pointer', fontSize: 15 }}>×</button>}
+            <div className="px-5 py-[14px] border-t border-p-border bg-p-bg-subtle shrink-0">
+              <div className="text-[11.5px] font-semibold text-p-text-tertiary uppercase tracking-[0.07em] mb-2">Agregar alumno</div>
+              <div className={cn('relative', searchResults.length ? 'mb-2' : 'mb-0')}>
+                <input
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  placeholder="Buscar por nombre o email…"
+                  className="w-full px-[11px] py-[6px] text-[12.5px] font-[inherit] border border-p-border rounded-[10px] bg-p-bg-base text-p-text-primary outline-none box-border"
+                />
+                {busqueda && (
+                  <button
+                    onClick={() => setBusqueda('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 border-none bg-transparent text-p-text-tertiary cursor-pointer text-[15px]"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
 
               {busqueda.length >= 2 && (
-                <div style={{ background: 'var(--p-bg-base)', border: '1px solid var(--p-border)', borderRadius: 10, overflow: 'hidden' }}>
-                  {searchResults.length === 0
-                    ? <div style={{ padding: '12px 14px', fontSize: 12.5, color: 'var(--p-text-tertiary)' }}>Sin resultados</div>
-                    : searchResults.slice(0, 5).map((s, i) => (
-                        <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '8px 12px', borderTop: i > 0 ? '1px solid var(--p-border)' : 'none' }}
-                          onMouseEnter={(e) => e.currentTarget.style.background = 'var(--p-bg-subtle)'}
-                          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
-                          <div style={{ width: 26, height: 26, borderRadius: '99px', background: avatarColor(s.fullName || s.email), display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'white', flexShrink: 0 }}>{getInitials(s.fullName || s.email)}</div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--p-text-primary)' }}>{s.fullName}</div>
-                            <div style={{ fontSize: 11, color: 'var(--p-text-tertiary)' }}>{s.email}</div>
-                          </div>
-                          <button
-                            onClick={() => handleEnroll(s.id)}
-                            disabled={enrollStudent.isPending || enrolledList.length >= max}
-                            style={{ padding: '4px 12px', borderRadius: 8, border: 'none', background: 'var(--p-accent)', color: 'var(--p-accent-text)', fontSize: 12, fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer', opacity: enrolledList.length >= max ? 0.5 : 1 }}>
-                            Inscribir
-                          </button>
+                <div className="bg-p-bg-base border border-p-border rounded-[10px] overflow-hidden">
+                  {searchResults.length === 0 ? (
+                    <div className="px-[14px] py-3 text-[12.5px] text-p-text-tertiary">Sin resultados</div>
+                  ) : (
+                    searchResults.slice(0, 5).map((s, i) => (
+                      <div
+                        key={s.id}
+                        className={cn('flex items-center gap-[9px] px-3 py-2 hover:bg-p-bg-subtle', i > 0 && 'border-t border-p-border')}
+                      >
+                        <div
+                          className="w-[26px] h-[26px] rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
+                          style={{ background: avatarColor(s.fullName || s.email) }}
+                        >
+                          {getInitials(s.fullName || s.email)}
                         </div>
-                      ))
-                  }
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[13px] font-medium text-p-text-primary">{s.fullName}</div>
+                          <div className="text-[11px] text-p-text-tertiary">{s.email}</div>
+                        </div>
+                        <button
+                          onClick={() => handleEnroll(s.id)}
+                          disabled={enrollStudent.isPending || enrolledList.length >= max}
+                          className={cn(
+                            'px-3 py-1 rounded-lg border-none bg-p-accent text-p-accent-text text-xs font-medium font-[inherit] cursor-pointer',
+                            enrolledList.length >= max && 'opacity-50',
+                          )}
+                        >
+                          Inscribir
+                        </button>
+                      </div>
+                    ))
+                  )}
                 </div>
               )}
 
               {enrolledList.length >= max && (
-                <div style={{ marginTop: 8, padding: '8px 12px', background: 'var(--p-d-100)', borderRadius: 10, fontSize: 12, color: 'var(--p-d-700)', fontWeight: 500 }}>
+                <div className="mt-2 px-3 py-2 bg-p-d-100 rounded-[10px] text-xs text-p-d-700 font-medium">
                   El curso está lleno ({max}/{max}).
                 </div>
               )}

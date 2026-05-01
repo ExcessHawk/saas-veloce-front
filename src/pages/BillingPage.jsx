@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { CreditCard, ExternalLink, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
+import { CreditCard, ExternalLink, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSubscription, useCheckout, usePortal } from '@/hooks/useBilling';
 import { useAdminPlans } from '@/hooks/useAdminPlans';
 import { showApiError } from '@/lib/errors';
+import { cn } from '@/lib/utils';
 
 const STATUS_STYLE = {
   active:    { color: '#16a34a', bg: '#f0fdf4', label: 'Activa' },
@@ -57,60 +58,57 @@ export default function BillingPage() {
   const statusStyle = STATUS_STYLE[sub?.status] ?? STATUS_STYLE.active;
 
   return (
-    <div style={{ maxWidth: 720, margin: '0 auto' }}>
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--p-text-primary)', margin: 0 }}>Facturación</h1>
-        <p style={{ fontSize: 13.5, color: 'var(--p-text-secondary)', marginTop: 4 }}>
+    <div className="max-w-[720px] mx-auto">
+      <div className="mb-7">
+        <h1 className="text-[22px] font-bold text-p-text-primary m-0">Facturación</h1>
+        <p className="text-[13.5px] text-p-text-secondary mt-1">
           Gestiona tu suscripción y métodos de pago.
         </p>
       </div>
 
       {/* Current subscription */}
-      <div style={{ background: 'var(--p-bg-base)', border: '1px solid var(--p-border)', borderRadius: 14, padding: 24, marginBottom: 20 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
-          <CheckCircle2 size={16} color="var(--p-text-secondary)" />
-          <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--p-text-primary)' }}>Suscripción actual</span>
+      <div className="bg-p-bg-base border border-p-border rounded-[14px] p-6 mb-5">
+        <div className="flex items-center gap-[10px] mb-[18px]">
+          <CheckCircle2 size={16} className="text-p-text-secondary" />
+          <span className="text-[14px] font-semibold text-p-text-primary">Suscripción actual</span>
         </div>
 
         {loadingSub ? (
-          <div style={{ height: 60, background: 'var(--p-bg-subtle)', borderRadius: 8, animation: 'pulse 1.5s infinite' }} />
+          <div className="h-[60px] bg-p-bg-subtle rounded-lg animate-pulse" />
         ) : sub ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 16 }}>
+          <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(140px,1fr))]">
             <div>
-              <div style={{ fontSize: 11, color: 'var(--p-text-tertiary)', marginBottom: 3 }}>Plan</div>
-              <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--p-text-primary)' }}>{sub.planName ?? '—'}</div>
+              <div className="text-[11px] text-p-text-tertiary mb-[3px]">Plan</div>
+              <div className="text-[15px] font-semibold text-p-text-primary">{sub.planName ?? '—'}</div>
             </div>
             <div>
-              <div style={{ fontSize: 11, color: 'var(--p-text-tertiary)', marginBottom: 3 }}>Estado</div>
-              <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 8px', borderRadius: 99, color: statusStyle.color, background: statusStyle.bg }}>
+              <div className="text-[11px] text-p-text-tertiary mb-[3px]">Estado</div>
+              <span
+                className="text-[12px] font-semibold px-2 py-[3px] rounded-full"
+                style={{ color: statusStyle.color, background: statusStyle.bg }}
+              >
                 {statusStyle.label}
               </span>
             </div>
             <div>
-              <div style={{ fontSize: 11, color: 'var(--p-text-tertiary)', marginBottom: 3 }}>Moneda</div>
-              <div style={{ fontSize: 14, color: 'var(--p-text-primary)' }}>{sub.currency}</div>
+              <div className="text-[11px] text-p-text-tertiary mb-[3px]">Moneda</div>
+              <div className="text-[14px] text-p-text-primary">{sub.currency}</div>
             </div>
             <div>
-              <div style={{ fontSize: 11, color: 'var(--p-text-tertiary)', marginBottom: 3 }}>Vence</div>
-              <div style={{ fontSize: 14, color: 'var(--p-text-primary)' }}>{fmtDate(sub.currentPeriodEnd)}</div>
+              <div className="text-[11px] text-p-text-tertiary mb-[3px]">Vence</div>
+              <div className="text-[14px] text-p-text-primary">{fmtDate(sub.currentPeriodEnd)}</div>
             </div>
           </div>
         ) : (
-          <p style={{ fontSize: 13.5, color: 'var(--p-text-secondary)', margin: 0 }}>Sin suscripción activa.</p>
+          <p className="text-[13.5px] text-p-text-secondary m-0">Sin suscripción activa.</p>
         )}
 
         {sub && (
-          <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px solid var(--p-border)' }}>
+          <div className="mt-[18px] pt-4 border-t border-p-border">
             <button
               onClick={handlePortal}
               disabled={portal.isPending}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '7px 14px', borderRadius: 8,
-                border: '1px solid var(--p-border)',
-                background: 'transparent', color: 'var(--p-text-primary)',
-                fontSize: 13, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
-              }}
+              className="inline-flex items-center gap-[6px] px-[14px] py-[7px] rounded-lg border border-p-border bg-transparent text-p-text-primary text-[13px] font-medium font-sans cursor-pointer"
             >
               <ExternalLink size={13} />
               {portal.isPending ? 'Abriendo…' : 'Gestionar pagos y facturas'}
@@ -120,31 +118,30 @@ export default function BillingPage() {
       </div>
 
       {/* Checkout */}
-      <div style={{ background: 'var(--p-bg-base)', border: '1px solid var(--p-border)', borderRadius: 14, padding: 24 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
-          <CreditCard size={16} color="var(--p-text-secondary)" />
-          <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--p-text-primary)' }}>Cambiar plan</span>
+      <div className="bg-p-bg-base border border-p-border rounded-[14px] p-6">
+        <div className="flex items-center gap-[10px] mb-[18px]">
+          <CreditCard size={16} className="text-p-text-secondary" />
+          <span className="text-[14px] font-semibold text-p-text-primary">Cambiar plan</span>
         </div>
 
         {loadingPlans ? (
-          <div style={{ height: 80, background: 'var(--p-bg-subtle)', borderRadius: 8 }} />
+          <div className="h-20 bg-p-bg-subtle rounded-lg" />
         ) : activePlans.length === 0 ? (
-          <p style={{ fontSize: 13.5, color: 'var(--p-text-secondary)', margin: 0 }}>
+          <p className="text-[13.5px] text-p-text-secondary m-0">
             No hay planes disponibles aún. El administrador debe configurarlos primero.
           </p>
         ) : (
           <>
-            <div style={{ display: 'grid', gap: 10, marginBottom: 16 }}>
+            <div className="flex flex-col gap-[10px] mb-4">
               {activePlans.map((plan) => (
                 <label
                   key={plan.id}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '12px 16px', borderRadius: 10,
-                    border: `1.5px solid ${selectedPlan === plan.code ? 'var(--p-accent)' : 'var(--p-border)'}`,
-                    background: selectedPlan === plan.code ? 'var(--p-bg-subtle)' : 'transparent',
-                    cursor: 'pointer',
-                  }}
+                  className={cn(
+                    'flex items-center gap-3 px-4 py-3 rounded-[10px] cursor-pointer border-[1.5px] transition-colors',
+                    selectedPlan === plan.code
+                      ? 'border-p-accent bg-p-bg-subtle'
+                      : 'border-p-border bg-transparent',
+                  )}
                 >
                   <input
                     type="radio"
@@ -152,33 +149,29 @@ export default function BillingPage() {
                     value={plan.code}
                     checked={selectedPlan === plan.code}
                     onChange={() => setSelectedPlan(plan.code)}
-                    style={{ accentColor: 'var(--p-accent)' }}
+                    className="accent-p-accent"
                   />
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--p-text-primary)' }}>{plan.name}</div>
+                  <div className="flex-1">
+                    <div className="text-[14px] font-semibold text-p-text-primary">{plan.name}</div>
                     {plan.description && (
-                      <div style={{ fontSize: 12, color: 'var(--p-text-secondary)', marginTop: 2 }}>{plan.description}</div>
+                      <div className="text-[12px] text-p-text-secondary mt-[2px]">{plan.description}</div>
                     )}
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--p-text-primary)' }}>
+                  <div className="text-right">
+                    <div className="text-[14px] font-bold text-p-text-primary">
                       {currency === 'MXN' ? fmtPrice(plan.priceMonthlyMxn, 'MXN') : fmtPrice(plan.priceMonthlyUsd, 'USD')}
                     </div>
-                    <div style={{ fontSize: 11, color: 'var(--p-text-tertiary)' }}>/ mes</div>
+                    <div className="text-[11px] text-p-text-tertiary">/ mes</div>
                   </div>
                 </label>
               ))}
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div className="flex items-center gap-[10px]">
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                style={{
-                  padding: '7px 10px', borderRadius: 8, border: '1px solid var(--p-border)',
-                  background: 'var(--p-bg-base)', color: 'var(--p-text-primary)',
-                  fontSize: 13, fontFamily: 'inherit', cursor: 'pointer',
-                }}
+                className="px-[10px] py-[7px] rounded-lg border border-p-border bg-p-bg-base text-p-text-primary text-[13px] font-sans cursor-pointer"
               >
                 <option value="MXN">MXN</option>
                 <option value="USD">USD</option>
@@ -187,15 +180,10 @@ export default function BillingPage() {
               <button
                 onClick={handleCheckout}
                 disabled={checkout.isPending || !selectedPlan}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '8px 18px', borderRadius: 8,
-                  background: 'var(--p-accent)', color: 'white',
-                  border: 'none', fontSize: 13.5, fontWeight: 600,
-                  cursor: checkout.isPending || !selectedPlan ? 'not-allowed' : 'pointer',
-                  opacity: !selectedPlan ? 0.5 : 1,
-                  fontFamily: 'inherit',
-                }}
+                className={cn(
+                  'inline-flex items-center gap-[6px] px-[18px] py-2 rounded-lg bg-p-accent text-white border-none text-[13.5px] font-semibold font-sans transition-opacity',
+                  checkout.isPending || !selectedPlan ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
+                )}
               >
                 <CreditCard size={14} />
                 {checkout.isPending ? 'Redirigiendo…' : 'Ir a pagar'}

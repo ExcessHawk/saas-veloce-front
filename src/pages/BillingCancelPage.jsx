@@ -4,13 +4,13 @@ import { XCircle } from 'lucide-react';
 export default function BillingCancelPage() {
   const navigate = useNavigate();
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', gap: 16, background: 'var(--p-bg-app)' }}>
+    <div className="flex flex-col items-center justify-center h-screen gap-4 bg-p-bg-app">
       <XCircle size={56} color="#dc2626" />
-      <h1 style={{ fontSize: 24, fontWeight: 700, color: 'var(--p-text-primary)', margin: 0 }}>Pago cancelado</h1>
-      <p style={{ fontSize: 14, color: 'var(--p-text-secondary)', margin: 0 }}>No se realizó ningún cargo.</p>
+      <h1 className="text-2xl font-bold text-p-text-primary m-0">Pago cancelado</h1>
+      <p className="text-sm text-p-text-secondary m-0">No se realizó ningún cargo.</p>
       <button
         onClick={() => navigate('/dashboard/billing')}
-        style={{ marginTop: 8, padding: '8px 20px', borderRadius: 8, background: 'var(--p-accent)', color: 'white', border: 'none', fontSize: 13.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+        className="mt-2 px-5 py-2 rounded-lg bg-p-accent text-white text-[13.5px] font-semibold cursor-pointer border-0 font-sans"
       >
         Volver a facturación
       </button>

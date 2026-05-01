@@ -5,6 +5,7 @@ import { useLogout } from '@/hooks/useAuth';
 import { ModeToggle } from '@/components/ModeToggle';
 import { getInitials, avatarColor } from '@/lib/materia-colors';
 import { LayoutDashboard, CreditCard, School, LogOut, Menu, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
   { path: '/admin',         label: 'Dashboard',  icon: LayoutDashboard, exact: true },
@@ -13,22 +14,17 @@ const NAV_ITEMS = [
 ];
 
 const NavItem = ({ item, isActive, onClick }) => {
-  const [hov, setHov] = useState(false);
   const Icon = item.icon;
   return (
     <Link
       to={item.path}
       onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        display: 'flex', alignItems: 'center', gap: 10,
-        padding: '7px 12px', borderRadius: 10,
-        background: isActive ? 'var(--p-sidebar-active)' : hov ? 'var(--p-sidebar-hover)' : 'transparent',
-        color: isActive || hov ? 'var(--p-sidebar-text-active)' : 'var(--p-sidebar-text)',
-        fontSize: 13.5, fontWeight: isActive ? 500 : 400,
-        textDecoration: 'none', transition: 'all 0.1s',
-      }}
+      className={cn(
+        'flex items-center gap-[10px] px-3 py-[7px] rounded-xl no-underline transition-all duration-100 text-[13.5px]',
+        isActive
+          ? 'bg-p-sidebar-active text-p-sidebar-text-active font-medium'
+          : 'text-p-sidebar-text font-normal hover:bg-p-sidebar-hover hover:text-p-sidebar-text-active'
+      )}
     >
       <Icon size={15} />
       <span>{item.label}</span>
@@ -61,83 +57,71 @@ export default function AdminLayout() {
 
   const SidebarContent = ({ onItemClick }) => (
     <>
-      <div style={{ padding: '18px 18px 16px', borderBottom: '1px solid oklch(99% 0 0 / 0.07)', display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div style={{ width: 32, height: 32, borderRadius: 10, background: 'oklch(99% 0 0 / 0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-          </svg>
-        </div>
-        <div>
-          <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--p-sidebar-text-active)', letterSpacing: '-0.03em' }}>Pensum</div>
-          <div style={{ fontSize: 10.5, color: 'var(--p-sidebar-text)', marginTop: 1 }}>Super Admin</div>
-        </div>
+      <div className="px-[18px] py-[17px] border-b border-[oklch(99%_0_0/0.07)] flex items-center gap-[10px]">
+        <img src="/logo-pensum.png" alt="Pensum" className="h-7 brightness-0 invert object-contain" />
+        <div className="text-[10.5px] text-p-sidebar-text mt-px">Super Admin</div>
       </div>
 
-      <nav style={{ flex: 1, padding: '10px 8px', display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <nav className="flex-1 p-2 flex flex-col gap-px">
         {NAV_ITEMS.map((item) => (
           <NavItem key={item.path} item={item} isActive={isActive(item)} onClick={() => { setSidebarOpen(false); onItemClick?.(); }} />
         ))}
       </nav>
 
-      <div style={{ margin: 8, padding: '10px 12px', background: 'oklch(99% 0 0 / 0.06)', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div style={{ width: 30, height: 30, borderRadius: '99px', background: userAvatarBg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: 'white', flexShrink: 0 }}>
+      <div className="m-2 px-3 py-[10px] bg-[oklch(99%_0_0/0.06)] rounded-[10px] flex items-center gap-[10px]">
+        <div className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+          style={{ background: userAvatarBg }}>
           {userInitials}
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 12.5, fontWeight: 500, color: 'var(--p-sidebar-text-active)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.fullName || user?.email}</div>
-          <div style={{ fontSize: 10.5, color: 'var(--p-sidebar-text)' }}>superadmin</div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[12.5px] font-medium text-p-sidebar-text-active truncate">{user?.fullName || user?.email}</div>
+          <div className="text-[10.5px] text-p-sidebar-text">superadmin</div>
         </div>
       </div>
     </>
   );
 
   return (
-    <div style={{ display: 'flex', height: '100vh', background: 'var(--p-bg-app)', overflow: 'hidden' }}>
+    <div className="flex h-screen bg-p-bg-app overflow-hidden">
       {isNavigating && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, height: 2, overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: '33%', background: 'var(--p-accent)', animation: 'slide 0.8s ease-in-out infinite' }} />
+        <div className="fixed top-0 left-0 right-0 z-50 h-0.5 overflow-hidden">
+          <div className="h-full w-1/3 bg-p-accent [animation:slide_0.8s_ease-in-out_infinite]" />
         </div>
       )}
 
-      <aside style={{ width: 256, flexShrink: 0, height: '100vh', background: 'var(--p-sidebar-bg)', display: 'none', flexDirection: 'column', borderRight: '1px solid oklch(99% 0 0 / 0.06)', position: 'sticky', top: 0 }} className="md-sidebar">
+      <aside className="hidden md:flex w-64 shrink-0 h-screen bg-p-sidebar-bg flex-col border-r border-[oklch(99%_0_0/0.06)] sticky top-0">
         <SidebarContent />
       </aside>
 
       {sidebarOpen && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 50 }} className="md:hidden">
-          <div style={{ position: 'fixed', inset: 0, background: 'oklch(0% 0 0 / 0.5)' }} onClick={() => setSidebarOpen(false)} />
-          <aside style={{ position: 'fixed', left: 0, top: 0, bottom: 0, width: 256, background: 'var(--p-sidebar-bg)', display: 'flex', flexDirection: 'column', zIndex: 50 }}>
-            <div style={{ padding: '12px 16px', display: 'flex', justifyContent: 'flex-end', borderBottom: '1px solid oklch(99% 0 0 / 0.07)' }}>
-              <button onClick={() => setSidebarOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--p-sidebar-text)', cursor: 'pointer', display: 'flex', padding: 4 }}><X size={18} /></button>
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
+          <aside className="fixed left-0 top-0 bottom-0 w-64 bg-p-sidebar-bg flex flex-col z-50">
+            <div className="px-4 py-3 flex justify-end border-b border-[oklch(99%_0_0/0.07)]">
+              <button onClick={() => setSidebarOpen(false)} className="bg-transparent border-0 text-p-sidebar-text cursor-pointer flex p-1"><X size={18} /></button>
             </div>
             <SidebarContent onItemClick={() => setSidebarOpen(false)} />
           </aside>
         </div>
       )}
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
-        <header style={{ height: 54, flexShrink: 0, background: 'var(--p-bg-base)', borderBottom: '1px solid var(--p-border)', display: 'flex', alignItems: 'center', padding: '0 20px', gap: 10, position: 'sticky', top: 0, zIndex: 10 }}>
-          <button onClick={() => setSidebarOpen(true)} style={{ background: 'transparent', border: 'none', color: 'var(--p-text-secondary)', cursor: 'pointer', display: 'flex', padding: 4 }} className="md:hidden">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        <header className="h-[54px] shrink-0 bg-p-bg-base border-b border-p-border flex items-center px-5 gap-[10px] sticky top-0 z-10">
+          <button onClick={() => setSidebarOpen(true)} className="md:hidden bg-transparent border-0 text-p-text-secondary cursor-pointer flex p-1">
             <Menu size={20} />
           </button>
-          <div style={{ flex: 1 }} />
+          <div className="flex-1" />
           <ModeToggle />
-          <button
-            onClick={handleLogout}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', border: '1px solid var(--p-border)', borderRadius: 10, background: 'transparent', color: 'var(--p-text-secondary)', fontSize: 13, fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer' }}
-          >
+          <button onClick={handleLogout}
+            className="flex items-center gap-[6px] px-3 py-[6px] border border-p-border rounded-[10px] bg-transparent text-p-text-secondary text-[13px] font-sans font-medium cursor-pointer">
             <LogOut size={13} />
             Salir
           </button>
         </header>
-        <main style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
+        <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
       </div>
-
-      <style>{`
-        @media (min-width: 768px) { .md-sidebar { display: flex !important; } .md\\:hidden { display: none !important; } }
-      `}</style>
     </div>
   );
 }

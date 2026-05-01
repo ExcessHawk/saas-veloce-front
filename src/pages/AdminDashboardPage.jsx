@@ -14,20 +14,20 @@ export default function AdminDashboardPage() {
 
   return (
     <div>
-      <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--p-text-primary)', margin: 0 }}>Panel Super Admin</h1>
-        <p style={{ fontSize: 13.5, color: 'var(--p-text-secondary)', marginTop: 4 }}>Vista global del SaaS.</p>
+      <div className="mb-7">
+        <h1 className="text-[22px] font-bold text-p-text-primary m-0">Panel Super Admin</h1>
+        <p className="text-[13.5px] text-p-text-secondary mt-1">Vista global del SaaS.</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16 }}>
+      <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
         {stats.map((s) => {
           const Icon = s.icon;
           return (
-            <Link key={s.label} to={s.path} style={{ textDecoration: 'none' }}>
-              <div style={{ background: 'var(--p-bg-base)', border: '1px solid var(--p-border)', borderRadius: 14, padding: '20px 22px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <Icon size={18} color="var(--p-text-secondary)" />
-                <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--p-text-primary)' }}>{s.value}</div>
-                <div style={{ fontSize: 12.5, color: 'var(--p-text-secondary)' }}>{s.label}</div>
+            <Link key={s.label} to={s.path} className="no-underline">
+              <div className="bg-p-bg-base border border-p-border rounded-[14px] px-[22px] py-5 flex flex-col gap-[10px]">
+                <Icon size={18} className="text-p-text-secondary" />
+                <div className="text-[28px] font-bold text-p-text-primary">{s.value}</div>
+                <div className="text-[12.5px] text-p-text-secondary">{s.label}</div>
               </div>
             </Link>
           );

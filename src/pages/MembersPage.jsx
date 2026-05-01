@@ -14,31 +14,44 @@ import { showApiError } from '@/lib/errors';
 import { avatarColor, getInitials } from '@/lib/materia-colors';
 import { RoleGate } from '@/components/RoleGate';
 import { Spinner } from '@/components/AuthFormParts';
+import { cn } from '@/lib/utils';
 
 const ROLES_META = {
   director: {
     label: 'Director',
-    bg: 'oklch(8.5% 0.005 80)',
-    color: 'oklch(99.2% 0.003 80)',
-    dot: 'oklch(99.2% 0.003 80)',
+    bg: 'oklch(8.5%_0.005_80)',
+    color: 'oklch(99.2%_0.003_80)',
+    dot: 'oklch(99.2%_0.003_80)',
+    bgStyle: 'oklch(8.5% 0.005 80)',
+    colorStyle: 'oklch(99.2% 0.003 80)',
+    dotStyle: 'oklch(99.2% 0.003 80)',
   },
   teacher: {
     label: 'Docente',
-    bg: 'oklch(92% 0.020 250)',
-    color: 'oklch(35% 0.050 250)',
-    dot: 'oklch(35% 0.050 250)',
+    bg: 'oklch(92%_0.020_250)',
+    color: 'oklch(35%_0.050_250)',
+    dot: 'oklch(35%_0.050_250)',
+    bgStyle: 'oklch(92% 0.020 250)',
+    colorStyle: 'oklch(35% 0.050 250)',
+    dotStyle: 'oklch(35% 0.050 250)',
   },
   student: {
     label: 'Estudiante',
-    bg: 'var(--p-s-100)',
-    color: 'var(--p-s-700)',
-    dot: 'var(--p-s-500)',
+    bg: null,
+    color: null,
+    dot: null,
+    bgStyle: 'var(--p-s-100)',
+    colorStyle: 'var(--p-s-700)',
+    dotStyle: 'var(--p-s-500)',
   },
   parent: {
     label: 'Padre/Madre',
-    bg: 'oklch(93% 0.040 50)',
-    color: 'oklch(35% 0.09 50)',
-    dot: 'oklch(50% 0.13 50)',
+    bg: 'oklch(93%_0.040_50)',
+    color: 'oklch(35%_0.09_50)',
+    dot: 'oklch(50%_0.13_50)',
+    bgStyle: 'oklch(93% 0.040 50)',
+    colorStyle: 'oklch(35% 0.09 50)',
+    dotStyle: 'oklch(50% 0.13 50)',
   },
 };
 
@@ -52,12 +65,13 @@ const inviteSchema = z.object({
 /* ── Avatar ── */
 function Av({ nombre, size = 32 }) {
   return (
-    <div style={{
-      width: size, height: size, borderRadius: '99px',
-      background: avatarColor(nombre || ''),
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontSize: size > 30 ? 11 : 9, fontWeight: 700, color: 'white', flexShrink: 0,
-    }}>
+    <div
+      className={cn(
+        'rounded-full flex items-center justify-center font-bold text-white shrink-0',
+        size > 30 ? 'text-[11px]' : 'text-[9px]',
+      )}
+      style={{ width: size, height: size, background: avatarColor(nombre || '') }}
+    >
       {getInitials(nombre || '?')}
     </div>
   );
@@ -67,10 +81,10 @@ function Av({ nombre, size = 32 }) {
 function RoleBadge({ role }) {
   const m = ROLES_META[role] || ROLES_META.student;
   return (
-    <span style={{
-      padding: '3px 9px', borderRadius: '99px', fontSize: 12, fontWeight: 700,
-      background: m.bg, color: m.color, display: 'inline-block', whiteSpace: 'nowrap',
-    }}>
+    <span
+      className="px-[9px] py-[3px] rounded-full text-[12px] font-bold inline-block whitespace-nowrap"
+      style={{ background: m.bgStyle, color: m.colorStyle }}
+    >
       {m.label}
     </span>
   );
@@ -86,12 +100,10 @@ function InlineRoleSelect({ value, onChange, onClose }) {
   }, [onClose]);
 
   return (
-    <div ref={ref} style={{
-      position: 'absolute', zIndex: 50, top: 'calc(100% + 4px)', left: 0,
-      background: 'var(--p-bg-base)', border: '1px solid var(--p-border)',
-      borderRadius: 16, boxShadow: 'var(--p-shadow-lg)',
-      overflow: 'hidden', minWidth: 160, animation: 'dropIn 0.15s ease',
-    }}>
+    <div
+      ref={ref}
+      className="absolute z-50 top-[calc(100%+4px)] left-0 bg-p-bg-base border border-p-border rounded-2xl shadow-p-lg overflow-hidden min-w-[160px] [animation:dropIn_0.15s_ease]"
+    >
       {ROLES_ORDER.map((k) => {
         const m = ROLES_META[k];
         const active = value === k;
@@ -100,22 +112,18 @@ function InlineRoleSelect({ value, onChange, onClose }) {
             key={k}
             type="button"
             onClick={() => { onChange(k); onClose(); }}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10,
-              width: '100%', padding: '9px 13px', border: 'none',
-              background: active ? 'var(--p-bg-subtle)' : 'transparent',
-              cursor: 'pointer', transition: 'background 0.08s', fontFamily: 'inherit',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--p-bg-subtle)')}
-            onMouseLeave={(e) => (e.currentTarget.style.background = active ? 'var(--p-bg-subtle)' : 'transparent')}
+            className={cn(
+              'flex items-center justify-between gap-[10px] w-full px-[13px] py-[9px] border-none cursor-pointer transition-[background] duration-[0.08s] font-[inherit] hover:bg-p-bg-subtle',
+              active ? 'bg-p-bg-subtle' : 'bg-transparent',
+            )}
           >
-            <span style={{
-              padding: '2px 8px', borderRadius: '99px', fontSize: 12, fontWeight: 700,
-              background: m.bg, color: m.color,
-            }}>
+            <span
+              className="px-2 py-[2px] rounded-full text-[12px] font-bold"
+              style={{ background: m.bgStyle, color: m.colorStyle }}
+            >
               {m.label}
             </span>
-            {active && <Check size={12} color="var(--p-text-secondary)" />}
+            {active && <Check size={12} className="text-p-text-secondary" />}
           </button>
         );
       })}
@@ -135,45 +143,20 @@ function DotsMenu({ onChangeRole, onDelete, isSelf }) {
   }, []);
 
   return (
-    <div ref={ref} style={{ position: 'relative' }}>
+    <div ref={ref} className="relative">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        style={{
-          width: 28, height: 28, borderRadius: 6, border: '1px solid transparent',
-          background: 'transparent', cursor: 'pointer',
-          color: 'var(--p-text-tertiary)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: 'all 0.1s',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'var(--p-bg-subtle)';
-          e.currentTarget.style.color = 'var(--p-text-primary)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent';
-          e.currentTarget.style.color = 'var(--p-text-tertiary)';
-        }}
+        className="w-7 h-7 rounded-md border border-transparent bg-transparent cursor-pointer text-p-text-tertiary flex items-center justify-center transition-all duration-100 hover:bg-p-bg-subtle hover:text-p-text-primary"
       >
         <MoreHorizontal size={15} />
       </button>
       {open && (
-        <div style={{
-          position: 'absolute', right: 0, top: 'calc(100% + 4px)', zIndex: 50, minWidth: 170,
-          background: 'var(--p-bg-base)', border: '1px solid var(--p-border)',
-          borderRadius: 16, boxShadow: 'var(--p-shadow-lg)',
-          overflow: 'hidden', animation: 'dropIn 0.15s ease',
-        }}>
+        <div className="absolute right-0 top-[calc(100%+4px)] z-50 min-w-[170px] bg-p-bg-base border border-p-border rounded-2xl shadow-p-lg overflow-hidden [animation:dropIn_0.15s_ease]">
           <button
             type="button"
             onClick={() => { onChangeRole(); setOpen(false); }}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 9, width: '100%', padding: '9px 14px',
-              border: 'none', background: 'transparent', cursor: 'pointer',
-              fontFamily: 'inherit', fontSize: 13.5, color: 'var(--p-text-primary)', textAlign: 'left',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--p-bg-subtle)')}
-            onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+            className="flex items-center gap-[9px] w-full px-[14px] py-[9px] border-none bg-transparent cursor-pointer font-[inherit] text-[13.5px] text-p-text-primary text-left hover:bg-p-bg-subtle"
           >
             <Pencil size={13} /> Cambiar rol
           </button>
@@ -181,14 +164,7 @@ function DotsMenu({ onChangeRole, onDelete, isSelf }) {
             <button
               type="button"
               onClick={() => { onDelete(); setOpen(false); }}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 9, width: '100%', padding: '9px 14px',
-                border: 'none', background: 'transparent', cursor: 'pointer',
-                fontFamily: 'inherit', fontSize: 13.5, color: 'var(--p-d-500)', textAlign: 'left',
-                borderTop: '1px solid var(--p-border)',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--p-d-100)')}
-              onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+              className="flex items-center gap-[9px] w-full px-[14px] py-[9px] border-none bg-transparent cursor-pointer font-[inherit] text-[13.5px] text-left border-t border-p-border hover:bg-p-d-100 text-p-d-500"
             >
               <Trash2 size={13} /> Eliminar miembro
             </button>
@@ -207,23 +183,16 @@ function MemberRow({ member, isSelf, isDirector, onRoleChange, onDelete }) {
     : '—';
 
   return (
-    <tr
-      style={{ borderTop: '1px solid var(--p-border)', transition: 'background 0.08s' }}
-      onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--p-bg-subtle)')}
-      onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-    >
-      <td style={{ padding: '13px 20px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
+    <tr className="border-t border-p-border transition-[background] duration-[0.08s] hover:bg-p-bg-subtle">
+      <td className="px-5 py-[13px]">
+        <div className="flex items-center gap-[11px]">
           <Av nombre={member.fullName || member.email} size={34} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-            <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--p-text-primary)' }}>
+          <div className="flex items-center gap-[7px]">
+            <span className="text-[14px] font-medium text-p-text-primary">
               {member.fullName || member.email}
             </span>
             {isSelf && (
-              <span style={{
-                padding: '1px 7px', borderRadius: '99px', fontSize: 10.5, fontWeight: 700,
-                background: 'var(--p-bg-muted)', color: 'var(--p-text-secondary)',
-              }}>
+              <span className="px-[7px] py-[1px] rounded-full text-[10.5px] font-bold bg-p-bg-muted text-p-text-secondary">
                 Tú
               </span>
             )}
@@ -231,25 +200,22 @@ function MemberRow({ member, isSelf, isDirector, onRoleChange, onDelete }) {
         </div>
       </td>
 
-      <td style={{ padding: '13px 20px' }}>
-        <span style={{
-          fontSize: 13, color: 'var(--p-text-secondary)',
-          fontFamily: "'Geist Mono', monospace",
-        }}>
+      <td className="px-5 py-[13px]">
+        <span className="text-[13px] text-p-text-secondary font-['Geist_Mono',monospace]">
           {member.email}
         </span>
       </td>
 
-      <td style={{ padding: '13px 20px' }}>
-        <div style={{ position: 'relative', display: 'inline-block' }}>
+      <td className="px-5 py-[13px]">
+        <div className="relative inline-block">
           <button
             type="button"
             onClick={() => isDirector && !isSelf && setEditRole((o) => !o)}
             disabled={!isDirector || isSelf}
-            style={{
-              border: 'none', background: 'transparent', padding: 0, display: 'flex',
-              cursor: (isDirector && !isSelf) ? 'pointer' : 'default',
-            }}
+            className={cn(
+              'border-none bg-transparent p-0 flex',
+              (isDirector && !isSelf) ? 'cursor-pointer' : 'cursor-default',
+            )}
           >
             <RoleBadge role={member.role} />
           </button>
@@ -263,11 +229,11 @@ function MemberRow({ member, isSelf, isDirector, onRoleChange, onDelete }) {
         </div>
       </td>
 
-      <td style={{ padding: '13px 20px' }}>
-        <span style={{ fontSize: 13, color: 'var(--p-text-secondary)' }}>{desde}</span>
+      <td className="px-5 py-[13px]">
+        <span className="text-[13px] text-p-text-secondary">{desde}</span>
       </td>
 
-      <td style={{ padding: '13px 20px' }}>
+      <td className="px-5 py-[13px]">
         {isDirector && (
           <DotsMenu
             isSelf={isSelf}
@@ -283,21 +249,18 @@ function MemberRow({ member, isSelf, isDirector, onRoleChange, onDelete }) {
 /* ── Empty state ── */
 function EmptyState({ onAdd, isDirector, query }) {
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      padding: '72px 24px', gap: 16, animation: 'fadeUp 0.25s ease',
-    }}>
+    <div className="flex flex-col items-center justify-center px-6 py-[72px] gap-4 [animation:fadeUp_0.25s_ease]">
       <svg width="88" height="88" viewBox="0 0 88 88" fill="none">
         <circle cx="32" cy="30" r="14" fill="var(--p-bg-subtle)" stroke="var(--p-border)" strokeWidth="1.5" />
         <path d="M10 68a22 22 0 0 1 44 0" fill="var(--p-bg-subtle)" stroke="var(--p-border)" strokeWidth="1.5" />
         <circle cx="60" cy="28" r="10" fill="var(--p-bg-muted)" stroke="var(--p-border)" strokeWidth="1.5" />
         <path d="M42 62a16 16 0 0 1 32 0" fill="var(--p-bg-muted)" stroke="var(--p-border)" strokeWidth="1.5" />
       </svg>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 17, fontWeight: 700, color: 'var(--p-text-primary)', marginBottom: 7 }}>
+      <div className="text-center">
+        <div className="text-[17px] font-bold text-p-text-primary mb-[7px]">
           {query ? 'Sin resultados' : 'Sin miembros aquí'}
         </div>
-        <div style={{ fontSize: 14, color: 'var(--p-text-secondary)' }}>
+        <div className="text-[14px] text-p-text-secondary">
           {query ? `No se encontraron miembros para "${query}"` : 'No hay miembros con este rol todavía.'}
         </div>
       </div>
@@ -305,12 +268,7 @@ function EmptyState({ onAdd, isDirector, query }) {
         <button
           type="button"
           onClick={onAdd}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            padding: '8px 18px', borderRadius: 10, border: 'none',
-            background: 'var(--p-accent)', color: 'var(--p-accent-text)',
-            fontSize: 13.5, fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer',
-          }}
+          className="inline-flex items-center gap-[6px] px-[18px] py-2 rounded-[10px] border-none bg-p-accent text-p-accent-text text-[13.5px] font-[inherit] font-semibold cursor-pointer"
         >
           <Plus size={14} /> Agregar miembro
         </button>
@@ -324,32 +282,20 @@ function ModalShell({ title, subtitle, onClose, children, width = 480 }) {
   return (
     <div
       onClick={onClose}
-      style={{
-        position: 'fixed', inset: 0, zIndex: 1000,
-        background: 'oklch(0% 0 0 / 0.45)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        backdropFilter: 'blur(2px)', padding: 16,
-      }}
+      className="fixed inset-0 z-[1000] bg-[oklch(0%_0_0/0.45)] flex items-center justify-center backdrop-blur-[2px] p-4"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{
-          width, maxWidth: 'calc(100vw - 32px)',
-          background: 'var(--p-bg-base)', border: '1px solid var(--p-border)',
-          borderRadius: 24, boxShadow: 'var(--p-shadow-lg)',
-          display: 'flex', flexDirection: 'column', overflow: 'hidden',
-        }}
+        className="bg-p-bg-base border border-p-border rounded-3xl shadow-p-lg flex flex-col overflow-hidden max-w-[calc(100vw-32px)]"
+        style={{ width }}
       >
-        <div style={{
-          padding: '18px 24px 16px', borderBottom: '1px solid var(--p-border)',
-          display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
-        }}>
+        <div className="px-6 pt-[18px] pb-4 border-b border-p-border flex items-start justify-between">
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--p-text-primary)', letterSpacing: '-0.02em' }}>
+            <div className="text-[15px] font-bold text-p-text-primary tracking-[-0.02em]">
               {title}
             </div>
             {subtitle && (
-              <div style={{ fontSize: 12.5, color: 'var(--p-text-secondary)', marginTop: 2 }}>
+              <div className="text-[12.5px] text-p-text-secondary mt-[2px]">
                 {subtitle}
               </div>
             )}
@@ -357,12 +303,7 @@ function ModalShell({ title, subtitle, onClose, children, width = 480 }) {
           <button
             type="button"
             onClick={onClose}
-            style={{
-              width: 28, height: 28, borderRadius: 10,
-              border: '1px solid var(--p-border)', background: 'transparent',
-              cursor: 'pointer', color: 'var(--p-text-tertiary)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
+            className="w-7 h-7 rounded-[10px] border border-p-border bg-transparent cursor-pointer text-p-text-tertiary flex items-center justify-center"
           >
             <X size={14} />
           </button>
@@ -396,40 +337,30 @@ function AddMemberModal({ onClose }) {
   return (
     <ModalShell title="Agregar miembro" subtitle="El usuario debe estar registrado en Pensum" onClose={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="px-6 py-5 flex flex-col gap-4">
           {/* Email */}
           <div>
-            <label style={{
-              display: 'block', fontSize: 12.5, fontWeight: 600,
-              color: 'var(--p-text-secondary)', marginBottom: 6,
-            }}>
+            <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
               Correo electrónico *
             </label>
-            <div style={{ position: 'relative' }}>
-              <span style={{
-                position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)',
-                color: 'var(--p-text-tertiary)', pointerEvents: 'none', display: 'flex',
-              }}>
+            <div className="relative">
+              <span className="absolute left-[10px] top-1/2 -translate-y-1/2 text-p-text-tertiary pointer-events-none flex">
                 <Mail size={14} />
               </span>
               <input
                 type="email"
                 placeholder="usuario@email.com"
-                style={{
-                  width: '100%', padding: '9px 12px 9px 34px',
-                  fontSize: 13.5, fontFamily: 'inherit',
-                  border: `1.5px solid ${errors.email ? 'var(--p-d-500)' : 'var(--p-border)'}`,
-                  borderRadius: 10,
-                  background: 'var(--p-bg-base)', color: 'var(--p-text-primary)', outline: 'none',
-                }}
+                className={cn(
+                  'w-full py-[9px] pr-3 pl-[34px] text-[13.5px] font-[inherit] rounded-[10px] bg-p-bg-base text-p-text-primary outline-none',
+                  errors.email
+                    ? 'border-[1.5px] border-p-d-500'
+                    : 'border-[1.5px] border-p-border',
+                )}
                 {...register('email')}
               />
             </div>
             {errors.email && (
-              <div style={{
-                fontSize: 12, color: 'var(--p-d-500)', marginTop: 5,
-                display: 'flex', alignItems: 'center', gap: 5,
-              }}>
+              <div className="text-[12px] mt-[5px] flex items-center gap-[5px] text-p-d-500">
                 <X size={12} /> {errors.email.message}
               </div>
             )}
@@ -437,13 +368,10 @@ function AddMemberModal({ onClose }) {
 
           {/* Rol */}
           <div>
-            <label style={{
-              display: 'block', fontSize: 12.5, fontWeight: 600,
-              color: 'var(--p-text-secondary)', marginBottom: 6,
-            }}>
+            <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
               Rol
             </label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            <div className="grid grid-cols-2 gap-2">
               {ROLES_ORDER.map((k) => {
                 const m = ROLES_META[k];
                 const active = selectedRole === k;
@@ -452,23 +380,25 @@ function AddMemberModal({ onClose }) {
                     key={k}
                     type="button"
                     onClick={() => setValue('role', k, { shouldDirty: true })}
-                    style={{
-                      padding: '9px 12px', borderRadius: 10,
-                      border: `1.5px solid ${active ? 'var(--p-border-strong)' : 'var(--p-border)'}`,
-                      background: active ? m.bg : 'transparent',
-                      cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
-                      fontFamily: 'inherit', transition: 'all 0.12s',
-                      boxShadow: active ? 'var(--p-shadow-sm)' : 'none',
-                    }}
+                    className={cn(
+                      'px-3 py-[9px] rounded-[10px] cursor-pointer flex items-center gap-2 font-[inherit] transition-all duration-[0.12s]',
+                      active
+                        ? 'border-[1.5px] border-p-border-strong shadow-p-sm'
+                        : 'border-[1.5px] border-p-border bg-transparent',
+                    )}
+                    style={active ? { background: m.bgStyle } : undefined}
                   >
-                    <span style={{ width: 8, height: 8, borderRadius: '99px', background: m.dot, flexShrink: 0 }} />
-                    <span style={{
-                      fontSize: 13, fontWeight: active ? 700 : 500,
-                      color: active ? 'var(--p-text-primary)' : 'var(--p-text-secondary)',
-                    }}>
+                    <span
+                      className="w-2 h-2 rounded-full shrink-0"
+                      style={{ background: m.dotStyle }}
+                    />
+                    <span className={cn(
+                      'text-[13px]',
+                      active ? 'font-bold text-p-text-primary' : 'font-medium text-p-text-secondary',
+                    )}>
                       {m.label}
                     </span>
-                    {active && <Check size={12} color="var(--p-text-secondary)" style={{ marginLeft: 'auto' }} />}
+                    {active && <Check size={12} className="text-p-text-secondary ml-auto" />}
                   </button>
                 );
               })}
@@ -476,48 +406,29 @@ function AddMemberModal({ onClose }) {
           </div>
 
           {/* Info box */}
-          <div style={{
-            padding: '10px 13px', background: 'var(--p-bg-subtle)',
-            border: '1px solid var(--p-border)', borderRadius: 10,
-            display: 'flex', alignItems: 'flex-start', gap: 8,
-            fontSize: 12.5, color: 'var(--p-text-secondary)', lineHeight: 1.6,
-          }}>
-            <span style={{ color: 'var(--p-text-tertiary)', flexShrink: 0, marginTop: 1, display: 'flex' }}>
+          <div className="px-[13px] py-[10px] bg-p-bg-subtle border border-p-border rounded-[10px] flex items-start gap-2 text-[12.5px] text-p-text-secondary leading-[1.6]">
+            <span className="text-p-text-tertiary shrink-0 mt-[1px] flex">
               <Info size={13} />
             </span>
             El usuario debe estar previamente registrado en Pensum con este email para poder añadirlo a tu institución.
           </div>
         </div>
 
-        <div style={{
-          padding: '14px 24px', borderTop: '1px solid var(--p-border)',
-          display: 'flex', justifyContent: 'flex-end', gap: 8,
-          background: 'var(--p-bg-subtle)',
-        }}>
+        <div className="px-6 py-[14px] border-t border-p-border flex justify-end gap-2 bg-p-bg-subtle">
           <button
             type="button"
             onClick={onClose}
-            style={{
-              padding: '7px 15px', borderRadius: 10,
-              border: '1px solid var(--p-border)', background: 'var(--p-bg-base)',
-              color: 'var(--p-text-primary)', fontSize: 13, fontFamily: 'inherit', fontWeight: 500,
-              cursor: 'pointer',
-            }}
+            className="px-[15px] py-[7px] rounded-[10px] border border-p-border bg-p-bg-base text-p-text-primary text-[13px] font-[inherit] font-medium cursor-pointer"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={inviteMember.isPending}
-            style={{
-              padding: '7px 15px', borderRadius: 10,
-              border: '1px solid transparent',
-              background: 'var(--p-accent)', color: 'var(--p-accent-text)',
-              fontSize: 13, fontFamily: 'inherit', fontWeight: 500,
-              cursor: inviteMember.isPending ? 'not-allowed' : 'pointer',
-              opacity: inviteMember.isPending ? 0.5 : 1,
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-            }}
+            className={cn(
+              'px-[15px] py-[7px] rounded-[10px] border border-transparent bg-p-accent text-p-accent-text text-[13px] font-[inherit] font-medium inline-flex items-center gap-[6px]',
+              inviteMember.isPending ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
+            )}
           >
             {inviteMember.isPending && <Spinner size={13} />}
             {inviteMember.isPending ? 'Agregando…' : 'Agregar miembro'}
@@ -535,52 +446,29 @@ function DeleteModal({ member, isPending, onClose, onConfirm }) {
   return (
     <div
       onClick={onClose}
-      style={{
-        position: 'fixed', inset: 0, zIndex: 1000,
-        background: 'oklch(0% 0 0 / 0.45)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        backdropFilter: 'blur(2px)', padding: 16,
-      }}
+      className="fixed inset-0 z-[1000] bg-[oklch(0%_0_0/0.45)] flex items-center justify-center backdrop-blur-[2px] p-4"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{
-          width: 420, maxWidth: 'calc(100vw - 32px)',
-          background: 'var(--p-bg-base)', border: '1px solid var(--p-border)',
-          borderRadius: 24, boxShadow: 'var(--p-shadow-lg)', overflow: 'hidden',
-        }}
+        className="w-[420px] max-w-[calc(100vw-32px)] bg-p-bg-base border border-p-border rounded-3xl shadow-p-lg overflow-hidden"
       >
-        <div style={{ padding: '20px 24px' }}>
-          <div style={{
-            width: 44, height: 44, borderRadius: 16,
-            background: 'var(--p-d-100)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'var(--p-d-500)', marginBottom: 14,
-          }}>
+        <div className="px-6 py-5">
+          <div className="w-11 h-11 rounded-2xl bg-p-d-100 flex items-center justify-center text-p-d-500 mb-[14px]">
             <AlertTriangle size={20} />
           </div>
-          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--p-text-primary)', marginBottom: 8 }}>
+          <div className="text-[15px] font-bold text-p-text-primary mb-2">
             Eliminar miembro
           </div>
-          <p style={{ fontSize: 14, color: 'var(--p-text-secondary)', lineHeight: 1.65, margin: 0 }}>
-            ¿Eliminar a <strong style={{ color: 'var(--p-text-primary)' }}>{name}</strong> de la institución?
+          <p className="text-[14px] text-p-text-secondary leading-[1.65] m-0">
+            ¿Eliminar a <strong className="text-p-text-primary">{name}</strong> de la institución?
             Perderá acceso inmediatamente. Esta acción no se puede deshacer.
           </p>
         </div>
-        <div style={{
-          padding: '14px 24px', borderTop: '1px solid var(--p-border)',
-          display: 'flex', justifyContent: 'flex-end', gap: 8,
-          background: 'var(--p-bg-subtle)',
-        }}>
+        <div className="px-6 py-[14px] border-t border-p-border flex justify-end gap-2 bg-p-bg-subtle">
           <button
             type="button"
             onClick={onClose}
-            style={{
-              padding: '7px 15px', borderRadius: 10,
-              border: '1px solid var(--p-border)', background: 'var(--p-bg-base)',
-              color: 'var(--p-text-primary)', fontSize: 13, fontFamily: 'inherit', fontWeight: 500,
-              cursor: 'pointer',
-            }}
+            className="px-[15px] py-[7px] rounded-[10px] border border-p-border bg-p-bg-base text-p-text-primary text-[13px] font-[inherit] font-medium cursor-pointer"
           >
             Cancelar
           </button>
@@ -588,15 +476,10 @@ function DeleteModal({ member, isPending, onClose, onConfirm }) {
             type="button"
             onClick={onConfirm}
             disabled={isPending}
-            style={{
-              padding: '7px 15px', borderRadius: 10,
-              border: '1px solid transparent',
-              background: 'var(--p-d-500)', color: 'white',
-              fontSize: 13, fontFamily: 'inherit', fontWeight: 500,
-              cursor: isPending ? 'not-allowed' : 'pointer',
-              opacity: isPending ? 0.6 : 1,
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-            }}
+            className={cn(
+              'px-[15px] py-[7px] rounded-[10px] border border-transparent bg-p-d-500 text-white text-[13px] font-[inherit] font-medium inline-flex items-center gap-[6px]',
+              isPending ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
+            )}
           >
             {isPending && <Spinner size={13} />}
             {isPending ? 'Eliminando…' : 'Eliminar'}
@@ -660,25 +543,19 @@ export default function MembersPage() {
   };
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+    <div className="max-w-[1100px] mx-auto">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22, gap: 12 }}>
+      <div className="flex items-center justify-between mb-[22px] gap-3">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-            <h1 style={{
-              fontSize: 22, fontWeight: 800, color: 'var(--p-text-primary)',
-              letterSpacing: '-0.03em', margin: 0,
-            }}>
+          <div className="flex items-center gap-[10px] mb-1">
+            <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] m-0">
               Miembros
             </h1>
-            <span style={{
-              padding: '2px 9px', borderRadius: '99px', fontSize: 13, fontWeight: 700,
-              background: 'var(--p-bg-muted)', color: 'var(--p-text-secondary)',
-            }}>
+            <span className="px-[9px] py-[2px] rounded-full text-[13px] font-bold bg-p-bg-muted text-p-text-secondary">
               {data.length}
             </span>
           </div>
-          <p style={{ fontSize: 13, color: 'var(--p-text-secondary)', margin: 0 }}>
+          <p className="text-[13px] text-p-text-secondary m-0">
             Gestiona los miembros de tu institución
           </p>
         </div>
@@ -686,12 +563,7 @@ export default function MembersPage() {
           <button
             type="button"
             onClick={() => setShowAdd(true)}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '8px 18px', borderRadius: 10, border: 'none',
-              background: 'var(--p-accent)', color: 'var(--p-accent-text)',
-              fontSize: 13.5, fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer',
-            }}
+            className="inline-flex items-center gap-[6px] px-[18px] py-2 rounded-[10px] border-none bg-p-accent text-p-accent-text text-[13.5px] font-[inherit] font-semibold cursor-pointer"
           >
             <Plus size={14} /> Agregar Miembro
           </button>
@@ -699,17 +571,10 @@ export default function MembersPage() {
       </div>
 
       {/* Card */}
-      <div style={{
-        background: 'var(--p-bg-base)', border: '1px solid var(--p-border)',
-        borderRadius: 24, boxShadow: 'var(--p-shadow-sm)', overflow: 'hidden',
-      }}>
+      <div className="bg-p-bg-base border border-p-border rounded-3xl shadow-p-sm overflow-hidden">
         {/* Toolbar: tabs + search */}
-        <div style={{
-          padding: '0 20px', borderBottom: '1px solid var(--p-border)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          gap: 16, flexWrap: 'wrap',
-        }}>
-          <div style={{ display: 'flex', overflowX: 'auto' }}>
+        <div className="px-5 border-b border-p-border flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex overflow-x-auto">
             {TABS.map((t) => {
               const cnt = countFor(t.id);
               const active = tabRole === t.id;
@@ -718,23 +583,20 @@ export default function MembersPage() {
                   key={t.id}
                   type="button"
                   onClick={() => setTabRole(t.id)}
-                  style={{
-                    padding: '13px 14px', border: 'none',
-                    borderBottom: active ? '2px solid var(--p-accent)' : '2px solid transparent',
-                    background: 'transparent',
-                    fontSize: 13.5, fontFamily: 'inherit',
-                    fontWeight: active ? 600 : 500, cursor: 'pointer',
-                    color: active ? 'var(--p-text-primary)' : 'var(--p-text-secondary)',
-                    display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
-                    marginBottom: -1, transition: 'all 0.1s',
-                  }}
+                  className={cn(
+                    'px-[14px] py-[13px] border-none bg-transparent text-[13.5px] font-[inherit] cursor-pointer flex items-center gap-[6px] whitespace-nowrap -mb-px transition-all duration-100',
+                    active
+                      ? 'border-b-2 border-b-p-accent font-semibold text-p-text-primary'
+                      : 'border-b-2 border-b-transparent font-medium text-p-text-secondary',
+                  )}
                 >
                   {t.label}
-                  <span style={{
-                    padding: '1px 6px', borderRadius: '99px', fontSize: 11.5, fontWeight: 700,
-                    background: active ? 'var(--p-bg-subtle)' : 'var(--p-bg-muted)',
-                    color: active ? 'var(--p-text-primary)' : 'var(--p-text-tertiary)',
-                  }}>
+                  <span className={cn(
+                    'px-[6px] py-[1px] rounded-full text-[11.5px] font-bold',
+                    active
+                      ? 'bg-p-bg-subtle text-p-text-primary'
+                      : 'bg-p-bg-muted text-p-text-tertiary',
+                  )}>
                     {cnt}
                   </span>
                 </button>
@@ -742,11 +604,8 @@ export default function MembersPage() {
             })}
           </div>
 
-          <div style={{ position: 'relative', flexShrink: 0, paddingBlock: 8 }}>
-            <span style={{
-              position: 'absolute', left: 9, top: '50%', transform: 'translateY(-50%)',
-              color: 'var(--p-text-tertiary)', display: 'flex', pointerEvents: 'none',
-            }}>
+          <div className="relative shrink-0 py-2">
+            <span className="absolute left-[9px] top-1/2 -translate-y-1/2 text-p-text-tertiary flex pointer-events-none">
               <Search size={13} />
             </span>
             <input
@@ -754,46 +613,39 @@ export default function MembersPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar miembro…"
-              style={{
-                padding: '7px 11px 7px 30px', fontSize: 13, fontFamily: 'inherit',
-                border: '1.5px solid var(--p-border)', borderRadius: 10,
-                background: 'var(--p-bg-base)', color: 'var(--p-text-primary)',
-                outline: 'none', width: 220,
-              }}
+              className="py-[7px] pr-[11px] pl-[30px] text-[13px] font-[inherit] border-[1.5px] border-p-border rounded-[10px] bg-p-bg-base text-p-text-primary outline-none w-[220px]"
             />
           </div>
         </div>
 
         {/* Body */}
         {members.isLoading ? (
-          <div style={{ padding: '32px 20px' }}>
+          <div className="px-5 py-8">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 11, paddingBlock: 12, borderBottom: '1px solid var(--p-border)' }}>
-                <div style={{ width: 34, height: 34, borderRadius: '99px', background: 'var(--p-bg-subtle)' }} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ height: 12, background: 'var(--p-bg-subtle)', borderRadius: 4, width: '40%', marginBottom: 6 }} />
-                  <div style={{ height: 10, background: 'var(--p-bg-subtle)', borderRadius: 4, width: '60%' }} />
+              <div key={i} className="flex items-center gap-[11px] py-3 border-b border-p-border">
+                <div className="w-[34px] h-[34px] rounded-full bg-p-bg-subtle" />
+                <div className="flex-1">
+                  <div className="h-3 bg-p-bg-subtle rounded w-[40%] mb-[6px]" />
+                  <div className="h-[10px] bg-p-bg-subtle rounded w-[60%]" />
                 </div>
-                <div style={{ width: 70, height: 18, borderRadius: 99, background: 'var(--p-bg-subtle)' }} />
+                <div className="w-[70px] h-[18px] rounded-full bg-p-bg-subtle" />
               </div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <EmptyState onAdd={() => setShowAdd(true)} isDirector={isDirector} query={query} />
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
               <thead>
-                <tr style={{ background: 'var(--p-bg-subtle)', borderBottom: '1px solid var(--p-border)' }}>
+                <tr className="bg-p-bg-subtle border-b border-p-border">
                   {['Nombre', 'Email', 'Rol', 'Miembro desde', ''].map((h, i) => (
                     <th
                       key={i}
-                      style={{
-                        padding: '9px 20px', textAlign: 'left',
-                        fontSize: 11, fontWeight: 700, color: 'var(--p-text-tertiary)',
-                        textTransform: 'uppercase', letterSpacing: '0.06em',
-                        whiteSpace: 'nowrap', width: i === 4 ? '44px' : undefined,
-                      }}
+                      className={cn(
+                      'px-5 py-[9px] text-left text-[11px] font-bold text-p-text-tertiary uppercase tracking-[0.06em] whitespace-nowrap',
+                      i === 4 && 'w-[44px]',
+                    )}
                     >
                       {h}
                     </th>
@@ -817,11 +669,7 @@ export default function MembersPage() {
         )}
 
         {!members.isLoading && filtered.length > 0 && (
-          <div style={{
-            padding: '11px 20px', borderTop: '1px solid var(--p-border)',
-            background: 'var(--p-bg-subtle)',
-            fontSize: 12.5, color: 'var(--p-text-tertiary)',
-          }}>
+          <div className="px-5 py-[11px] border-t border-p-border bg-p-bg-subtle text-[12.5px] text-p-text-tertiary">
             Mostrando {filtered.length} de {data.length} miembro{data.length !== 1 ? 's' : ''}
           </div>
         )}
@@ -836,12 +684,6 @@ export default function MembersPage() {
         onConfirm={onConfirmDelete}
       />
 
-      <style>{`
-        @keyframes dropIn {
-          from { opacity: 0; transform: translateY(-6px) scale(0.97); }
-          to   { opacity: 1; transform: none; }
-        }
-      `}</style>
     </div>
   );
 }

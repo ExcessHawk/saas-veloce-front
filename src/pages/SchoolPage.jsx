@@ -17,6 +17,7 @@ import { useClassrooms } from '@/hooks/useClassrooms';
 import { showApiError } from '@/lib/errors';
 import { useAuthStore } from '@/stores/authStore';
 import { Spinner } from '@/components/AuthFormParts';
+import { cn } from '@/lib/utils';
 
 const schoolSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido'),
@@ -44,12 +45,9 @@ const initials = (n) => (n || 'P').split(' ').map((w) => w[0]).join('').slice(0,
 function EditInput({ value, onChange, placeholder, mono, icon: IconCmp, error, ...rest }) {
   const [focus, setFocus] = useState(false);
   return (
-    <div style={{ position: 'relative' }}>
+    <div className="relative">
       {IconCmp && (
-        <span style={{
-          position: 'absolute', left: 9, top: '50%', transform: 'translateY(-50%)',
-          color: 'var(--p-text-tertiary)', display: 'flex', pointerEvents: 'none',
-        }}>
+        <span className="absolute left-[9px] top-1/2 -translate-y-1/2 text-p-text-tertiary flex pointer-events-none">
           <IconCmp size={13} />
         </span>
       )}
@@ -59,18 +57,16 @@ function EditInput({ value, onChange, placeholder, mono, icon: IconCmp, error, .
         placeholder={placeholder}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
-        style={{
-          width: '100%', padding: '7px 10px',
-          paddingLeft: IconCmp ? 30 : 10,
-          fontSize: 13.5,
-          fontFamily: mono ? "'Geist Mono', monospace" : 'inherit',
-          border: `1.5px solid ${error ? 'var(--p-d-500)' : focus ? 'var(--p-border-strong)' : 'var(--p-border)'}`,
-          borderRadius: 10,
-          background: 'var(--p-bg-base)',
-          color: 'var(--p-text-primary)',
-          outline: 'none', transition: 'border-color 0.12s',
-          letterSpacing: mono ? '0.02em' : 'normal',
-        }}
+        className={cn(
+          'w-full py-[7px] pr-[10px] text-[13.5px] rounded-[10px] bg-p-bg-base text-p-text-primary outline-none transition-[border-color] duration-[120ms]',
+          IconCmp ? 'pl-[30px]' : 'pl-[10px]',
+          mono ? 'font-mono tracking-[0.02em]' : '',
+          error
+            ? 'border-[1.5px] border-p-d-500'
+            : focus
+            ? 'border-[1.5px] border-p-border-strong'
+            : 'border-[1.5px] border-p-border',
+        )}
         {...rest}
       />
     </div>
@@ -81,30 +77,25 @@ function EditInput({ value, onChange, placeholder, mono, icon: IconCmp, error, .
 function FieldRow({ label, value, icon: IconCmp, editing, onChange, placeholder, readonly, mono, error }) {
   return (
     <div>
-      <div style={{
-        fontSize: 11, fontWeight: 700, color: 'var(--p-text-tertiary)',
-        textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 5,
-      }}>
+      <div className="text-[11px] font-bold text-p-text-tertiary uppercase tracking-[0.08em] mb-[5px]">
         {label}
       </div>
       {editing && !readonly ? (
         <>
           <EditInput value={value} onChange={onChange} placeholder={placeholder || label} icon={IconCmp} mono={mono} error={error} />
-          {error && <div style={{ fontSize: 11.5, color: 'var(--p-d-500)', marginTop: 4 }}>{error}</div>}
+          {error && <div className="text-[11.5px] text-p-d-500 mt-1">{error}</div>}
         </>
       ) : (
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 8,
-          fontSize: mono ? 13 : 14,
-          color: value ? 'var(--p-text-primary)' : 'var(--p-text-tertiary)',
-          fontFamily: mono ? "'Geist Mono', monospace" : 'inherit',
-          padding: editing && readonly ? '7px 10px' : 0,
-          background: editing && readonly ? 'var(--p-bg-subtle)' : 'transparent',
-          borderRadius: editing && readonly ? 10 : 0,
-          border: editing && readonly ? '1px solid var(--p-border)' : 'none',
-        }}>
-          {IconCmp && !editing && <span style={{ color: 'var(--p-text-tertiary)', flexShrink: 0, display: 'flex' }}><IconCmp size={13} /></span>}
-          {editing && readonly && <span style={{ color: 'var(--p-text-tertiary)', flexShrink: 0, display: 'flex' }}><Lock size={11} /></span>}
+        <div className={cn(
+          'flex items-center gap-2',
+          mono ? 'text-[13px] font-mono' : 'text-[14px]',
+          value ? 'text-p-text-primary' : 'text-p-text-tertiary',
+          editing && readonly
+            ? 'py-[7px] px-[10px] bg-p-bg-subtle rounded-[10px] border border-p-border'
+            : 'p-0 bg-transparent border-none rounded-none',
+        )}>
+          {IconCmp && !editing && <span className="text-p-text-tertiary shrink-0 flex"><IconCmp size={13} /></span>}
+          {editing && readonly && <span className="text-p-text-tertiary shrink-0 flex"><Lock size={11} /></span>}
           <span>{value || '—'}</span>
         </div>
       )}
@@ -115,28 +106,16 @@ function FieldRow({ label, value, icon: IconCmp, editing, onChange, placeholder,
 /* ── Section card ── */
 function SectionCard(props) {
   return (
-    <div style={{
-      background: 'var(--p-bg-base)', border: '1px solid var(--p-border)',
-      borderRadius: 24, boxShadow: 'var(--p-shadow-sm)', overflow: 'hidden',
-    }}>
-      <div style={{
-        padding: '16px 22px 14px', borderBottom: '1px solid var(--p-border)',
-        display: 'flex', alignItems: 'center', gap: 9,
-      }}>
-        <div style={{
-          width: 30, height: 30, borderRadius: 10, background: 'var(--p-bg-subtle)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'var(--p-text-secondary)', flexShrink: 0,
-        }}>
+    <div className="bg-p-bg-base border border-p-border rounded-[24px] shadow-p-sm overflow-hidden">
+      <div className="px-[22px] py-[16px] pb-[14px] border-b border-p-border flex items-center gap-[9px]">
+        <div className="w-[30px] h-[30px] rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
           <props.icon size={14} />
         </div>
-        <span style={{
-          fontSize: 13.5, fontWeight: 700, color: 'var(--p-text-primary)', letterSpacing: '-0.01em',
-        }}>
+        <span className="text-[13.5px] font-bold text-p-text-primary tracking-[-0.01em]">
           {props.title}
         </span>
       </div>
-      <div style={{ padding: '18px 22px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div className="px-[22px] py-[18px] flex flex-col gap-4">
         {props.children}
       </div>
     </div>
@@ -145,33 +124,22 @@ function SectionCard(props) {
 
 /* ── Header buttons ── */
 function HeaderBtn({ children, variant = 'secondary', icon: IconCmp, onClick, loading, disabled }) {
-  const [hov, setHov] = useState(false);
-  const styles = {
-    primary: {
-      bg: loading || disabled ? 'var(--p-text-secondary)' : hov ? 'var(--p-accent-hover)' : 'var(--p-accent)',
-      color: 'var(--p-accent-text)', border: 'transparent',
-    },
-    secondary: {
-      bg: hov ? 'var(--p-bg-subtle)' : 'var(--p-bg-base)',
-      color: 'var(--p-text-primary)', border: 'var(--p-border)',
-    },
-  }[variant];
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled || loading}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '7px 14px', borderRadius: 10,
-        border: `1px solid ${styles.border}`,
-        background: styles.bg, color: styles.color,
-        fontSize: 13, fontFamily: 'inherit', fontWeight: 600,
-        cursor: disabled || loading ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1, transition: 'all 0.12s',
-      }}
+      className={cn(
+        'inline-flex items-center gap-[6px] px-[14px] py-[7px] rounded-[10px] border text-[13px] font-semibold font-[inherit] transition-all duration-[120ms]',
+        disabled || loading ? 'cursor-not-allowed' : 'cursor-pointer',
+        disabled ? 'opacity-50' : '',
+        variant === 'primary'
+          ? cn(
+              'border-transparent text-p-accent-text',
+              loading || disabled ? 'bg-p-text-secondary' : 'bg-p-accent hover:bg-p-accent-hover',
+            )
+          : 'bg-p-bg-base hover:bg-p-bg-subtle text-p-text-primary border-p-border',
+      )}
     >
       {loading ? <Spinner size={13} /> : IconCmp && <IconCmp size={13} />}
       {children}
@@ -280,25 +248,22 @@ export default function SchoolPage() {
   const renovacion = sub?.currentPeriodEnd ? format(new Date(sub.currentPeriodEnd), 'dd MMM yyyy') : '—';
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: 1000, margin: '0 auto' }}>
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-[1000px] mx-auto">
       {/* Title row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, gap: 12 }}>
+      <div className="flex items-center justify-between mb-6 gap-3">
         <div>
-          <h1 style={{
-            fontSize: 22, fontWeight: 800, color: 'var(--p-text-primary)',
-            letterSpacing: '-0.03em', marginBottom: 4,
-          }}>
+          <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] mb-1">
             Mi Escuela
           </h1>
-          <p style={{ fontSize: 13.5, color: 'var(--p-text-secondary)', margin: 0 }}>
+          <p className="text-[13.5px] text-p-text-secondary m-0">
             Información, contacto y plan de tu institución
           </p>
         </div>
 
         {isDirector && (
           editing ? (
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <span style={{ fontSize: 12.5, color: 'var(--p-text-tertiary)', marginRight: 4 }}>Modo edición</span>
+            <div className="flex gap-2 items-center">
+              <span className="text-[12.5px] text-p-text-tertiary mr-1">Modo edición</span>
               <HeaderBtn variant="secondary" icon={X} onClick={cancelEdit}>Cancelar</HeaderBtn>
               <HeaderBtn variant="primary" icon={Check} loading={updateSchool.isPending} onClick={handleSubmit(onSubmit)} disabled={!isDirty}>
                 {updateSchool.isPending ? 'Guardando…' : 'Guardar cambios'}
@@ -312,56 +277,38 @@ export default function SchoolPage() {
 
       {/* Edit mode banner */}
       {editing && (
-        <div style={{
-          padding: '11px 16px', background: 'oklch(93% 0.025 250)',
-          border: '1px solid oklch(84% 0.032 250)', borderRadius: 16,
-          display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20,
-          animation: 'fadeUp 0.2s ease',
-        }}>
-          <span style={{ color: 'oklch(32% 0.07 250)', display: 'flex' }}><Pencil size={14} /></span>
-          <span style={{ fontSize: 13.5, color: 'oklch(28% 0.07 250)', fontWeight: 500 }}>
+        <div className="px-4 py-[11px] bg-[oklch(93%_0.025_250)] border border-[oklch(84%_0.032_250)] rounded-[16px] flex items-center gap-[10px] mb-5 animate-[fadeUp_0.2s_ease]">
+          <span className="text-[oklch(32%_0.07_250)] flex"><Pencil size={14} /></span>
+          <span className="text-[13.5px] text-[oklch(28%_0.07_250)] font-medium">
             Estás editando la información de la escuela. Los cambios se publicarán al guardar.
           </span>
-          <button type="button" onClick={cancelEdit} style={{
-            marginLeft: 'auto', border: 'none', background: 'transparent',
-            color: 'oklch(45% 0.07 250)', cursor: 'pointer', display: 'flex', padding: 2,
-          }}>
+          <button type="button" onClick={cancelEdit} className="ml-auto border-none bg-transparent text-[oklch(45%_0.07_250)] cursor-pointer flex p-[2px]">
             <X size={14} />
           </button>
         </div>
       )}
 
       {/* School header card */}
-      <div style={{
-        background: 'var(--p-bg-base)', border: '1px solid var(--p-border)',
-        borderRadius: 24, boxShadow: 'var(--p-shadow-sm)',
-        padding: '28px 28px 26px', marginBottom: 20,
-        display: 'flex', alignItems: 'flex-start', gap: 22, flexWrap: 'wrap',
-      }}>
+      <div className="bg-p-bg-base border border-p-border rounded-[24px] shadow-p-sm px-7 pt-7 pb-[26px] mb-5 flex items-start gap-[22px] flex-wrap">
         {/* Logo */}
         <div
           onMouseEnter={() => setLogoHov(true)}
           onMouseLeave={() => setLogoHov(false)}
-          style={{ position: 'relative', cursor: editing ? 'pointer' : 'default', flexShrink: 0 }}
+          className={cn('relative shrink-0', editing ? 'cursor-pointer' : 'cursor-default')}
         >
-          <div style={{
-            width: 64, height: 64, borderRadius: 16,
-            background: 'linear-gradient(135deg, oklch(50% 0.08 250), oklch(38% 0.07 260))',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 22, fontWeight: 800, color: 'white', letterSpacing: '-0.03em',
-            boxShadow: logoHov && editing ? '0 0 0 3px var(--p-border-strong)' : 'none',
-            transition: 'box-shadow 0.15s',
-          }}>
+          <div
+            className={cn(
+              'w-16 h-16 rounded-[16px] flex items-center justify-center text-[22px] font-extrabold text-white tracking-[-0.03em] transition-[box-shadow] duration-[150ms]',
+              logoHov && editing ? 'shadow-[0_0_0_3px_var(--p-border-strong)]' : 'shadow-none',
+            )}
+            style={{ background: 'linear-gradient(135deg, oklch(50% 0.08 250), oklch(38% 0.07 260))' }}
+          >
             {initials(school?.name)}
           </div>
           {editing && logoHov && (
-            <div style={{
-              position: 'absolute', inset: 0, borderRadius: 16,
-              background: 'oklch(0% 0 0 / 0.55)',
-              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
-            }}>
+            <div className="absolute inset-0 rounded-[16px] bg-[oklch(0%_0_0_/_0.55)] flex flex-col items-center justify-center gap-[2px]">
               <Camera size={16} color="white" />
-              <span style={{ fontSize: 8.5, fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              <span className="text-[8.5px] font-bold text-white uppercase tracking-[0.04em]">
                 Cambiar
               </span>
             </div>
@@ -369,64 +316,38 @@ export default function SchoolPage() {
         </div>
 
         {/* Name + badges */}
-        <div style={{ flex: 1, minWidth: 200 }}>
+        <div className="flex-1 min-w-[200px]">
           {isLoading ? (
-            <div style={{ height: 28, background: 'var(--p-bg-subtle)', borderRadius: 6, width: '60%', marginBottom: 12 }} />
+            <div className="h-7 bg-p-bg-subtle rounded-[6px] w-3/5 mb-3" />
           ) : editing ? (
-            <div style={{ marginBottom: 12 }}>
+            <div className="mb-3">
               <input
                 {...register('name')}
-                style={{
-                  fontSize: 22, fontWeight: 800, fontFamily: 'inherit', letterSpacing: '-0.03em',
-                  background: 'transparent', border: 'none',
-                  borderBottom: '2px solid var(--p-accent)',
-                  color: 'var(--p-text-primary)',
-                  outline: 'none', width: '100%', padding: '2px 0',
-                }}
+                className="text-[22px] font-extrabold font-[inherit] tracking-[-0.03em] bg-transparent border-none border-b-2 border-b-p-accent text-p-text-primary outline-none w-full py-[2px] px-0"
               />
-              {errors.name && <div style={{ fontSize: 12, color: 'var(--p-d-500)', marginTop: 4 }}>{errors.name.message}</div>}
+              {errors.name && <div className="text-[12px] text-p-d-500 mt-1">{errors.name.message}</div>}
             </div>
           ) : (
-            <h1 style={{
-              fontSize: 24, fontWeight: 800, color: 'var(--p-text-primary)',
-              letterSpacing: '-0.035em', marginBottom: 10,
-            }}>
+            <h1 className="text-[24px] font-extrabold text-p-text-primary tracking-[-0.035em] mb-[10px]">
               {school?.name || '—'}
             </h1>
           )}
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-            <span style={{
-              padding: '3px 10px', borderRadius: '99px', fontSize: 12, fontWeight: 700,
-              background: 'oklch(92% 0.020 250)', color: 'oklch(35% 0.050 250)',
-              display: 'flex', alignItems: 'center', gap: 5,
-            }}>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="px-[10px] py-[3px] rounded-full text-[12px] font-bold bg-[oklch(92%_0.020_250)] text-[oklch(35%_0.050_250)] flex items-center gap-[5px]">
               <Star size={11} /> {sub ? `Plan ${planName}` : 'Sin plan'}
             </span>
-            <span style={{
-              padding: '3px 10px', borderRadius: '99px', fontSize: 12, fontWeight: 700,
-              background: 'var(--p-s-100)', color: 'var(--p-s-700)',
-              display: 'flex', alignItems: 'center', gap: 5,
-            }}>
-              <span style={{ width: 6, height: 6, borderRadius: '99px', background: 'var(--p-s-500)' }} />
+            <span className="px-[10px] py-[3px] rounded-full text-[12px] font-bold bg-p-s-100 text-p-s-700 flex items-center gap-[5px]">
+              <span className="w-[6px] h-[6px] rounded-full bg-p-s-500" />
               {school?.status === 'active' ? 'Activo' : (school?.status || 'Activo')}
             </span>
             {school?.country && (
-              <span style={{
-                padding: '3px 10px', borderRadius: '99px', fontSize: 12, fontWeight: 600,
-                background: 'var(--p-bg-subtle)', color: 'var(--p-text-secondary)',
-                border: '1px solid var(--p-border)',
-              }}>
+              <span className="px-[10px] py-[3px] rounded-full text-[12px] font-semibold bg-p-bg-subtle text-p-text-secondary border border-p-border">
                 {school.country}
               </span>
             )}
             {school?.slug && (
-              <span style={{
-                padding: '3px 10px', borderRadius: '99px', fontSize: 11.5, fontWeight: 500,
-                background: 'var(--p-bg-subtle)', color: 'var(--p-text-tertiary)',
-                border: '1px solid var(--p-border)',
-                fontFamily: "'Geist Mono', monospace",
-              }}>
+              <span className="px-[10px] py-[3px] rounded-full text-[11.5px] font-medium bg-p-bg-subtle text-p-text-tertiary border border-p-border font-mono">
                 /{school.slug}
               </span>
             )}
@@ -435,7 +356,7 @@ export default function SchoolPage() {
       </div>
 
       {/* Info grid */}
-      <div className="school-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+      <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
         {/* Contacto */}
         <SectionCard title="Contacto" icon={Mail}>
           <FieldRow label="Email de contacto" value={val('contactEmail')} icon={Mail} editing={editing}
@@ -464,37 +385,26 @@ export default function SchoolPage() {
 
         {/* Plan */}
         <SectionCard title="Plan actual" icon={Zap}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+          <div className="flex items-center justify-between flex-wrap gap-[10px]">
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                <span style={{
-                  padding: '4px 12px', borderRadius: '99px', fontSize: 13, fontWeight: 800,
-                  background: 'oklch(92% 0.020 250)', color: 'oklch(35% 0.050 250)',
-                }}>
+              <div className="flex items-center gap-2 mb-[6px]">
+                <span className="px-3 py-1 rounded-full text-[13px] font-extrabold bg-[oklch(92%_0.020_250)] text-[oklch(35%_0.050_250)]">
                   Pensum {sub ? planName : '—'}
                 </span>
               </div>
-              <div style={{ fontSize: 13, color: 'var(--p-text-secondary)', display: 'flex', alignItems: 'center', gap: 5 }}>
+              <div className="text-[13px] text-p-text-secondary flex items-center gap-[5px]">
                 <Clock size={12} /> Renovación: {renovacion}
               </div>
             </div>
           </div>
-          <div style={{ borderTop: '1px solid var(--p-border)', paddingTop: 14 }}>
-            <div style={{
-              fontSize: 11, fontWeight: 700, color: 'var(--p-text-tertiary)',
-              textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10,
-            }}>
+          <div className="border-t border-p-border pt-[14px]">
+            <div className="text-[11px] font-bold text-p-text-tertiary uppercase tracking-[0.08em] mb-[10px]">
               Incluye
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+            <div className="flex flex-col gap-[7px]">
               {currentFeatures.map((f) => (
-                <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--p-text-secondary)' }}>
-                  <span style={{
-                    width: 16, height: 16, borderRadius: '99px',
-                    background: 'var(--p-s-100)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: 'var(--p-s-700)', flexShrink: 0,
-                  }}>
+                <div key={f} className="flex items-center gap-2 text-[13px] text-p-text-secondary">
+                  <span className="w-4 h-4 rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700 shrink-0">
                     <Check size={9} strokeWidth={3} />
                   </span>
                   {f}
@@ -505,17 +415,7 @@ export default function SchoolPage() {
           <button
             type="button"
             onClick={() => navigate('/dashboard/billing')}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 7,
-              fontSize: 13.5, fontWeight: 600,
-              color: 'oklch(35% 0.050 250)', background: 'transparent',
-              border: '1px solid oklch(84% 0.032 250)',
-              padding: '8px 16px', borderRadius: 10,
-              cursor: 'pointer', fontFamily: 'inherit',
-              transition: 'all 0.1s', width: '100%', justifyContent: 'center',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = 'oklch(92% 0.020 250)')}
-            onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+            className="flex items-center gap-[7px] text-[13.5px] font-semibold text-[oklch(35%_0.050_250)] bg-transparent border border-[oklch(84%_0.032_250)] px-4 py-2 rounded-[10px] cursor-pointer font-[inherit] transition-all duration-[100ms] w-full justify-center hover:bg-[oklch(92%_0.020_250)]"
           >
             Gestionar facturación <ArrowRight size={13} />
           </button>
@@ -523,40 +423,28 @@ export default function SchoolPage() {
 
         {/* Stats */}
         <SectionCard title="Estadísticas rápidas" icon={Users}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+          <div className="grid grid-cols-3 gap-3">
             {[
               { label: 'Miembros', value: memberCount,    Icon: Users,    color: 'oklch(32% 0.07 250)', loading: members.isLoading },
               { label: 'Cursos',   value: courseCount,    Icon: BookOpen, color: 'var(--p-s-700)',      loading: courses.isLoading },
               { label: 'Aulas',    value: classroomCount, Icon: DoorOpen, color: 'oklch(38% 0.10 72)',  loading: classrooms.isLoading },
             ].map((s) => (
-              <div key={s.label} style={{
-                padding: '14px 12px', background: 'var(--p-bg-subtle)',
-                border: '1px solid var(--p-border)', borderRadius: 16, textAlign: 'center',
-              }}>
-                <div style={{ fontSize: 28, fontWeight: 800, color: s.color, letterSpacing: '-0.05em', lineHeight: 1 }}>
+              <div key={s.label} className="px-3 py-[14px] bg-p-bg-subtle border border-p-border rounded-[16px] text-center">
+                <div className="text-[28px] font-extrabold tracking-[-0.05em] leading-none" style={{ color: s.color }}>
                   {s.loading ? '—' : s.value}
                 </div>
-                <div style={{ fontSize: 11.5, color: 'var(--p-text-secondary)', marginTop: 6, fontWeight: 500 }}>
+                <div className="text-[11.5px] text-p-text-secondary mt-[6px] font-medium">
                   {s.label}
                 </div>
               </div>
             ))}
           </div>
-          <div style={{
-            padding: '12px 14px', background: 'var(--p-bg-subtle)',
-            borderRadius: 10, border: '1px solid var(--p-border)',
-            fontSize: 12.5, color: 'var(--p-text-secondary)', lineHeight: 1.6,
-          }}>
+          <div className="px-[14px] py-3 bg-p-bg-subtle rounded-[10px] border border-p-border text-[12.5px] text-p-text-secondary leading-[1.6]">
             Datos sincronizados en tiempo real con tu instancia de Pensum.
           </div>
         </SectionCard>
       </div>
 
-      <style>{`
-        @media (max-width: 768px) {
-          .school-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </form>
   );
 }

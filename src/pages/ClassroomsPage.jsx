@@ -25,7 +25,7 @@ function GradeLevelSelect({ value, onChange, levels }) {
     <select
       value={value ?? ''}
       onChange={(e) => onChange(e.target.value || null)}
-      style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid hsl(var(--border))', background: 'hsl(var(--background))', color: 'hsl(var(--foreground))', fontSize: 14, fontFamily: 'inherit' }}
+      className="w-full px-[10px] py-2 rounded-md border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-[hsl(var(--foreground))] text-sm font-[inherit]"
     >
       <option value="">— Sin nivel —</option>
       {(levels ?? []).map((l) => (
@@ -104,20 +104,20 @@ function GradeLevelsPanel() {
   };
 
   return (
-    <div style={{ background: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: 12, padding: 16 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+    <div className="bg-[hsl(var(--background))] border border-[hsl(var(--border))] rounded-xl p-4">
+      <div className="flex items-center gap-2 mb-[14px]">
         <GraduationCap size={15} />
-        <span style={{ fontSize: 14, fontWeight: 600 }}>Niveles de Grado</span>
+        <span className="text-sm font-semibold">Niveles de Grado</span>
       </div>
 
-      <form onSubmit={handleCreate} style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+      <form onSubmit={handleCreate} className="flex gap-2 mb-3">
         <Input
           value={newName} onChange={(e) => setNewName(e.target.value)}
-          placeholder="Ej: 1° Primaria" style={{ flex: 1 }}
+          placeholder="Ej: 1° Primaria" className="flex-1"
         />
         <Input
           type="number" min={0} value={newOrder} onChange={(e) => setNewOrder(e.target.value)}
-          placeholder="Orden" style={{ width: 72 }}
+          placeholder="Orden" className="w-[72px]"
         />
         <Button type="submit" size="sm" disabled={!newName.trim() || createLevel.isPending}>
           <Plus size={14} />
@@ -127,27 +127,27 @@ function GradeLevelsPanel() {
       {isLoading ? (
         <Skeleton className="h-8 w-full" />
       ) : levels?.length === 0 ? (
-        <p style={{ fontSize: 13, color: 'hsl(var(--muted-foreground))' }}>Sin niveles. Crea el primero arriba.</p>
+        <p className="text-[13px] text-[hsl(var(--muted-foreground))]">Sin niveles. Crea el primero arriba.</p>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div className="flex flex-col gap-[6px]">
           {levels.map((l) => (
-            <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', background: 'hsl(var(--muted))', borderRadius: 8 }}>
+            <div key={l.id} className="flex items-center gap-2 px-[10px] py-[6px] bg-[hsl(var(--muted))] rounded-lg">
               {editId === l.id ? (
                 <>
-                  <Input value={editName} onChange={(e) => setEditName(e.target.value)} style={{ flex: 1, height: 28, fontSize: 13 }} />
-                  <Input type="number" min={0} value={editOrder} onChange={(e) => setEditOrder(e.target.value)} style={{ width: 60, height: 28, fontSize: 13 }} />
-                  <Button size="sm" variant="outline" style={{ height: 28, fontSize: 12 }} onClick={() => handleUpdate(l.id)} disabled={updateLevel.isPending}>OK</Button>
-                  <Button size="sm" variant="ghost" style={{ height: 28 }} onClick={() => setEditId(null)}>✕</Button>
+                  <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="flex-1 h-7 text-[13px]" />
+                  <Input type="number" min={0} value={editOrder} onChange={(e) => setEditOrder(e.target.value)} className="w-[60px] h-7 text-[13px]" />
+                  <Button size="sm" variant="outline" className="h-7 text-[12px]" onClick={() => handleUpdate(l.id)} disabled={updateLevel.isPending}>OK</Button>
+                  <Button size="sm" variant="ghost" className="h-7" onClick={() => setEditId(null)}>✕</Button>
                 </>
               ) : (
                 <>
-                  <span style={{ flex: 1, fontSize: 13 }}>{l.name}</span>
-                  <span style={{ fontSize: 11, color: 'hsl(var(--muted-foreground))' }}>orden {l.order}</span>
-                  <Button size="sm" variant="ghost" style={{ height: 26, width: 26, padding: 0 }}
+                  <span className="flex-1 text-[13px]">{l.name}</span>
+                  <span className="text-[11px] text-[hsl(var(--muted-foreground))]">orden {l.order}</span>
+                  <Button size="sm" variant="ghost" className="h-[26px] w-[26px] p-0"
                     onClick={() => { setEditId(l.id); setEditName(l.name); setEditOrder(String(l.order)); }}>
                     <Pencil size={12} />
                   </Button>
-                  <Button size="sm" variant="ghost" style={{ height: 26, width: 26, padding: 0, color: 'hsl(var(--destructive))' }}
+                  <Button size="sm" variant="ghost" className="h-[26px] w-[26px] p-0 text-[hsl(var(--destructive))]"
                     onClick={() => deleteLevel.mutateAsync(l.id)}>
                     <Trash2 size={12} />
                   </Button>
@@ -225,7 +225,7 @@ export default function ClassroomsPage() {
         </RoleGate>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 20, alignItems: 'start' }}>
+      <div className="grid gap-5 items-start [grid-template-columns:1fr_320px]">
         <div className="space-y-4">
           <SearchInput value={query} onChange={setQuery} placeholder="Buscar por nombre o nivel…" />
 

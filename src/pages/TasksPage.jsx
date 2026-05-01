@@ -1,4 +1,4 @@
-﻿import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useTasks, useCreateTask, useUpdateTask, useDeleteTask } from '@/hooks/useTasks';
@@ -11,6 +11,7 @@ import { useSubjects } from '@/hooks/useSubjects';
 import { useAcademicYears } from '@/hooks/useAcademicYears';
 import { useMembers } from '@/hooks/useMembers';
 import { showApiError } from '@/lib/errors';
+import { cn } from '@/lib/utils';
 
 /* ── helpers ── */
 function findName(list, id) {
@@ -41,9 +42,9 @@ const TIPO_META = {
 };
 
 const ESTADO_META = {
-  active:  { label: 'Activa',   bg: 'var(--p-s-100)',     color: 'var(--p-s-700)'     },
-  draft:   { label: 'Borrador', bg: 'var(--p-w-100)',     color: 'var(--p-w-700)'     },
-  closed:  { label: 'Cerrada',  bg: 'var(--p-bg-subtle)', color: 'var(--p-text-tertiary)' },
+  active:  { label: 'Activa',   bg: 'var(--p-s-100)',     color: 'var(--p-s-700)'          },
+  draft:   { label: 'Borrador', bg: 'var(--p-w-100)',     color: 'var(--p-w-700)'          },
+  closed:  { label: 'Cerrada',  bg: 'var(--p-bg-subtle)', color: 'var(--p-text-tertiary)'  },
 };
 
 function urgMeta(dl) {
@@ -80,43 +81,38 @@ const Icon = ({ name, size = 16 }) => (
 
 /* ── Btn ── */
 const Btn = ({ children, variant = 'primary', onClick, disabled, icon, size = 'md', type = 'button' }) => {
-  const [hov, setHov] = useState(false);
-  const pad = size === 'sm' ? '5px 12px' : size === 'lg' ? '10px 22px' : '7px 16px';
-  const fs = size === 'sm' ? 12.5 : size === 'lg' ? 14.5 : 13;
+  const pad = size === 'sm' ? 'px-3 py-[5px] text-[12.5px]' : size === 'lg' ? 'px-[22px] py-[10px] text-[14.5px]' : 'px-4 py-[7px] text-[13px]';
   const v = {
-    primary:  { bg: hov ? 'var(--p-accent-hover)' : 'var(--p-accent)', color: 'var(--p-accent-text)', border: 'transparent' },
-    secondary:{ bg: hov ? 'var(--p-bg-subtle)' : 'var(--p-bg-base)', color: 'var(--p-text-primary)', border: 'var(--p-border)' },
-    ghost:    { bg: hov ? 'var(--p-bg-subtle)' : 'transparent', color: hov ? 'var(--p-text-primary)' : 'var(--p-text-secondary)', border: 'transparent' },
-    danger:   { bg: hov ? 'var(--p-d-700)' : 'var(--p-d-500)', color: 'white', border: 'transparent' },
+    primary:   'bg-p-accent text-p-accent-text border-transparent hover:bg-p-accent-hover',
+    secondary: 'bg-p-bg-base text-p-text-primary border-p-border hover:bg-p-bg-subtle',
+    ghost:     'bg-transparent text-p-text-secondary border-transparent hover:bg-p-bg-subtle hover:text-p-text-primary',
+    danger:    'bg-p-d-500 text-white border-transparent hover:bg-p-d-700',
   }[variant];
   return (
     <button type={type} onClick={onClick} disabled={disabled}
-      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: pad,
-        borderRadius: 10, border: `1px solid ${v.border}`,
-        background: v.bg, color: v.color, fontSize: fs, fontFamily: 'inherit',
-        fontWeight: 500, cursor: disabled ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1, transition: 'all 0.1s' }}>
-      {icon && <Icon name={icon} size={fs} />}
+      className={cn(
+        'inline-flex items-center gap-[6px] rounded-[10px] border font-sans font-medium transition-all duration-100',
+        pad, v,
+        disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
+      )}>
+      {icon && <Icon name={icon} size={size === 'sm' ? 12.5 : size === 'lg' ? 14.5 : 13} />}
       {children}
     </button>
   );
 };
 
 /* ── GhostIcon ── */
-const GhostIcon = ({ name, title, onClick, danger }) => {
-  const [hov, setHov] = useState(false);
-  return (
-    <button title={title} onClick={onClick}
-      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ width: 30, height: 30, borderRadius: 6, border: '1px solid transparent',
-        background: hov ? (danger ? 'var(--p-d-100)' : 'var(--p-bg-subtle)') : 'transparent',
-        color: hov ? (danger ? 'var(--p-d-500)' : 'var(--p-text-primary)') : 'var(--p-text-tertiary)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.1s' }}>
-      <Icon name={name} size={14} />
-    </button>
-  );
-};
+const GhostIcon = ({ name, title, onClick, danger }) => (
+  <button title={title} onClick={onClick}
+    className={cn(
+      'w-[30px] h-[30px] rounded-md border border-transparent bg-transparent flex items-center justify-center cursor-pointer transition-all duration-100',
+      danger
+        ? 'text-p-text-tertiary hover:bg-p-d-100 hover:text-p-d-500'
+        : 'text-p-text-tertiary hover:bg-p-bg-subtle hover:text-p-text-primary',
+    )}>
+    <Icon name={name} size={14} />
+  </button>
+);
 
 /* ── Modal shell ── */
 const Modal = ({ open, onClose, title, subtitle, children, width = 520 }) => {
@@ -128,21 +124,20 @@ const Modal = ({ open, onClose, title, subtitle, children, width = 520 }) => {
   }, [open, onClose]);
   if (!open) return null;
   return (
-    <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'oklch(0% 0 0/0.45)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(2px)', padding: 16 }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ width, maxWidth: 'calc(100vw - 32px)', maxHeight: '90vh',
-        background: 'var(--p-bg-base)', border: '1px solid var(--p-border)', borderRadius: 24,
-        boxShadow: 'var(--p-shadow-lg)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <div style={{ padding: '18px 24px 16px', borderBottom: '1px solid var(--p-border)',
-          display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexShrink: 0 }}>
+    <div onClick={onClose}
+      className="fixed inset-0 z-[1000] bg-[oklch(0%_0_0/0.45)] flex items-center justify-center backdrop-blur-[2px] p-4">
+      <div onClick={(e) => e.stopPropagation()}
+        className="max-w-[calc(100vw-32px)] max-h-[90vh] bg-p-bg-base border border-p-border rounded-[24px] shadow-p-lg flex flex-col overflow-hidden"
+        style={{ width }}>
+        <div className="px-6 pt-[18px] pb-4 border-b border-p-border flex items-start justify-between shrink-0">
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--p-text-primary)', letterSpacing: '-0.02em' }}>{title}</div>
-            {subtitle && <div style={{ fontSize: 12.5, color: 'var(--p-text-secondary)', marginTop: 3 }}>{subtitle}</div>}
+            <div className="text-[15px] font-bold text-p-text-primary tracking-[-0.02em]">{title}</div>
+            {subtitle && <div className="text-[12.5px] text-p-text-secondary mt-[3px]">{subtitle}</div>}
           </div>
-          <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: 10,
-            border: '1px solid var(--p-border)', background: 'transparent', cursor: 'pointer',
-            color: 'var(--p-text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 16, lineHeight: 1, flexShrink: 0 }}>×</button>
+          <button onClick={onClose}
+            className="w-7 h-7 rounded-[10px] border border-p-border bg-transparent cursor-pointer text-p-text-tertiary flex items-center justify-center text-[16px] leading-none shrink-0">
+            ×
+          </button>
         </div>
         {children}
       </div>
@@ -153,33 +148,32 @@ const Modal = ({ open, onClose, title, subtitle, children, width = 520 }) => {
 /* ── Field ── */
 const Field = ({ label, error, required, children }) => (
   <div>
-    <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: 'var(--p-text-secondary)', marginBottom: 6 }}>
-      {label}{required && <span style={{ color: 'var(--p-d-500)', marginLeft: 3 }}>*</span>}
+    <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
+      {label}{required && <span className="text-p-d-500 ml-[3px]">*</span>}
     </label>
     {children}
-    {error && <div style={{ fontSize: 11.5, color: 'var(--p-d-500)', marginTop: 4 }}>{error}</div>}
+    {error && <div className="text-[11.5px] text-p-d-500 mt-1">{error}</div>}
   </div>
 );
 
-const inputStyle = {
-  width: '100%', padding: '8px 11px', fontSize: 13.5, fontFamily: 'inherit',
-  border: '1.5px solid var(--p-border)', borderRadius: 10,
-  background: 'var(--p-bg-base)', color: 'var(--p-text-primary)', outline: 'none',
-};
+const inputCls = 'w-full px-[11px] py-2 text-[13.5px] font-sans border-[1.5px] border-p-border rounded-[10px] bg-p-bg-base text-p-text-primary outline-none';
 
 /* ── Toggle ── */
 const Toggle = ({ checked, onChange, label, sub }) => (
-  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+  <div className="flex items-start justify-between gap-3">
     <div>
-      <div style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--p-text-primary)' }}>{label}</div>
-      {sub && <div style={{ fontSize: 12, color: 'var(--p-text-secondary)', marginTop: 2 }}>{sub}</div>}
+      <div className="text-[13.5px] font-medium text-p-text-primary">{label}</div>
+      {sub && <div className="text-[12px] text-p-text-secondary mt-[2px]">{sub}</div>}
     </div>
     <button type="button" onClick={() => onChange(!checked)}
-      style={{ width: 40, height: 22, borderRadius: 99, border: 'none', cursor: 'pointer', padding: 0, flexShrink: 0,
-        background: checked ? 'var(--p-accent)' : 'var(--p-bg-muted)', transition: 'background 0.2s', position: 'relative' }}>
-      <div style={{ position: 'absolute', top: 2, width: 18, height: 18, borderRadius: 99, background: 'white',
-        boxShadow: '0 1px 3px oklch(0% 0 0/0.2)',
-        transform: checked ? 'translateX(20px)' : 'translateX(2px)', transition: 'transform 0.2s' }} />
+      className={cn(
+        'w-10 h-[22px] rounded-full border-none cursor-pointer p-0 shrink-0 relative transition-[background] duration-200',
+        checked ? 'bg-p-accent' : 'bg-p-bg-muted',
+      )}>
+      <div className={cn(
+        'absolute top-[2px] w-[18px] h-[18px] rounded-full bg-white shadow-[0_1px_3px_oklch(0%_0_0/0.2)] transition-transform duration-200',
+        checked ? 'translate-x-[20px]' : 'translate-x-[2px]',
+      )} />
     </button>
   </div>
 );
@@ -209,12 +203,7 @@ const EvidenceModal = ({ submission, task, courseId, onClose }) => {
 
   const handleSave = async () => {
     try {
-      await grade.mutateAsync({
-        submissionId: submission.id,
-        score: score !== '' ? Number(score) : null,
-        feedback: feedback || null,
-        status,
-      });
+      await grade.mutateAsync({ submissionId: submission.id, score: score !== '' ? Number(score) : null, feedback: feedback || null, status });
       setSaved(true);
       setTimeout(onClose, 1400);
     } catch { /* handled */ }
@@ -225,32 +214,26 @@ const EvidenceModal = ({ submission, task, courseId, onClose }) => {
       title={`Revisión — ${submission.studentFullName}`}
       subtitle={`${task.title} · Entregada ${fmtDate(submission.submittedAt) ?? '—'}`}
       width={att && (isImage(att.contentType) || isPdf(att.contentType)) ? 720 : 540}>
-      <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 18 }}>
+      <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-[18px]">
 
         {/* File viewer */}
         {att && (
           <div>
-            <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--p-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>Evidencia</div>
+            <div className="text-[11.5px] font-bold text-p-text-tertiary uppercase tracking-[0.07em] mb-2">Evidencia</div>
             {attLoading ? (
-              <div style={{ height: 80, background: 'var(--p-bg-subtle)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--p-text-tertiary)', fontSize: 13 }}>Cargando…</div>
+              <div className="h-20 bg-p-bg-subtle rounded-[12px] flex items-center justify-center text-p-text-tertiary text-[13px]">Cargando…</div>
             ) : isImage(att.contentType) ? (
-              attUrl ? (
-                <img src={attUrl} alt={att.filename}
-                  style={{ maxWidth: '100%', maxHeight: 420, borderRadius: 12, border: '1px solid var(--p-border)', objectFit: 'contain', display: 'block' }} />
-              ) : null
+              attUrl ? <img src={attUrl} alt={att.filename} className="max-w-full max-h-[420px] rounded-[12px] border border-p-border object-contain block" /> : null
             ) : isPdf(att.contentType) ? (
-              attUrl ? (
-                <iframe key={attUrl} src={attUrl} title={att.filename}
-                  style={{ width: '100%', height: 420, borderRadius: 12, border: '1px solid var(--p-border)', background: '#f5f5f5' }} />
-              ) : null
+              attUrl ? <iframe key={attUrl} src={attUrl} title={att.filename} className="w-full h-[420px] rounded-[12px] border border-p-border bg-[#f5f5f5]" /> : null
             ) : (
-              <div style={{ padding: '14px 16px', background: 'var(--p-bg-subtle)', border: '1px solid var(--p-border)', borderRadius: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div className="px-4 py-[14px] bg-p-bg-subtle border border-p-border rounded-[12px] flex items-center gap-3">
                 <Icon name="inbox" size={16} />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--p-text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{att.filename}</div>
-                  {att.size && <div style={{ fontSize: 11.5, color: 'var(--p-text-tertiary)' }}>{(att.size / 1024).toFixed(1)} KB · {att.contentType || 'archivo'}</div>}
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13.5px] font-medium text-p-text-primary whitespace-nowrap overflow-hidden text-ellipsis">{att.filename}</div>
+                  {att.size && <div className="text-[11.5px] text-p-text-tertiary">{(att.size / 1024).toFixed(1)} KB · {att.contentType || 'archivo'}</div>}
                 </div>
-                <a href={attUrl} download={att.filename} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+                <a href={attUrl} download={att.filename} target="_blank" rel="noreferrer" className="no-underline">
                   <Btn variant="secondary" size="sm" icon="upload">Descargar</Btn>
                 </a>
               </div>
@@ -261,23 +244,23 @@ const EvidenceModal = ({ submission, task, courseId, onClose }) => {
         {/* Student note */}
         {submission.content && (
           <div>
-            <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--p-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>Nota del alumno</div>
-            <div style={{ padding: '12px 14px', background: 'var(--p-bg-subtle)', borderRadius: 12, border: '1px solid var(--p-border)', fontSize: 13.5, color: 'var(--p-text-primary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+            <div className="text-[11.5px] font-bold text-p-text-tertiary uppercase tracking-[0.07em] mb-[6px]">Nota del alumno</div>
+            <div className="px-[14px] py-3 bg-p-bg-subtle rounded-[12px] border border-p-border text-[13.5px] text-p-text-primary leading-[1.6] whitespace-pre-wrap">
               {submission.content}
             </div>
           </div>
         )}
 
         {/* Grade form */}
-        <div style={{ borderTop: '1px solid var(--p-border)', paddingTop: 18, display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--p-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Calificación</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr', gap: 12 }}>
+        <div className="border-t border-p-border pt-[18px] flex flex-col gap-[14px]">
+          <div className="text-[11.5px] font-bold text-p-text-tertiary uppercase tracking-[0.07em]">Calificación</div>
+          <div className="grid gap-3 [grid-template-columns:150px_1fr]">
             <Field label={`Puntaje (máx ${task.maxScore})`}>
               <input type="number" min={0} max={task.maxScore} value={score}
-                onChange={(e) => setScore(e.target.value)} placeholder="—" style={inputStyle} />
+                onChange={(e) => setScore(e.target.value)} placeholder="—" className={inputCls} />
             </Field>
             <Field label="Estado">
-              <select value={status} onChange={(e) => setStatus(e.target.value)} style={inputStyle}>
+              <select value={status} onChange={(e) => setStatus(e.target.value)} className={inputCls}>
                 <option value="graded">Calificada</option>
                 <option value="returned">Devuelta al alumno</option>
               </select>
@@ -286,12 +269,12 @@ const EvidenceModal = ({ submission, task, courseId, onClose }) => {
           <Field label="Retroalimentación">
             <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)}
               rows={3} placeholder="Comentarios para el alumno…"
-              style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.55 }} />
+              className={cn(inputCls, 'resize-y leading-[1.55]')} />
           </Field>
         </div>
       </div>
 
-      <div style={{ padding: '14px 24px', borderTop: '1px solid var(--p-border)', display: 'flex', justifyContent: 'flex-end', gap: 8, background: 'var(--p-bg-subtle)', flexShrink: 0 }}>
+      <div className="px-6 py-[14px] border-t border-p-border flex justify-end gap-2 bg-p-bg-subtle shrink-0">
         <Btn variant="secondary" onClick={onClose}>Cancelar</Btn>
         <Btn variant="primary" onClick={handleSave} disabled={grade.isPending}>
           {saved ? '¡Guardado!' : grade.isPending ? 'Guardando…' : 'Guardar calificación'}
@@ -318,45 +301,50 @@ const SubmissionsModal = ({ task, courseId, onClose }) => {
         title={`Entregas — ${task.title}`}
         subtitle={`${subs.length} de ${enrolled.length} inscritos entregaron`}
         width={680}>
-        <div style={{ flex: 1, overflowY: 'auto', padding: '18px 24px', display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <div className="flex-1 overflow-y-auto px-6 py-[18px] flex flex-col gap-[18px]">
 
           {/* Rate */}
-          <div style={{ background: 'var(--p-bg-subtle)', borderRadius: 16, padding: '16px 18px', border: '1px solid var(--p-border)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--p-text-primary)' }}>Tasa de entrega</span>
-              <span style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.03em', color: pct >= 70 ? 'var(--p-s-700)' : pct >= 40 ? 'oklch(50% 0.12 72)' : 'var(--p-d-500)' }}>{pct}%</span>
+          <div className="bg-p-bg-subtle rounded-2xl px-[18px] py-4 border border-p-border">
+            <div className="flex items-center justify-between mb-[10px]">
+              <span className="text-[13px] font-semibold text-p-text-primary">Tasa de entrega</span>
+              <span className="text-[22px] font-extrabold tracking-[-0.03em]"
+                style={{ color: pct >= 70 ? 'var(--p-s-700)' : pct >= 40 ? 'oklch(50% 0.12 72)' : 'var(--p-d-500)' }}>
+                {pct}%
+              </span>
             </div>
-            <div style={{ height: 8, borderRadius: 99, background: 'var(--p-border)', overflow: 'hidden' }}>
-              <div style={{ height: 8, borderRadius: 99, width: `${pct}%`, transition: 'width 0.4s',
-                background: pct >= 70 ? 'var(--p-s-500)' : pct >= 40 ? 'oklch(72% 0.15 72)' : 'var(--p-d-500)' }} />
+            <div className="h-2 rounded-full bg-p-border overflow-hidden">
+              <div className="h-2 rounded-full transition-[width] duration-[400ms]"
+                style={{ width: `${pct}%`, background: pct >= 70 ? 'var(--p-s-500)' : pct >= 40 ? 'oklch(72% 0.15 72)' : 'var(--p-d-500)' }} />
             </div>
-            <div style={{ display: 'flex', gap: 18, marginTop: 10, fontSize: 12.5 }}>
-              <span style={{ color: 'var(--p-s-700)' }}>✓ {subs.length} entregadas</span>
-              <span style={{ color: 'var(--p-text-tertiary)' }}>○ {notSent.length} pendientes</span>
-              <span style={{ color: 'var(--p-text-secondary)' }}>{enrolled.length} inscritos total</span>
+            <div className="flex gap-[18px] mt-[10px] text-[12.5px]">
+              <span className="text-p-s-700">✓ {subs.length} entregadas</span>
+              <span className="text-p-text-tertiary">○ {notSent.length} pendientes</span>
+              <span className="text-p-text-secondary">{enrolled.length} inscritos total</span>
             </div>
           </div>
 
           {/* Submitted */}
           {subs.length > 0 && (
             <div>
-              <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--p-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 10 }}>Entregadas ({subs.length})</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div className="text-[11.5px] font-bold text-p-text-tertiary uppercase tracking-[0.07em] mb-[10px]">Entregadas ({subs.length})</div>
+              <div className="flex flex-col gap-2">
                 {subs.map((sub) => {
                   const sm = STATUS_SUB[sub.status] ?? STATUS_SUB.submitted;
                   const bg = avatarColor(sub.studentFullName || sub.studentEmail);
                   const ini = getInitials(sub.studentFullName || sub.studentEmail);
                   return (
-                    <div key={sub.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', background: 'var(--p-bg-base)', border: '1px solid var(--p-border)', borderRadius: 12 }}>
-                      <div style={{ width: 32, height: 32, borderRadius: '99px', background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: 'white', flexShrink: 0 }}>{ini}</div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--p-text-primary)' }}>{sub.studentFullName}</div>
-                        <div style={{ fontSize: 11.5, color: 'var(--p-text-tertiary)', marginTop: 1 }}>
+                    <div key={sub.id} className="flex items-center gap-3 px-[14px] py-[10px] bg-p-bg-base border border-p-border rounded-[12px]">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+                        style={{ background: bg }}>{ini}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[13.5px] font-medium text-p-text-primary">{sub.studentFullName}</div>
+                        <div className="text-[11.5px] text-p-text-tertiary mt-px">
                           {fmtDate(sub.submittedAt)}
                           {sub.score !== null && sub.score !== undefined && ` · ${sub.score}/${task.maxScore} pts`}
                         </div>
                       </div>
-                      <span style={{ padding: '2px 8px', borderRadius: '99px', fontSize: 11.5, fontWeight: 600, background: sm.bg, color: sm.color }}>{sm.label}</span>
+                      <span className="px-2 py-[2px] rounded-full text-[11.5px] font-semibold"
+                        style={{ background: sm.bg, color: sm.color }}>{sm.label}</span>
                       <Btn variant="secondary" size="sm" onClick={() => setReviewing(sub)}>
                         {sub.status === 'graded' || sub.status === 'returned' ? 'Ver' : 'Revisar'}
                       </Btn>
@@ -370,16 +358,17 @@ const SubmissionsModal = ({ task, courseId, onClose }) => {
           {/* Not submitted */}
           {notSent.length > 0 && (
             <div>
-              <div style={{ fontSize: 11.5, fontWeight: 700, color: 'var(--p-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>Sin entregar ({notSent.length})</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div className="text-[11.5px] font-bold text-p-text-tertiary uppercase tracking-[0.07em] mb-2">Sin entregar ({notSent.length})</div>
+              <div className="flex flex-col gap-[6px]">
                 {notSent.map((e) => {
                   const bg  = avatarColor(e.fullName || e.email);
                   const ini = getInitials(e.fullName || e.email);
                   return (
-                    <div key={e.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 14px', background: 'var(--p-bg-subtle)', border: '1px solid var(--p-border)', borderRadius: 12, opacity: 0.65 }}>
-                      <div style={{ width: 32, height: 32, borderRadius: '99px', background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: 'white', flexShrink: 0, filter: 'grayscale(0.6)' }}>{ini}</div>
-                      <div style={{ flex: 1 }}><div style={{ fontSize: 13.5, color: 'var(--p-text-secondary)' }}>{e.fullName || e.email}</div></div>
-                      <span style={{ padding: '2px 8px', borderRadius: '99px', fontSize: 11.5, fontWeight: 500, background: 'var(--p-bg-muted)', color: 'var(--p-text-tertiary)' }}>Pendiente</span>
+                    <div key={e.id} className="flex items-center gap-3 px-[14px] py-2 bg-p-bg-subtle border border-p-border rounded-[12px] opacity-65">
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0 grayscale-[0.6]"
+                        style={{ background: bg }}>{ini}</div>
+                      <div className="flex-1"><div className="text-[13.5px] text-p-text-secondary">{e.fullName || e.email}</div></div>
+                      <span className="px-2 py-[2px] rounded-full text-[11.5px] font-medium bg-p-bg-muted text-p-text-tertiary">Pendiente</span>
                     </div>
                   );
                 })}
@@ -388,26 +377,20 @@ const SubmissionsModal = ({ task, courseId, onClose }) => {
           )}
 
           {(submissions.isLoading || enrollments.isLoading) && (
-            <div style={{ padding: '32px 24px', textAlign: 'center', color: 'var(--p-text-tertiary)', fontSize: 13.5 }}>Cargando…</div>
+            <div className="py-8 text-center text-p-text-tertiary text-[13.5px]">Cargando…</div>
           )}
-
           {!submissions.isLoading && !enrollments.isLoading && enrolled.length === 0 && (
-            <div style={{ padding: '32px 24px', textAlign: 'center', color: 'var(--p-text-tertiary)', fontSize: 13.5 }}>Sin alumnos inscritos en este curso.</div>
+            <div className="py-8 text-center text-p-text-tertiary text-[13.5px]">Sin alumnos inscritos en este curso.</div>
           )}
         </div>
 
-        <div style={{ padding: '14px 24px', borderTop: '1px solid var(--p-border)', background: 'var(--p-bg-subtle)', flexShrink: 0 }}>
+        <div className="px-6 py-[14px] border-t border-p-border bg-p-bg-subtle shrink-0">
           <Btn variant="secondary" onClick={onClose}>Cerrar</Btn>
         </div>
       </Modal>
 
       {reviewing && (
-        <EvidenceModal
-          submission={reviewing}
-          task={task}
-          courseId={courseId}
-          onClose={() => setReviewing(null)}
-        />
+        <EvidenceModal submission={reviewing} task={task} courseId={courseId} onClose={() => setReviewing(null)} />
       )}
     </>
   );
@@ -419,14 +402,14 @@ const SubmissionsModal = ({ task, courseId, onClose }) => {
 
 const TareaFormModal = ({ open, onClose, initial, onSave, isPending }) => {
   const isEdit = !!initial;
-  const [titulo,   setTitulo]   = useState(initial?.title       || '');
-  const [desc,     setDesc]     = useState(initial?.description || '');
-  const [limite,   setLimite]   = useState(initial?.dueDate ? new Date(initial.dueDate).toISOString().slice(0, 10) : '');
-  const [puntaje,  setPuntaje]  = useState(initial?.maxScore    || 10);
-  const [tipo,     setTipo]     = useState(initial?.type        || 'tarea');
-  const [publicar, setPublicar] = useState(initial ? initial.status === 'active' : true);
-  const [statusSel,setStatusSel]= useState(initial?.status      || 'active');
-  const [errors,   setErrors]   = useState({});
+  const [titulo,   setTitulo]    = useState(initial?.title       || '');
+  const [desc,     setDesc]      = useState(initial?.description || '');
+  const [limite,   setLimite]    = useState(initial?.dueDate ? new Date(initial.dueDate).toISOString().slice(0, 10) : '');
+  const [puntaje,  setPuntaje]   = useState(initial?.maxScore    || 10);
+  const [tipo,     setTipo]      = useState(initial?.type        || 'tarea');
+  const [publicar, setPublicar]  = useState(initial ? initial.status === 'active' : true);
+  const [statusSel,setStatusSel] = useState(initial?.status      || 'active');
+  const [errors,   setErrors]    = useState({});
 
   useEffect(() => {
     if (open && initial) {
@@ -445,55 +428,48 @@ const TareaFormModal = ({ open, onClose, initial, onSave, isPending }) => {
     if (+puntaje < 1 || +puntaje > 100) errs.puntaje = 'Entre 1 y 100';
     setErrors(errs);
     if (Object.keys(errs).length) return;
-    onSave({
-      title: titulo.trim(),
-      description: desc.trim() || undefined,
-      dueDate: limite || undefined,
-      maxScore: +puntaje,
-      type: tipo,
-      status: isEdit ? statusSel : (publicar ? 'active' : 'draft'),
-    });
+    onSave({ title: titulo.trim(), description: desc.trim() || undefined, dueDate: limite || undefined, maxScore: +puntaje, type: tipo, status: isEdit ? statusSel : (publicar ? 'active' : 'draft') });
   };
 
   return (
     <Modal open={open} onClose={onClose} title={isEdit ? 'Editar tarea' : 'Nueva tarea'}>
-      <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+      <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <Field label="Tipo de actividad" required>
-            <select value={tipo} onChange={(e) => setTipo(e.target.value)} style={inputStyle}>
+            <select value={tipo} onChange={(e) => setTipo(e.target.value)} className={inputCls}>
               {Object.entries(TIPO_META).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
             </select>
           </Field>
           <Field label="Puntaje máximo" required error={errors.puntaje}>
-            <input type="number" min={1} max={100} value={puntaje} onChange={(e) => setPuntaje(e.target.value)} style={inputStyle} />
+            <input type="number" min={1} max={100} value={puntaje} onChange={(e) => setPuntaje(e.target.value)} className={inputCls} />
           </Field>
         </div>
 
         <Field label="Título" required error={errors.titulo}>
           <input value={titulo} onChange={(e) => { setTitulo(e.target.value); setErrors((p) => ({ ...p, titulo: '' })); }}
-            placeholder="Ej. Ejercicios capítulo 3" style={inputStyle} />
+            placeholder="Ej. Ejercicios capítulo 3" className={inputCls} />
         </Field>
 
         <Field label="Descripción / instrucciones">
           <textarea value={desc} onChange={(e) => setDesc(e.target.value)} rows={4}
             placeholder="Instrucciones detalladas para los estudiantes…"
-            style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.55 }} />
+            className={cn(inputCls, 'resize-y leading-[1.55]')} />
         </Field>
 
         <Field label="Fecha límite">
-          <input type="date" value={limite} onChange={(e) => setLimite(e.target.value)} style={inputStyle} />
+          <input type="date" value={limite} onChange={(e) => setLimite(e.target.value)} className={inputCls} />
         </Field>
 
         {isEdit ? (
           <Field label="Estado">
-            <select value={statusSel} onChange={(e) => setStatusSel(e.target.value)} style={inputStyle}>
+            <select value={statusSel} onChange={(e) => setStatusSel(e.target.value)} className={inputCls}>
               <option value="active">Activa</option>
               <option value="draft">Borrador</option>
               <option value="closed">Cerrada</option>
             </select>
           </Field>
         ) : (
-          <div style={{ padding: '14px 16px', background: 'var(--p-bg-subtle)', borderRadius: 16, border: '1px solid var(--p-border)' }}>
+          <div className="px-4 py-[14px] bg-p-bg-subtle rounded-2xl border border-p-border">
             <Toggle checked={publicar} onChange={setPublicar}
               label="Publicar inmediatamente"
               sub={publicar ? 'Los alumnos verán esta tarea al guardar.' : 'Se guardará como borrador. Los alumnos no la verán.'} />
@@ -501,11 +477,11 @@ const TareaFormModal = ({ open, onClose, initial, onSave, isPending }) => {
         )}
       </div>
 
-      <div style={{ padding: '14px 24px', borderTop: '1px solid var(--p-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--p-bg-subtle)', flexShrink: 0 }}>
-        <span style={{ fontSize: 12, color: publicar && !isEdit ? 'var(--p-s-700)' : 'var(--p-text-tertiary)', fontWeight: publicar && !isEdit ? 500 : 400 }}>
+      <div className="px-6 py-[14px] border-t border-p-border flex justify-between items-center bg-p-bg-subtle shrink-0">
+        <span className={cn('text-[12px]', publicar && !isEdit ? 'text-p-s-700 font-medium' : 'text-p-text-tertiary font-normal')}>
           {!isEdit && (publicar ? '✓ Se publicará para los alumnos' : 'Se guardará como borrador')}
         </span>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div className="flex gap-2">
           <Btn variant="secondary" onClick={onClose}>Cancelar</Btn>
           <Btn variant="primary" onClick={submit} disabled={isPending}>
             {isPending ? 'Guardando…' : isEdit ? 'Guardar cambios' : (publicar ? 'Publicar tarea' : 'Guardar borrador')}
@@ -520,16 +496,15 @@ const DeleteModal = ({ open, tarea, onClose, onConfirm, isPending }) => (
   <Modal open={open} onClose={onClose} title="Eliminar tarea" width={400}>
     {tarea && (
       <>
-        <div style={{ padding: '20px 24px' }}>
-          <div style={{ width: 44, height: 44, borderRadius: 16, background: 'var(--p-d-100)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--p-d-500)', marginBottom: 14 }}>
+        <div className="px-6 py-5">
+          <div className="w-11 h-11 rounded-2xl bg-p-d-100 flex items-center justify-center text-p-d-500 mb-[14px]">
             <Icon name="trash" size={20} />
           </div>
-          <p style={{ fontSize: 14, color: 'var(--p-text-secondary)', lineHeight: 1.65 }}>
-            ¿Eliminar la tarea <strong style={{ color: 'var(--p-text-primary)' }}>{tarea.title}</strong>? Esta acción no se puede deshacer.
+          <p className="text-[14px] text-p-text-secondary leading-[1.65] m-0">
+            ¿Eliminar la tarea <strong className="text-p-text-primary">{tarea.title}</strong>? Esta acción no se puede deshacer.
           </p>
         </div>
-        <div style={{ padding: '14px 24px', borderTop: '1px solid var(--p-border)', display: 'flex', justifyContent: 'flex-end', gap: 8, background: 'var(--p-bg-subtle)' }}>
+        <div className="px-6 py-[14px] border-t border-p-border flex justify-end gap-2 bg-p-bg-subtle">
           <Btn variant="secondary" onClick={onClose}>Cancelar</Btn>
           <Btn variant="danger" onClick={onConfirm} disabled={isPending}>
             {isPending ? 'Eliminando…' : 'Eliminar tarea'}
@@ -541,68 +516,60 @@ const DeleteModal = ({ open, tarea, onClose, onConfirm, isPending }) => (
 );
 
 const TareaCard = ({ tarea, onEdit, onDelete, onReview }) => {
-  const tm = TIPO_META[tarea.type]   || TIPO_META.tarea;
+  const tm = TIPO_META[tarea.type]    || TIPO_META.tarea;
   const em = ESTADO_META[tarea.status] || ESTADO_META.active;
   const dl = daysLeft(tarea.dueDate);
   const overdue = dl !== null && dl < 0 && tarea.status === 'active';
 
   return (
-    <div style={{ background: 'var(--p-bg-base)', border: '1px solid var(--p-border)', borderRadius: 16,
-      boxShadow: 'var(--p-shadow-sm)', padding: '18px 20px', display: 'flex', gap: 16, alignItems: 'flex-start', transition: 'box-shadow 0.12s' }}
-      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = 'var(--p-shadow-md)'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'var(--p-shadow-sm)'; }}>
-
-      <div style={{ width: 40, height: 40, borderRadius: 10, background: tm.bg,
-        display: 'flex', alignItems: 'center', justifyContent: 'center', color: tm.color, flexShrink: 0 }}>
+    <div className="bg-p-bg-base border border-p-border rounded-2xl shadow-p-sm px-5 py-[18px] flex gap-4 items-start transition-[box-shadow] duration-[120ms] hover:shadow-p-md">
+      <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
+        style={{ background: tm.bg, color: tm.color }}>
         <Icon name={tm.icon} size={18} />
       </div>
 
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 6 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 5, flexWrap: 'wrap' }}>
-              <span style={{ padding: '2px 8px', borderRadius: '99px', fontSize: 11.5, fontWeight: 600, background: tm.bg, color: tm.color }}>{tm.label}</span>
-              <span style={{ padding: '2px 8px', borderRadius: '99px', fontSize: 11.5, fontWeight: 600, background: em.bg, color: em.color }}>{em.label}</span>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-3 mb-[6px]">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-[7px] mb-[5px] flex-wrap">
+              <span className="px-2 py-[2px] rounded-full text-[11.5px] font-semibold" style={{ background: tm.bg, color: tm.color }}>{tm.label}</span>
+              <span className="px-2 py-[2px] rounded-full text-[11.5px] font-semibold" style={{ background: em.bg, color: em.color }}>{em.label}</span>
             </div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--p-text-primary)', letterSpacing: '-0.02em', marginBottom: 4, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <div className="text-[15px] font-bold text-p-text-primary tracking-[-0.02em] mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
               {tarea.title}
             </div>
             {tarea.description && (
-              <div style={{ fontSize: 13, color: 'var(--p-text-secondary)', lineHeight: 1.5, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <div className="text-[13px] text-p-text-secondary leading-[1.5] whitespace-nowrap overflow-hidden text-ellipsis">
                 {tarea.description}
               </div>
             )}
           </div>
-          <div style={{ display: 'flex', gap: 2, flexShrink: 0 }}>
+          <div className="flex gap-[2px] shrink-0">
             <GhostIcon name="edit"  title="Editar"   onClick={() => onEdit(tarea)} />
             <GhostIcon name="trash" title="Eliminar" onClick={() => onDelete(tarea)} danger />
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 18, marginTop: 10, flexWrap: 'wrap' }}>
+        <div className="flex items-center gap-[18px] mt-[10px] flex-wrap">
           {tarea.dueDate && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5,
-              color: overdue ? 'var(--p-d-500)' : 'var(--p-text-secondary)', fontWeight: overdue ? 500 : 400 }}>
+            <div className={cn('flex items-center gap-[5px] text-[12.5px]', overdue ? 'text-p-d-500 font-medium' : 'text-p-text-secondary')}>
               <Icon name="clock" size={12} />
               <span>{fmtDate(tarea.dueDate)}</span>
               {dl !== null && (
-                <span style={{ fontSize: 11.5, color: overdue ? 'var(--p-d-500)' : dl === 0 ? 'var(--p-w-700)' : dl <= 3 ? 'var(--p-w-500)' : 'var(--p-text-tertiary)' }}>
+                <span className="text-[11.5px]"
+                  style={{ color: overdue ? 'var(--p-d-500)' : dl === 0 ? 'var(--p-w-700)' : dl <= 3 ? 'var(--p-w-500)' : 'var(--p-text-tertiary)' }}>
                   ({overdue ? `venció hace ${-dl}d` : dl === 0 ? 'hoy' : `en ${dl}d`})
                 </span>
               )}
             </div>
           )}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: 'var(--p-text-secondary)' }}>
+          <div className="flex items-center gap-[5px] text-[12.5px] text-p-text-secondary">
             <Icon name="star" size={12} />
             <span>{tarea.maxScore} pts</span>
           </div>
           {onReview && (
             <button onClick={() => onReview(tarea)}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 10px', borderRadius: 8,
-                border: '1px solid var(--p-border)', background: 'transparent', color: 'var(--p-text-secondary)',
-                fontSize: 12, fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer', transition: 'all 0.1s' }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--p-bg-subtle)'; e.currentTarget.style.color = 'var(--p-text-primary)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--p-text-secondary)'; }}>
+              className="inline-flex items-center gap-[5px] px-[10px] py-1 rounded-lg border border-p-border bg-transparent text-p-text-secondary text-[12px] font-sans font-medium cursor-pointer transition-all duration-100 hover:bg-p-bg-subtle hover:text-p-text-primary">
               <Icon name="inbox" size={12} /> Ver entregas
             </button>
           )}
@@ -613,7 +580,7 @@ const TareaCard = ({ tarea, onEdit, onDelete, onReview }) => {
 };
 
 const EmptyStateDocente = ({ onNew }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 24px', gap: 18 }}>
+  <div className="flex flex-col items-center justify-center py-20 px-6 gap-[18px]">
     <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
       <rect x="12" y="20" width="72" height="60" rx="10" fill="var(--p-bg-subtle)" stroke="var(--p-border)" strokeWidth="1.5"/>
       <rect x="26" y="8" width="44" height="18" rx="6" fill="var(--p-bg-muted)" stroke="var(--p-border)" strokeWidth="1.5"/>
@@ -624,9 +591,9 @@ const EmptyStateDocente = ({ onNew }) => (
       <line x1="72" y1="63" x2="72" y2="77" stroke="var(--p-border-strong)" strokeWidth="2.5" strokeLinecap="round"/>
       <line x1="65" y1="70" x2="79" y2="70" stroke="var(--p-border-strong)" strokeWidth="2.5" strokeLinecap="round"/>
     </svg>
-    <div style={{ textAlign: 'center' }}>
-      <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--p-text-primary)', marginBottom: 8, letterSpacing: '-0.02em' }}>Sin tareas aún</div>
-      <div style={{ fontSize: 14, color: 'var(--p-text-secondary)', maxWidth: 320 }}>
+    <div className="text-center">
+      <div className="text-[18px] font-bold text-p-text-primary mb-2 tracking-[-0.02em]">Sin tareas aún</div>
+      <div className="text-[14px] text-p-text-secondary max-w-[320px]">
         Crea la primera tarea para este grupo y los alumnos la verán de inmediato.
       </div>
     </div>
@@ -637,7 +604,7 @@ const EmptyStateDocente = ({ onNew }) => (
 function TeacherView({ cursoId, courseName, tasks, createTask, updateTask, deleteTask }) {
   const [modal,     setModal]     = useState(null);
   const [deleteT,   setDeleteT]   = useState(null);
-  const [reviewing, setReviewing] = useState(null); // task being reviewed
+  const [reviewing, setReviewing] = useState(null);
   const [filter,    setFilter]    = useState('todas');
   const navigate = useNavigate();
 
@@ -666,28 +633,26 @@ function TeacherView({ cursoId, courseName, tasks, createTask, updateTask, delet
   const FILTROS = [['todas', 'Todas'], ['active', 'Activas'], ['draft', 'Borradores'], ['closed', 'Cerradas']];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div className="flex flex-col gap-5">
       {/* Header */}
       <div>
         <button onClick={() => navigate(-1)}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: 'var(--p-text-secondary)', background: 'transparent', border: 'none', cursor: 'pointer', padding: '0 0 10px', fontFamily: 'inherit' }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--p-text-primary)')}
-          onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--p-text-secondary)')}>
+          className="inline-flex items-center gap-[6px] text-[12.5px] text-p-text-secondary bg-transparent border-none cursor-pointer pb-[10px] font-sans hover:text-p-text-primary transition-colors">
           <Icon name="back" size={14} /> Volver
         </button>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <div className="flex items-start justify-between flex-wrap gap-3">
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--p-text-primary)', letterSpacing: '-0.03em', margin: 0, marginBottom: 6 }}>
+            <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] m-0 mb-[6px]">
               Tareas · {courseName}
             </h1>
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-              <span style={{ fontSize: 13, color: 'var(--p-text-secondary)', display: 'flex', alignItems: 'center', gap: 5 }}>
-                <span style={{ width: 7, height: 7, borderRadius: '99px', background: 'var(--p-s-500)', display: 'inline-block' }} />
+            <div className="flex gap-[14px] flex-wrap">
+              <span className="text-[13px] text-p-text-secondary flex items-center gap-[5px]">
+                <span className="w-[7px] h-[7px] rounded-full bg-p-s-500 inline-block" />
                 {activas} activa{activas !== 1 ? 's' : ''}
               </span>
               {borradores > 0 && (
-                <span style={{ fontSize: 13, color: 'var(--p-text-secondary)', display: 'flex', alignItems: 'center', gap: 5 }}>
-                  <span style={{ width: 7, height: 7, borderRadius: '99px', background: 'var(--p-w-500)', display: 'inline-block' }} />
+                <span className="text-[13px] text-p-text-secondary flex items-center gap-[5px]">
+                  <span className="w-[7px] h-[7px] rounded-full bg-p-w-500 inline-block" />
                   {borradores} borrador{borradores !== 1 ? 'es' : ''}
                 </span>
               )}
@@ -698,35 +663,32 @@ function TeacherView({ cursoId, courseName, tasks, createTask, updateTask, delet
       </div>
 
       {/* Filter bar */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', background: 'var(--p-bg-subtle)', borderRadius: 10, padding: 3, gap: 2 }}>
+      <div className="flex items-center gap-[10px] flex-wrap">
+        <div className="flex bg-p-bg-subtle rounded-[10px] p-[3px] gap-[2px]">
           {FILTROS.map(([v, l]) => (
             <button key={v} onClick={() => setFilter(v)}
-              style={{ padding: '5px 13px', borderRadius: 6, border: 'none', fontSize: 12.5,
-                fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer', transition: 'all 0.12s',
-                background: filter === v ? 'var(--p-bg-base)' : 'transparent',
-                color: filter === v ? 'var(--p-text-primary)' : 'var(--p-text-secondary)',
-                boxShadow: filter === v ? 'var(--p-shadow-sm)' : 'none' }}>
+              className={cn(
+                'px-[13px] py-[5px] rounded-md border-none text-[12.5px] font-medium font-sans cursor-pointer transition-all duration-[120ms]',
+                filter === v ? 'bg-p-bg-base text-p-text-primary shadow-p-sm' : 'bg-transparent text-p-text-secondary',
+              )}>
               {l}
             </button>
           ))}
         </div>
-        <span style={{ fontSize: 12.5, color: 'var(--p-text-tertiary)' }}>{filtered.length} tarea{filtered.length !== 1 ? 's' : ''}</span>
+        <span className="text-[12.5px] text-p-text-tertiary">{filtered.length} tarea{filtered.length !== 1 ? 's' : ''}</span>
       </div>
 
       {/* Task list */}
       {tasks.isLoading ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {[1, 2, 3].map((i) => (
-            <div key={i} style={{ height: 100, background: 'var(--p-bg-subtle)', borderRadius: 16, animation: 'pulse 1.5s ease-in-out infinite' }} />
-          ))}
+        <div className="flex flex-col gap-3">
+          {[1, 2, 3].map((i) => <div key={i} className="h-[100px] bg-p-bg-subtle rounded-2xl animate-pulse" />)}
         </div>
       ) : filtered.length === 0 ? (
         filter === 'todas'
           ? <EmptyStateDocente onNew={() => setModal({ mode: 'create' })} />
-          : <div style={{ padding: '48px 24px', textAlign: 'center', color: 'var(--p-text-tertiary)', fontSize: 14 }}>No hay tareas en este estado.</div>
+          : <div className="py-12 px-6 text-center text-p-text-tertiary text-[14px]">No hay tareas en este estado.</div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="flex flex-col gap-3">
           {filtered.map((t) => (
             <TareaCard key={t.id} tarea={t}
               onEdit={(t) => setModal({ mode: 'edit', tarea: t })}
@@ -736,24 +698,9 @@ function TeacherView({ cursoId, courseName, tasks, createTask, updateTask, delet
         </div>
       )}
 
-      <TareaFormModal
-        open={!!modal} onClose={() => setModal(null)}
-        initial={modal?.tarea}
-        onSave={handleSave}
-        isPending={createTask.isPending || updateTask.isPending} />
-
-      <DeleteModal
-        open={!!deleteT} tarea={deleteT}
-        onClose={() => setDeleteT(null)} onConfirm={handleDelete}
-        isPending={deleteTask.isPending} />
-
-      {reviewing && (
-        <SubmissionsModal
-          task={reviewing}
-          courseId={cursoId}
-          onClose={() => setReviewing(null)}
-        />
-      )}
+      <TareaFormModal open={!!modal} onClose={() => setModal(null)} initial={modal?.tarea} onSave={handleSave} isPending={createTask.isPending || updateTask.isPending} />
+      <DeleteModal open={!!deleteT} tarea={deleteT} onClose={() => setDeleteT(null)} onConfirm={handleDelete} isPending={deleteTask.isPending} />
+      {reviewing && <SubmissionsModal task={reviewing} courseId={cursoId} onClose={() => setReviewing(null)} />}
     </div>
   );
 }
@@ -765,16 +712,15 @@ function TeacherView({ cursoId, courseName, tasks, createTask, updateTask, delet
 const SubmissionFilePicker = ({ file, progress, uploading, error, onPick, onClear }) => {
   const [drag, setDrag] = useState(false);
   const onDrop = (e) => {
-    e.preventDefault();
-    setDrag(false);
+    e.preventDefault(); setDrag(false);
     const f = e.dataTransfer.files?.[0];
     if (f) onPick(f);
   };
 
   return (
     <div>
-      <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: 'var(--p-text-secondary)', marginBottom: 6 }}>
-        Archivo adjunto <span style={{ color: 'var(--p-text-tertiary)', fontWeight: 400 }}>(opcional, hasta 25 MB)</span>
+      <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
+        Archivo adjunto <span className="text-p-text-tertiary font-normal">(opcional, hasta 25 MB)</span>
       </label>
 
       {!file ? (
@@ -782,67 +728,41 @@ const SubmissionFilePicker = ({ file, progress, uploading, error, onPick, onClea
           onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
           onDragLeave={() => setDrag(false)}
           onDrop={onDrop}
-          style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
-            padding: '18px 14px', cursor: 'pointer',
-            border: `1.5px dashed ${drag ? 'var(--p-accent)' : 'var(--p-border)'}`,
-            borderRadius: 12,
-            background: drag ? 'var(--p-bg-subtle)' : 'var(--p-bg-base)',
-            color: 'var(--p-text-secondary)', fontSize: 13,
-            transition: 'border-color 0.12s, background 0.12s',
-          }}>
+          className={cn(
+            'flex flex-col items-center gap-[6px] px-[14px] py-[18px] cursor-pointer rounded-[12px] border-[1.5px] border-dashed text-p-text-secondary text-[13px] transition-[border-color,background] duration-[120ms]',
+            drag ? 'border-p-accent bg-p-bg-subtle' : 'border-p-border bg-p-bg-base',
+          )}>
           <Icon name="upload" size={20} />
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontWeight: 500 }}>Click o arrastra un archivo aquí</div>
-            <div style={{ fontSize: 11.5, color: 'var(--p-text-tertiary)', marginTop: 2 }}>
+          <div className="text-center">
+            <div className="font-medium">Click o arrastra un archivo aquí</div>
+            <div className="text-[11.5px] text-p-text-tertiary mt-[2px]">
               PDF, Word, Excel, PowerPoint, imágenes o texto
             </div>
           </div>
-          <input
-            type="file"
-            style={{ display: 'none' }}
-            onChange={(e) => onPick(e.target.files?.[0] ?? null)}
-          />
+          <input type="file" className="hidden" onChange={(e) => onPick(e.target.files?.[0] ?? null)} />
         </label>
       ) : (
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 10,
-          padding: '10px 12px', border: '1px solid var(--p-border)', borderRadius: 12,
-          background: 'var(--p-bg-subtle)',
-        }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: 8, background: 'var(--p-accent)',
-            color: 'var(--p-accent-text)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-          }}>
+        <div className="flex items-center gap-[10px] px-3 py-[10px] border border-p-border rounded-[12px] bg-p-bg-subtle">
+          <div className="w-8 h-8 rounded-lg bg-p-accent text-p-accent-text flex items-center justify-center shrink-0">
             <Icon name="upload" size={14} />
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{
-              fontSize: 13, fontWeight: 500, color: 'var(--p-text-primary)',
-              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-            }}>{file.name}</div>
-            <div style={{ fontSize: 11.5, color: 'var(--p-text-tertiary)', marginTop: 1 }}>
+          <div className="flex-1 min-w-0">
+            <div className="text-[13px] font-medium text-p-text-primary whitespace-nowrap overflow-hidden text-ellipsis">{file.name}</div>
+            <div className="text-[11.5px] text-p-text-tertiary mt-px">
               {(file.size / 1024).toFixed(1)} KB · {file.type || 'desconocido'}
               {uploading && ` · subiendo ${progress}%`}
             </div>
           </div>
           {!uploading && (
             <button type="button" onClick={onClear}
-              style={{
-                background: 'transparent', border: 'none', cursor: 'pointer',
-                color: 'var(--p-text-tertiary)', display: 'flex', padding: 4,
-              }}
-              aria-label="Quitar archivo">
+              className="bg-transparent border-none cursor-pointer text-p-text-tertiary flex p-1" aria-label="Quitar archivo">
               <Icon name="x" size={14} />
             </button>
           )}
         </div>
       )}
 
-      {error && (
-        <div style={{ marginTop: 6, fontSize: 12, color: 'var(--p-d-700)' }}>{error}</div>
-      )}
+      {error && <div className="mt-[6px] text-[12px] text-p-d-700">{error}</div>}
     </div>
   );
 };
@@ -861,15 +781,9 @@ const EntregarModal = ({ tarea, courseId, onClose, onSuccess }) => {
   const onPickFile = (f) => {
     setFileError(null);
     if (!f) { setFile(null); return; }
-    if (f.size > MAX_FILE_SIZE) {
-      setFileError(`Excede el máximo de ${Math.round(MAX_FILE_SIZE / 1024 / 1024)} MB`);
-      return;
-    }
+    if (f.size > MAX_FILE_SIZE) { setFileError(`Excede el máximo de ${Math.round(MAX_FILE_SIZE / 1024 / 1024)} MB`); return; }
     const ct = (f.type || 'application/octet-stream').toLowerCase();
-    if (!ALLOWED_MIME_TYPES.includes(ct)) {
-      setFileError(`Tipo de archivo no permitido: ${ct || 'desconocido'}`);
-      return;
-    }
+    if (!ALLOWED_MIME_TYPES.includes(ct)) { setFileError(`Tipo de archivo no permitido: ${ct || 'desconocido'}`); return; }
     setFile(f);
   };
 
@@ -877,40 +791,28 @@ const EntregarModal = ({ tarea, courseId, onClose, onSuccess }) => {
     try {
       let attachments;
       if (file) {
-        setUploading(true);
-        setProgress(0);
-        const att = await uploadFile(
-          file,
-          { kind: 'submission', courseId, taskId: tarea.id },
-          { onProgress: setProgress },
-        );
-        attachments = [att];
-        setUploading(false);
+        setUploading(true); setProgress(0);
+        const att = await uploadFile(file, { kind: 'submission', courseId, taskId: tarea.id }, { onProgress: setProgress });
+        attachments = [att]; setUploading(false);
       }
-      await submit.mutateAsync({
-        taskId: tarea.id,
-        content: [contenido.trim(), comentario.trim()].filter(Boolean).join('\n\n') || undefined,
-        attachments,
-      });
+      await submit.mutateAsync({ taskId: tarea.id, content: [contenido.trim(), comentario.trim()].filter(Boolean).join('\n\n') || undefined, attachments });
       setDone(true);
       setTimeout(() => { onSuccess(); onClose(); }, 1600);
     } catch (err) {
       setUploading(false);
       if (err?.message && !err?.response) setFileError(err.message);
-      // axios errors are surfaced by the hook's onError
     }
   };
 
   if (done) return (
     <Modal open onClose={onClose} title="Entrega registrada" width={400}>
-      <div style={{ padding: '36px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, textAlign: 'center' }}>
-        <div style={{ width: 64, height: 64, borderRadius: '99px', background: 'var(--p-s-100)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--p-s-700)' }}>
+      <div className="py-9 px-6 flex flex-col items-center gap-4 text-center">
+        <div className="w-16 h-16 rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
           <Icon name="check" size={30} />
         </div>
         <div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--p-text-primary)', marginBottom: 6 }}>¡Tarea entregada!</div>
-          <div style={{ fontSize: 13.5, color: 'var(--p-text-secondary)', lineHeight: 1.6 }}>
+          <div className="text-[16px] font-bold text-p-text-primary mb-[6px]">¡Tarea entregada!</div>
+          <div className="text-[13.5px] text-p-text-secondary leading-[1.6]">
             Tu entrega fue registrada. El docente la revisará pronto.
           </div>
         </div>
@@ -920,56 +822,47 @@ const EntregarModal = ({ tarea, courseId, onClose, onSuccess }) => {
 
   return (
     <Modal open onClose={onClose} title={`Entregar — ${tarea?.title}`} subtitle={`${tm.label} · ${tarea?.maxScore} pts`}>
-      <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16, overflowY: 'auto', flex: 1 }}>
-        <div style={{ padding: '10px 14px', background: 'var(--p-bg-subtle)', border: '1px solid var(--p-border)',
-          borderRadius: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 10, background: tm.bg,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', color: tm.color, flexShrink: 0 }}>
+      <div className="px-6 py-5 flex flex-col gap-4 overflow-y-auto flex-1">
+        <div className="px-[14px] py-[10px] bg-p-bg-subtle border border-p-border rounded-2xl flex items-center gap-[10px]">
+          <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0" style={{ background: tm.bg, color: tm.color }}>
             <Icon name="book" size={14} />
           </div>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--p-text-primary)' }}>{tarea?.title}</div>
-            <div style={{ fontSize: 11.5, color: 'var(--p-text-tertiary)', marginTop: 1 }}>
+            <div className="text-[13px] font-medium text-p-text-primary">{tarea?.title}</div>
+            <div className="text-[11.5px] text-p-text-tertiary mt-px">
               {tarea?.dueDate && `Fecha límite: ${fmtDate(tarea.dueDate)} · `}Puntaje: {tarea?.maxScore} pts
             </div>
           </div>
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: 'var(--p-text-secondary)', marginBottom: 6 }}>
-            Enlace <span style={{ color: 'var(--p-text-tertiary)', fontWeight: 400 }}>(opcional)</span>
+          <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
+            Enlace <span className="text-p-text-tertiary font-normal">(opcional)</span>
           </label>
-          <div style={{ position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--p-text-tertiary)', display: 'flex', pointerEvents: 'none' }}>
+          <div className="relative">
+            <span className="absolute left-[10px] top-1/2 -translate-y-1/2 text-p-text-tertiary flex pointer-events-none">
               <Icon name="upload" size={14} />
             </span>
             <input value={contenido} onChange={(e) => setContenido(e.target.value)}
               placeholder="https://drive.google.com/…"
-              style={{ ...inputStyle, padding: '9px 11px 9px 32px' }} />
+              className={cn(inputCls, 'pl-8')} />
           </div>
         </div>
 
-        <SubmissionFilePicker
-          file={file}
-          progress={progress}
-          uploading={uploading}
-          error={fileError}
-          onPick={onPickFile}
-          onClear={() => { setFile(null); setFileError(null); setProgress(0); }}
-        />
+        <SubmissionFilePicker file={file} progress={progress} uploading={uploading} error={fileError}
+          onPick={onPickFile} onClear={() => { setFile(null); setFileError(null); setProgress(0); }} />
 
         <div>
-          <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: 'var(--p-text-secondary)', marginBottom: 6 }}>
+          <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
             Comentarios para el docente
           </label>
           <textarea value={comentario} onChange={(e) => setComentario(e.target.value)}
             placeholder="Escribe cualquier nota o aclaración sobre tu entrega…" rows={4}
-            style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.55 }} />
+            className={cn(inputCls, 'resize-y leading-[1.55]')} />
         </div>
       </div>
 
-      <div style={{ padding: '14px 24px', borderTop: '1px solid var(--p-border)',
-        display: 'flex', justifyContent: 'flex-end', gap: 8, background: 'var(--p-bg-subtle)', flexShrink: 0 }}>
+      <div className="px-6 py-[14px] border-t border-p-border flex justify-end gap-2 bg-p-bg-subtle shrink-0">
         <Btn variant="secondary" onClick={onClose} disabled={uploading || submit.isPending}>Cancelar</Btn>
         <Btn variant="primary" onClick={handleSubmit} disabled={uploading || submit.isPending}>
           {uploading ? `Subiendo… ${progress}%` : submit.isPending ? 'Enviando…' : 'Confirmar entrega'}
@@ -981,66 +874,56 @@ const EntregarModal = ({ tarea, courseId, onClose, onSuccess }) => {
 
 const TabPendientes = ({ tareas, onEntregar }) => {
   if (tareas.length === 0) return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 24px', gap: 14 }}>
-      <div style={{ width: 52, height: 52, borderRadius: '99px', background: 'var(--p-s-100)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--p-s-700)' }}>
+    <div className="flex flex-col items-center py-[60px] px-6 gap-[14px]">
+      <div className="w-[52px] h-[52px] rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
         <Icon name="check" size={24} />
       </div>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--p-text-primary)', marginBottom: 6 }}>¡Todo al día!</div>
-        <div style={{ fontSize: 13.5, color: 'var(--p-text-secondary)' }}>No tienes tareas pendientes por entregar.</div>
+      <div className="text-center">
+        <div className="text-[16px] font-semibold text-p-text-primary mb-[6px]">¡Todo al día!</div>
+        <div className="text-[13.5px] text-p-text-secondary">No tienes tareas pendientes por entregar.</div>
       </div>
     </div>
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div className="flex flex-col gap-3">
       {tareas.map((t) => {
         const tm = TIPO_META[t.type] || TIPO_META.tarea;
         const dl = daysLeft(t.dueDate);
         const um = urgMeta(dl);
         return (
-          <div key={t.id} style={{ background: 'var(--p-bg-base)', border: '1px solid var(--p-border)',
-            borderRadius: 16, padding: '18px 20px',
-            display: 'flex', gap: 16, alignItems: 'flex-start', boxShadow: 'var(--p-shadow-sm)', transition: 'box-shadow 0.12s' }}
-            onMouseEnter={(e) => (e.currentTarget.style.boxShadow = 'var(--p-shadow-md)')}
-            onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'var(--p-shadow-sm)')}>
-
-            <div style={{ width: 3, alignSelf: 'stretch', borderRadius: 99, background: um.dot, flexShrink: 0, minHeight: 40 }} />
-
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 7, flexWrap: 'wrap' }}>
-                <span style={{ padding: '2px 8px', borderRadius: '99px', fontSize: 11.5, fontWeight: 600, background: tm.bg, color: tm.color }}>{tm.label}</span>
-                <span style={{ padding: '2px 8px', borderRadius: '99px', fontSize: 11.5, fontWeight: 700, background: um.bg, color: um.color }}>{um.label}</span>
+          <div key={t.id}
+            className="bg-p-bg-base border border-p-border rounded-2xl px-5 py-[18px] flex gap-4 items-start shadow-p-sm transition-[box-shadow] duration-[120ms] hover:shadow-p-md">
+            <div className="w-[3px] self-stretch rounded-full shrink-0 min-h-[40px]" style={{ background: um.dot }} />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-[7px] mb-[7px] flex-wrap">
+                <span className="px-2 py-[2px] rounded-full text-[11.5px] font-semibold" style={{ background: tm.bg, color: tm.color }}>{tm.label}</span>
+                <span className="px-2 py-[2px] rounded-full text-[11.5px] font-bold" style={{ background: um.bg, color: um.color }}>{um.label}</span>
               </div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--p-text-primary)', letterSpacing: '-0.02em', marginBottom: 5 }}>{t.title}</div>
+              <div className="text-[15px] font-bold text-p-text-primary tracking-[-0.02em] mb-[5px]">{t.title}</div>
               {t.description && (
-                <div style={{ fontSize: 13, color: 'var(--p-text-secondary)', lineHeight: 1.55, marginBottom: 10,
-                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 560 }}>
+                <div className="text-[13px] text-p-text-secondary leading-[1.55] mb-[10px] whitespace-nowrap overflow-hidden text-ellipsis max-w-[560px]">
                   {t.description}
                 </div>
               )}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap' }}>
+              <div className="flex items-center gap-[18px] flex-wrap">
                 {t.dueDate && (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5,
-                    color: dl !== null && dl <= 1 ? 'var(--p-d-500)' : 'var(--p-text-secondary)',
-                    fontWeight: dl !== null && dl <= 1 ? 500 : 400 }}>
+                  <span className={cn('flex items-center gap-[5px] text-[12.5px]', dl !== null && dl <= 1 ? 'text-p-d-500 font-medium' : 'text-p-text-secondary')}>
                     <Icon name="clock" size={12} />
                     {fmtDate(t.dueDate)}
                     {dl !== null && (
-                      <span style={{ fontSize: 11.5, color: dl <= 0 ? 'var(--p-d-500)' : 'var(--p-text-tertiary)' }}>
+                      <span className="text-[11.5px]" style={{ color: dl <= 0 ? 'var(--p-d-500)' : 'var(--p-text-tertiary)' }}>
                         ({dl <= 0 ? 'hoy' : `en ${dl}d`})
                       </span>
                     )}
                   </span>
                 )}
-                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: 'var(--p-text-secondary)' }}>
+                <span className="flex items-center gap-[5px] text-[12.5px] text-p-text-secondary">
                   <Icon name="star" size={12} />{t.maxScore} pts
                 </span>
               </div>
             </div>
-
-            <div style={{ flexShrink: 0, paddingTop: 4 }}>
+            <div className="shrink-0 pt-1">
               <Btn variant="primary" size="sm" onClick={() => onEntregar(t)}>Entregar</Btn>
             </div>
           </div>
@@ -1052,20 +935,19 @@ const TabPendientes = ({ tareas, onEntregar }) => {
 
 const TabEntregadas = ({ tareas, submissionsByTaskId }) => {
   if (tareas.length === 0) return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 24px', gap: 14 }}>
-      <div style={{ width: 52, height: 52, borderRadius: '99px', background: 'var(--p-bg-subtle)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--p-text-tertiary)' }}>
+    <div className="flex flex-col items-center py-[60px] px-6 gap-[14px]">
+      <div className="w-[52px] h-[52px] rounded-full bg-p-bg-subtle flex items-center justify-center text-p-text-tertiary">
         <Icon name="upload" size={24} />
       </div>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--p-text-primary)', marginBottom: 6 }}>Sin entregas aún</div>
-        <div style={{ fontSize: 13.5, color: 'var(--p-text-secondary)' }}>Tus entregas aparecerán aquí cuando las envíes.</div>
+      <div className="text-center">
+        <div className="text-[16px] font-semibold text-p-text-primary mb-[6px]">Sin entregas aún</div>
+        <div className="text-[13.5px] text-p-text-secondary">Tus entregas aparecerán aquí cuando las envíes.</div>
       </div>
     </div>
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div className="flex flex-col gap-[10px]">
       {tareas.map((t) => {
         const tm  = TIPO_META[t.type] || TIPO_META.tarea;
         const sub = submissionsByTaskId.get(t.id);
@@ -1074,48 +956,36 @@ const TabEntregadas = ({ tareas, submissionsByTaskId }) => {
         const aprobado = pct !== null && pct >= 60;
 
         return (
-          <div key={t.id} style={{ background: 'var(--p-bg-base)', border: '1px solid var(--p-border)',
-            borderRadius: 16, padding: '16px 20px',
-            display: 'flex', gap: 14, alignItems: 'center', boxShadow: 'var(--p-shadow-sm)', transition: 'box-shadow 0.12s' }}
-            onMouseEnter={(e) => (e.currentTarget.style.boxShadow = 'var(--p-shadow-md)')}
-            onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'var(--p-shadow-sm)')}>
-
-            <div style={{ width: 38, height: 38, borderRadius: 10, background: tm.bg,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', color: tm.color, flexShrink: 0 }}>
+          <div key={t.id}
+            className="bg-p-bg-base border border-p-border rounded-2xl px-5 py-4 flex gap-[14px] items-center shadow-p-sm transition-[box-shadow] duration-[120ms] hover:shadow-p-md">
+            <div className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center shrink-0"
+              style={{ background: tm.bg, color: tm.color }}>
               <Icon name="book" size={16} />
             </div>
-
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--p-text-primary)', letterSpacing: '-0.01em', marginBottom: 3 }}>{t.title}</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-                {sub?.submittedAt && (
-                  <span style={{ fontSize: 12.5, color: 'var(--p-text-secondary)' }}>
-                    Entregada el {fmtDate(sub.submittedAt)}
-                  </span>
-                )}
-                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: 'var(--p-text-secondary)' }}>
+            <div className="flex-1 min-w-0">
+              <div className="text-[14.5px] font-semibold text-p-text-primary tracking-[-0.01em] mb-[3px]">{t.title}</div>
+              <div className="flex items-center gap-[14px] flex-wrap">
+                {sub?.submittedAt && <span className="text-[12.5px] text-p-text-secondary">Entregada el {fmtDate(sub.submittedAt)}</span>}
+                <span className="flex items-center gap-[5px] text-[12.5px] text-p-text-secondary">
                   <Icon name="star" size={11} />{t.maxScore} pts
                 </span>
               </div>
             </div>
-
-            <div style={{ flexShrink: 0, textAlign: 'center' }}>
+            <div className="shrink-0 text-center">
               {!graded ? (
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 11px',
-                  borderRadius: '99px', fontSize: 12, fontWeight: 500,
-                  background: 'var(--p-bg-subtle)', color: 'var(--p-text-secondary)', border: '1px solid var(--p-border)' }}>
+                <span className="inline-flex items-center gap-[6px] px-[11px] py-1 rounded-full text-[12px] font-medium bg-p-bg-subtle text-p-text-secondary border border-p-border">
                   <Icon name="clock" size={12} />Por revisar
                 </span>
               ) : sub.score === null ? (
-                <span style={{ fontSize: 13, color: 'var(--p-text-tertiary)' }}>—</span>
+                <span className="text-[13px] text-p-text-tertiary">—</span>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: aprobado ? 'var(--p-s-700)' : 'var(--p-d-500)', letterSpacing: '-0.04em', lineHeight: 1 }}>
-                    {sub.score}<span style={{ fontSize: 14, fontWeight: 500, color: 'var(--p-text-tertiary)' }}>/{t.maxScore}</span>
+                <div className="flex flex-col items-center gap-1">
+                  <div className="text-[22px] font-extrabold tracking-[-0.04em] leading-none"
+                    style={{ color: aprobado ? 'var(--p-s-700)' : 'var(--p-d-500)' }}>
+                    {sub.score}<span className="text-[14px] font-medium text-p-text-tertiary">/{t.maxScore}</span>
                   </div>
-                  <span style={{ padding: '2px 8px', borderRadius: '99px', fontSize: 11, fontWeight: 700,
-                    background: aprobado ? 'var(--p-s-100)' : 'var(--p-d-100)',
-                    color: aprobado ? 'var(--p-s-700)' : 'var(--p-d-700)' }}>
+                  <span className="px-2 py-[2px] rounded-full text-[11px] font-bold"
+                    style={{ background: aprobado ? 'var(--p-s-100)' : 'var(--p-d-100)', color: aprobado ? 'var(--p-s-700)' : 'var(--p-d-700)' }}>
                     {aprobado ? 'Aprobado' : 'Reprobado'}
                   </span>
                 </div>
@@ -1130,51 +1000,47 @@ const TabEntregadas = ({ tareas, submissionsByTaskId }) => {
 
 const TabVencidas = ({ tareas }) => {
   if (tareas.length === 0) return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 24px', gap: 14 }}>
-      <div style={{ width: 52, height: 52, borderRadius: '99px', background: 'var(--p-s-100)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--p-s-700)' }}>
+    <div className="flex flex-col items-center py-[60px] px-6 gap-[14px]">
+      <div className="w-[52px] h-[52px] rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
         <Icon name="check" size={24} />
       </div>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--p-text-primary)', marginBottom: 6 }}>Sin tareas vencidas</div>
-        <div style={{ fontSize: 13.5, color: 'var(--p-text-secondary)' }}>¡Bien hecho! No tienes tareas vencidas sin entregar.</div>
+      <div className="text-center">
+        <div className="text-[16px] font-semibold text-p-text-primary mb-[6px]">Sin tareas vencidas</div>
+        <div className="text-[13.5px] text-p-text-secondary">¡Bien hecho! No tienes tareas vencidas sin entregar.</div>
       </div>
     </div>
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div className="flex flex-col gap-[10px]">
       {tareas.map((t) => {
         const tm = TIPO_META[t.type] || TIPO_META.tarea;
         const dl = daysLeft(t.dueDate);
         return (
-          <div key={t.id} style={{ background: 'var(--p-bg-base)', border: '1px solid var(--p-d-100)',
-            borderRadius: 16, padding: '16px 20px',
-            display: 'flex', gap: 14, alignItems: 'flex-start', boxShadow: 'var(--p-shadow-sm)', opacity: 0.85 }}>
-            <div style={{ width: 3, alignSelf: 'stretch', borderRadius: 99, background: 'var(--p-d-500)', flexShrink: 0, minHeight: 36 }} />
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--p-d-100)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--p-d-500)', flexShrink: 0 }}>
+          <div key={t.id} className="bg-p-bg-base border border-p-d-100 rounded-2xl px-5 py-4 flex gap-[14px] items-start shadow-p-sm opacity-85">
+            <div className="w-[3px] self-stretch rounded-full bg-p-d-500 shrink-0 min-h-[36px]" />
+            <div className="w-9 h-9 rounded-[10px] bg-p-d-100 flex items-center justify-center text-p-d-500 shrink-0">
               <Icon name="lock" size={16} />
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
-                <span style={{ padding: '2px 8px', borderRadius: '99px', fontSize: 11.5, fontWeight: 600, background: tm.bg, color: tm.color }}>{tm.label}</span>
-                <span style={{ padding: '2px 8px', borderRadius: '99px', fontSize: 11.5, fontWeight: 700, background: 'var(--p-d-100)', color: 'var(--p-d-700)' }}>Vencida</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-[5px]">
+                <span className="px-2 py-[2px] rounded-full text-[11.5px] font-semibold" style={{ background: tm.bg, color: tm.color }}>{tm.label}</span>
+                <span className="px-2 py-[2px] rounded-full text-[11.5px] font-bold bg-p-d-100 text-p-d-700">Vencida</span>
               </div>
-              <div style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--p-text-primary)', letterSpacing: '-0.01em', marginBottom: 4, textDecoration: 'line-through', opacity: 0.7 }}>
+              <div className="text-[14.5px] font-semibold text-p-text-primary tracking-[-0.01em] mb-1 line-through opacity-70">
                 {t.title}
               </div>
               {t.description && (
-                <div style={{ fontSize: 13, color: 'var(--p-text-secondary)', lineHeight: 1.55, marginBottom: 8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <div className="text-[13px] text-p-text-secondary leading-[1.55] mb-2 whitespace-nowrap overflow-hidden text-ellipsis">
                   {t.description}
                 </div>
               )}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: 'var(--p-d-500)', fontWeight: 500 }}>
+              <div className="flex items-center gap-[14px]">
+                <span className="flex items-center gap-[5px] text-[12.5px] text-p-d-500 font-medium">
                   <Icon name="clock" size={12} />
                   Venció el {fmtDate(t.dueDate)}{dl !== null ? ` (${Math.abs(dl)}d atrás)` : ''}
                 </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: 'var(--p-text-secondary)' }}>
+                <span className="flex items-center gap-[5px] text-[12.5px] text-p-text-secondary">
                   <Icon name="star" size={11} />{t.maxScore} pts
                 </span>
               </div>
@@ -1183,10 +1049,9 @@ const TabVencidas = ({ tareas }) => {
         );
       })}
 
-      <div style={{ padding: '14px 16px', background: 'var(--p-d-100)', border: '1px solid var(--p-d-500)',
-        borderRadius: 16, display: 'flex', alignItems: 'center', gap: 10, marginTop: 4 }}>
+      <div className="px-4 py-[14px] bg-p-d-100 border border-p-d-500 rounded-2xl flex items-center gap-[10px] mt-1">
         <Icon name="x" size={16} />
-        <span style={{ fontSize: 13, color: 'var(--p-d-700)' }}>
+        <span className="text-[13px] text-p-d-700">
           Contacta a tu docente si necesitas una prórroga para estas entregas.
         </span>
       </div>
@@ -1199,16 +1064,16 @@ function StudentView({ cursoId, courseName, curso, tasks, mySubmissions }) {
   const [tab,       setTab]       = useState('pendientes');
   const [entregarT, setEntregarT] = useState(null);
 
-  const classrooms   = useClassrooms();
-  const subjects     = useSubjects();
-  const academicYears= useAcademicYears();
-  const members      = useMembers();
+  const classrooms    = useClassrooms();
+  const subjects      = useSubjects();
+  const academicYears = useAcademicYears();
+  const members       = useMembers();
 
-  const subjectName  = curso ? findName(subjects.data, curso.subjectId) : courseName;
-  const classroomName= curso ? findName(classrooms.data, curso.classroomId) : '';
-  const yearName     = curso ? findName(academicYears.data, curso.academicYearId) : '';
-  const teacherMember= curso ? members.data?.find((m) => m.id === curso.teacherMemberId) : null;
-  const teacherName  = teacherMember ? `Prof. ${teacherMember.fullName}` : '—';
+  const subjectName   = curso ? findName(subjects.data, curso.subjectId) : courseName;
+  const classroomName = curso ? findName(classrooms.data, curso.classroomId) : '';
+  const yearName      = curso ? findName(academicYears.data, curso.academicYearId) : '';
+  const teacherMember = curso ? members.data?.find((m) => m.id === curso.teacherMemberId) : null;
+  const teacherName   = teacherMember ? `Prof. ${teacherMember.fullName}` : '—';
 
   const submissionsByTaskId = useMemo(() => {
     const subs = (mySubmissions.data ?? []).filter((s) => s.courseId === cursoId);
@@ -1243,51 +1108,50 @@ function StudentView({ cursoId, courseName, curso, tasks, mySubmissions }) {
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+    <div className="flex flex-col gap-0">
       {/* Back */}
       <button onClick={() => navigate(-1)}
-        style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: 'var(--p-text-secondary)', background: 'transparent', border: 'none', cursor: 'pointer', padding: '0 0 14px', fontFamily: 'inherit', alignSelf: 'flex-start' }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--p-text-primary)')}
-        onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--p-text-secondary)')}>
+        className="inline-flex items-center gap-[6px] text-[12.5px] text-p-text-secondary bg-transparent border-none cursor-pointer pb-[14px] font-sans self-start hover:text-p-text-primary transition-colors">
         <Icon name="back" size={14} /> Volver
       </button>
 
       {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--p-text-primary)', letterSpacing: '-0.03em', marginBottom: 8, margin: 0 }}>
+      <div className="mb-6">
+        <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] m-0">
           Tareas · {subjectName}
         </h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 8, flexWrap: 'wrap' }}>
-          <span style={{ padding: '2px 10px', borderRadius: '99px', fontSize: 11.5, fontWeight: 600,
-            background: 'oklch(93% 0.040 50)', color: 'oklch(35% 0.09 50)' }}>Estudiante</span>
-          {teacherName !== '—' && <span style={{ fontSize: 13, color: 'var(--p-text-secondary)' }}>{teacherName}</span>}
+        <div className="flex items-center gap-[10px] mt-2 flex-wrap">
+          <span className="px-[10px] py-[2px] rounded-full text-[11.5px] font-semibold bg-[oklch(93%_0.040_50)] text-[oklch(35%_0.09_50)]">Estudiante</span>
+          {teacherName !== '—' && <span className="text-[13px] text-p-text-secondary">{teacherName}</span>}
           {classroomName && classroomName !== '—' && (
             <>
-              <span style={{ width: 3, height: 3, borderRadius: '99px', background: 'var(--p-text-tertiary)', flexShrink: 0 }} />
-              <span style={{ fontSize: 13, color: 'var(--p-text-secondary)' }}>{classroomName}{yearName && yearName !== '—' ? ` · ${yearName}` : ''}</span>
+              <span className="w-[3px] h-[3px] rounded-full bg-p-text-tertiary shrink-0" />
+              <span className="text-[13px] text-p-text-secondary">{classroomName}{yearName && yearName !== '—' ? ` · ${yearName}` : ''}</span>
             </>
           )}
         </div>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 0, borderBottom: '1px solid var(--p-border)', marginBottom: 24 }}>
+      <div className="flex border-b border-p-border mb-6">
         {TABS.map((t) => {
           const active = tab === t.id;
           const danger = t.id === 'vencidas' && t.count > 0;
           return (
             <button key={t.id} onClick={() => setTab(t.id)}
-              style={{ padding: '10px 18px', border: 'none', borderBottom: active ? '2px solid var(--p-accent)' : '2px solid transparent',
-                background: 'transparent', fontSize: 13.5, fontFamily: 'inherit',
-                fontWeight: active ? 600 : 500, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', gap: 7,
-                color: active ? 'var(--p-text-primary)' : 'var(--p-text-secondary)',
-                marginBottom: -1, transition: 'all 0.12s' }}>
+              className={cn(
+                'px-[18px] py-[10px] border-none bg-transparent text-[13.5px] font-sans cursor-pointer flex items-center gap-[7px] -mb-px transition-all duration-[120ms]',
+                active
+                  ? 'border-b-2 border-b-p-accent font-semibold text-p-text-primary'
+                  : 'border-b-2 border-b-transparent font-medium text-p-text-secondary',
+              )}>
               {t.label}
               {t.count > 0 && (
-                <span style={{ padding: '1px 7px', borderRadius: '99px', fontSize: 11.5, fontWeight: 700,
-                  background: danger ? 'var(--p-d-100)' : active ? 'var(--p-bg-subtle)' : 'var(--p-bg-muted)',
-                  color: danger ? 'var(--p-d-700)' : active ? 'var(--p-text-primary)' : 'var(--p-text-tertiary)' }}>
+                <span className="px-[7px] py-[1px] rounded-full text-[11.5px] font-bold"
+                  style={{
+                    background: danger ? 'var(--p-d-100)' : active ? 'var(--p-bg-subtle)' : 'var(--p-bg-muted)',
+                    color: danger ? 'var(--p-d-700)' : active ? 'var(--p-text-primary)' : 'var(--p-text-tertiary)',
+                  }}>
                   {t.count}
                 </span>
               )}
@@ -1298,8 +1162,8 @@ function StudentView({ cursoId, courseName, curso, tasks, mySubmissions }) {
 
       {/* Tab content */}
       {tasks.isLoading || mySubmissions.isLoading ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {[1, 2, 3].map((i) => <div key={i} style={{ height: 100, background: 'var(--p-bg-subtle)', borderRadius: 16, animation: 'pulse 1.5s ease-in-out infinite' }} />)}
+        <div className="flex flex-col gap-3">
+          {[1, 2, 3].map((i) => <div key={i} className="h-[100px] bg-p-bg-subtle rounded-2xl animate-pulse" />)}
         </div>
       ) : (
         <>
@@ -1310,11 +1174,7 @@ function StudentView({ cursoId, courseName, curso, tasks, mySubmissions }) {
       )}
 
       {entregarT && (
-        <EntregarModal
-          tarea={entregarT}
-          courseId={cursoId}
-          onClose={() => setEntregarT(null)}
-          onSuccess={() => setEntregarT(null)} />
+        <EntregarModal tarea={entregarT} courseId={cursoId} onClose={() => setEntregarT(null)} onSuccess={() => setEntregarT(null)} />
       )}
     </div>
   );
@@ -1345,6 +1205,3 @@ export default function TasksPage() {
 
   return <StudentView cursoId={cursoId} courseName={courseName} curso={curso} tasks={tasks} mySubmissions={mySubmissions} />;
 }
-
-
-

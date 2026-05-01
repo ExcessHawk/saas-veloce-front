@@ -19,6 +19,38 @@
 @theme inline {
     --font-heading: var(--font-sans);
     --font-sans: 'Geist Variable', sans-serif;
+
+    /* ── Pensum design tokens → Tailwind utilities ── */
+    --color-p-bg-app:    var(--p-bg-app);
+    --color-p-bg-base:   var(--p-bg-base);
+    --color-p-bg-subtle: var(--p-bg-subtle);
+    --color-p-bg-muted:  var(--p-bg-muted);
+    --color-p-border:        var(--p-border);
+    --color-p-border-strong: var(--p-border-strong);
+    --color-p-text-primary:   var(--p-text-primary);
+    --color-p-text-secondary: var(--p-text-secondary);
+    --color-p-text-tertiary:  var(--p-text-tertiary);
+    --color-p-accent:       var(--p-accent);
+    --color-p-accent-hover: var(--p-accent-hover);
+    --color-p-accent-text:  var(--p-accent-text);
+    --color-p-sidebar-bg:          var(--p-sidebar-bg);
+    --color-p-sidebar-text:        var(--p-sidebar-text);
+    --color-p-sidebar-text-active: var(--p-sidebar-text-active);
+    --color-p-sidebar-active:      var(--p-sidebar-active);
+    --color-p-sidebar-hover:       var(--p-sidebar-hover);
+    --color-p-s-100: var(--p-s-100);
+    --color-p-s-500: var(--p-s-500);
+    --color-p-s-700: var(--p-s-700);
+    --color-p-w-100: var(--p-w-100);
+    --color-p-w-500: var(--p-w-500);
+    --color-p-w-700: var(--p-w-700);
+    --color-p-d-100: var(--p-d-100);
+    --color-p-d-500: var(--p-d-500);
+    --color-p-d-700: var(--p-d-700);
+    --shadow-p-sm: var(--p-shadow-sm);
+    --shadow-p-md: var(--p-shadow-md);
+    --shadow-p-lg: var(--p-shadow-lg);
+
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

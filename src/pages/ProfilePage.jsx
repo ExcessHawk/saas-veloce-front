@@ -11,6 +11,7 @@ import {
 import { useProfile, useUpdateProfile, useChangePassword } from '@/hooks/useProfile';
 import { showApiError } from '@/lib/errors';
 import { PwStrengthMeter, Spinner } from '@/components/AuthFormParts';
+import { cn } from '@/lib/utils';
 
 /* ── Role config ── */
 const ROLES = {
@@ -39,13 +40,13 @@ const passwordSchema = z.object({
 /* ── Field primitive ── */
 function Field({ label, error, hint, children }) {
   return (
-    <div style={{ marginBottom: 18 }}>
-      <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, color: 'var(--p-text-secondary)', marginBottom: 6 }}>
+    <div className="mb-[18px]">
+      <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
         {label}
       </label>
       {children}
-      {hint && <div style={{ fontSize: 11.5, color: 'var(--p-text-tertiary)', marginTop: 5 }}>{hint}</div>}
-      {error && <div style={{ fontSize: 11.5, color: 'var(--p-d-500)', marginTop: 5 }}>{error}</div>}
+      {hint && <div className="text-[11.5px] text-p-text-tertiary mt-[5px]">{hint}</div>}
+      {error && <div className="text-[11.5px] text-p-d-500 mt-[5px]">{error}</div>}
     </div>
   );
 }
@@ -53,12 +54,9 @@ function Field({ label, error, hint, children }) {
 function ProfileInput({ icon: IconCmp, suffix, disabled, error, ...rest }) {
   const [focus, setFocus] = useState(false);
   return (
-    <div style={{ position: 'relative' }}>
+    <div className="relative">
       {IconCmp && (
-        <span style={{
-          position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)',
-          color: 'var(--p-text-tertiary)', display: 'flex', pointerEvents: 'none',
-        }}>
+        <span className="absolute left-[10px] top-1/2 -translate-y-1/2 text-p-text-tertiary flex pointer-events-none">
           <IconCmp size={14} />
         </span>
       )}
@@ -66,21 +64,23 @@ function ProfileInput({ icon: IconCmp, suffix, disabled, error, ...rest }) {
         disabled={disabled}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
-        style={{
-          width: '100%', padding: '9px 12px',
-          paddingLeft: IconCmp ? 34 : 12,
-          paddingRight: suffix ? 40 : 12,
-          fontSize: 13.5, fontFamily: 'inherit',
-          border: `1.5px solid ${error ? 'var(--p-d-500)' : focus ? 'var(--p-border-strong)' : 'var(--p-border)'}`,
-          borderRadius: 10,
-          background: disabled ? 'var(--p-bg-subtle)' : 'var(--p-bg-base)',
-          color: disabled ? 'var(--p-text-tertiary)' : 'var(--p-text-primary)',
-          outline: 'none', transition: 'border-color 0.12s',
-        }}
+        className={cn(
+          'w-full py-[9px] text-[13.5px] font-[inherit] rounded-[10px] outline-none transition-[border-color] duration-[120ms]',
+          IconCmp ? 'pl-[34px]' : 'pl-3',
+          suffix ? 'pr-10' : 'pr-3',
+          disabled
+            ? 'bg-p-bg-subtle text-p-text-tertiary'
+            : 'bg-p-bg-base text-p-text-primary',
+          error
+            ? 'border-[1.5px] border-p-d-500'
+            : focus
+            ? 'border-[1.5px] border-p-border-strong'
+            : 'border-[1.5px] border-p-border',
+        )}
         {...rest}
       />
       {suffix && (
-        <span style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)' }}>
+        <span className="absolute right-[10px] top-1/2 -translate-y-1/2">
           {suffix}
         </span>
       )}
@@ -89,24 +89,17 @@ function ProfileInput({ icon: IconCmp, suffix, disabled, error, ...rest }) {
 }
 
 function PrimaryBtn({ children, loading, disabled, type = 'button', onClick }) {
-  const [hov, setHov] = useState(false);
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        display: 'inline-flex', alignItems: 'center', gap: 7,
-        padding: '9px 20px', borderRadius: 10,
-        border: '1px solid transparent',
-        background: loading || disabled ? 'var(--p-text-secondary)' : hov ? 'var(--p-accent-hover)' : 'var(--p-accent)',
-        color: 'var(--p-accent-text)',
-        fontSize: 13.5, fontFamily: 'inherit', fontWeight: 600,
-        cursor: disabled || loading ? 'not-allowed' : 'pointer',
-        opacity: disabled ? 0.5 : 1, transition: 'all 0.12s',
-      }}
+      className={cn(
+        'inline-flex items-center gap-[7px] px-5 py-[9px] rounded-[10px] border border-transparent text-p-accent-text text-[13.5px] font-[inherit] font-semibold transition-all duration-[120ms]',
+        disabled || loading ? 'cursor-not-allowed' : 'cursor-pointer',
+        disabled ? 'opacity-50' : '',
+        loading || disabled ? 'bg-p-text-secondary' : 'bg-p-accent hover:bg-p-accent-hover',
+      )}
     >
       {loading && <Spinner size={14} />}
       {children}
@@ -129,7 +122,7 @@ function TabInfo({ profile, isPending, onSubmit }) {
   }, [profile, reset]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} style={{ animation: 'fadeUp 0.2s ease' }}>
+    <form onSubmit={handleSubmit(onSubmit)} className="animate-[fadeUp_0.2s_ease]">
       <Field label="Nombre completo" error={errors.fullName?.message}>
         <ProfileInput
           icon={User}
@@ -151,7 +144,7 @@ function TabInfo({ profile, isPending, onSubmit }) {
         />
       </Field>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 4 }}>
+      <div className="flex items-center gap-[10px] mt-1">
         <PrimaryBtn type="submit" loading={isPending} disabled={!isDirty}>
           {isPending ? 'Guardando…' : 'Guardar cambios'}
         </PrimaryBtn>
@@ -159,11 +152,7 @@ function TabInfo({ profile, isPending, onSubmit }) {
           <button
             type="button"
             onClick={() => reset({ fullName: profile?.fullName || '', phone: profile?.phone || '' })}
-            style={{
-              border: 'none', background: 'transparent',
-              color: 'var(--p-text-tertiary)', fontSize: 13,
-              cursor: 'pointer', fontFamily: 'inherit',
-            }}
+            className="border-none bg-transparent text-p-text-tertiary text-[13px] cursor-pointer font-[inherit]"
           >
             Descartar
           </button>
@@ -199,17 +188,14 @@ function TabSeguridad({ isPending, onSubmit }) {
     <button
       type="button"
       onClick={() => set(!show)}
-      style={{
-        border: 'none', background: 'transparent', cursor: 'pointer',
-        color: 'var(--p-text-tertiary)', display: 'flex', padding: 0,
-      }}
+      className="border-none bg-transparent cursor-pointer text-p-text-tertiary flex p-0"
     >
       {show ? <EyeOff size={14} /> : <Eye size={14} />}
     </button>
   );
 
   return (
-    <form onSubmit={handleSubmit(handle)} style={{ animation: 'fadeUp 0.2s ease' }}>
+    <form onSubmit={handleSubmit(handle)} className="animate-[fadeUp_0.2s_ease]">
       <Field label="Contraseña actual" error={errors.currentPassword?.message}>
         <ProfileInput
           icon={Lock}
@@ -234,12 +220,12 @@ function TabSeguridad({ isPending, onSubmit }) {
             {...register('newPassword')}
           />
         </Field>
-        <div style={{ marginTop: -12 }}>
+        <div className="-mt-3">
           <PwStrengthMeter password={newPw} />
         </div>
       </div>
 
-      <div style={{ marginTop: 14 }}>
+      <div className="mt-[14px]">
         <Field label="Confirmar nueva contraseña" error={errors.confirmPassword?.message}>
           <ProfileInput
             icon={Lock}
@@ -252,22 +238,13 @@ function TabSeguridad({ isPending, onSubmit }) {
           />
         </Field>
         {matches && (
-          <div style={{
-            fontSize: 12, color: 'var(--p-s-700)',
-            marginTop: -10, marginBottom: 14,
-            display: 'flex', alignItems: 'center', gap: 5,
-          }}>
+          <div className="text-[12px] text-p-s-700 -mt-[10px] mb-[14px] flex items-center gap-[5px]">
             <Check size={12} /> Las contraseñas coinciden
           </div>
         )}
       </div>
 
-      <div style={{
-        padding: '12px 14px', background: 'var(--p-bg-subtle)',
-        borderRadius: 10, border: '1px solid var(--p-border)',
-        marginBottom: 20, fontSize: 12.5, color: 'var(--p-text-secondary)',
-        lineHeight: 1.6,
-      }}>
+      <div className="px-[14px] py-3 bg-p-bg-subtle rounded-[10px] border border-p-border mb-5 text-[12.5px] text-p-text-secondary leading-[1.6]">
         Tu contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial para ser segura.
       </div>
 
@@ -295,37 +272,33 @@ function ProfileCard({ profile, role }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div className="flex flex-col">
       {/* Avatar */}
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '28px 24px 22px', borderBottom: '1px solid var(--p-border)' }}>
+      <div className="flex justify-center px-6 pt-7 pb-[22px] border-b border-p-border">
         <div
           onMouseEnter={() => setHov(true)}
           onMouseLeave={() => setHov(false)}
-          style={{ position: 'relative', cursor: 'pointer' }}
+          className="relative cursor-pointer"
         >
-          <div style={{
-            width: 80, height: 80, borderRadius: '99px',
-            background: `linear-gradient(135deg, ${rc.grad})`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 26, fontWeight: 800, color: 'white',
-            boxShadow: hov
-              ? '0 0 0 4px var(--p-bg-base), 0 0 0 6px var(--p-border)'
-              : '0 0 0 3px var(--p-bg-base), 0 0 0 4px var(--p-border)',
-            transition: 'box-shadow 0.15s',
-          }}>
+          <div
+            className={cn(
+              'w-20 h-20 rounded-full flex items-center justify-center text-[26px] font-extrabold text-white transition-[box-shadow] duration-[150ms]',
+              hov
+                ? 'shadow-[0_0_0_4px_var(--p-bg-base),0_0_0_6px_var(--p-border)]'
+                : 'shadow-[0_0_0_3px_var(--p-bg-base),0_0_0_4px_var(--p-border)]',
+            )}
+            style={{ background: `linear-gradient(135deg, ${rc.grad})` }}
+          >
             {initials(profile?.fullName)}
           </div>
-          <div style={{
-            position: 'absolute', inset: 0, borderRadius: '99px',
-            background: 'oklch(0% 0 0 / 0.50)',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-            opacity: hov ? 1 : 0, transition: 'opacity 0.15s', gap: 3, pointerEvents: 'none',
-          }}>
+          <div
+            className={cn(
+              'absolute inset-0 rounded-full bg-[oklch(0%_0_0_/_0.50)] flex flex-col items-center justify-center gap-[3px] pointer-events-none transition-opacity duration-[150ms]',
+              hov ? 'opacity-100' : 'opacity-0',
+            )}
+          >
             <Camera size={18} color="white" />
-            <span style={{
-              fontSize: 9, fontWeight: 700, color: 'white',
-              letterSpacing: '0.02em', textTransform: 'uppercase',
-            }}>
+            <span className="text-[9px] font-bold text-white tracking-[0.02em] uppercase">
               Cambiar
             </span>
           </div>
@@ -333,43 +306,30 @@ function ProfileCard({ profile, role }) {
       </div>
 
       {/* Identity */}
-      <div style={{ padding: '18px 24px', borderBottom: '1px solid var(--p-border)', textAlign: 'center' }}>
-        <div style={{
-          fontSize: 17, fontWeight: 800, color: 'var(--p-text-primary)',
-          letterSpacing: '-0.03em', marginBottom: 5,
-        }}>
+      <div className="px-6 py-[18px] border-b border-p-border text-center">
+        <div className="text-[17px] font-extrabold text-p-text-primary tracking-[-0.03em] mb-[5px]">
           {profile?.fullName || '—'}
         </div>
-        <div style={{
-          fontSize: 12, color: 'var(--p-text-tertiary)', marginBottom: 12,
-          fontFamily: "'Geist Mono', monospace", wordBreak: 'break-all',
-        }}>
+        <div className="text-[12px] text-p-text-tertiary mb-3 font-mono break-all">
           {profile?.email || '—'}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 7, flexWrap: 'wrap' }}>
-          <span style={{
-            padding: '3px 10px', borderRadius: '99px', fontSize: 12, fontWeight: 700,
-            background: rc.bg, color: rc.color,
-          }}>
+        <div className="flex justify-center gap-[7px] flex-wrap">
+          <span
+            className="px-[10px] py-[3px] rounded-full text-[12px] font-bold"
+            style={{ background: rc.bg, color: rc.color }}
+          >
             {rc.label}
           </span>
-          <span style={{
-            padding: '3px 10px', borderRadius: '99px', fontSize: 12, fontWeight: 700,
-            background: 'var(--p-s-100)', color: 'var(--p-s-700)',
-            display: 'flex', alignItems: 'center', gap: 5,
-          }}>
-            <span style={{ width: 6, height: 6, borderRadius: '99px', background: 'var(--p-s-500)', flexShrink: 0 }} />
+          <span className="px-[10px] py-[3px] rounded-full text-[12px] font-bold bg-p-s-100 text-p-s-700 flex items-center gap-[5px]">
+            <span className="w-[6px] h-[6px] rounded-full bg-p-s-500 shrink-0" />
             {profile?.status === 'active' ? 'Activo' : (profile?.status || 'Activo')}
           </span>
         </div>
       </div>
 
       {/* Stats */}
-      <div style={{ padding: '18px 24px' }}>
-        <div style={{
-          fontSize: 11, fontWeight: 700, color: 'var(--p-text-tertiary)',
-          textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14,
-        }}>
+      <div className="px-6 py-[18px]">
+        <div className="text-[11px] font-bold text-p-text-tertiary uppercase tracking-[0.08em] mb-[14px]">
           Actividad
         </div>
         {[
@@ -377,17 +337,13 @@ function ProfileCard({ profile, role }) {
           { icon: Clock,    label: 'Último acceso',    value: fmtDateTime(profile?.lastLoginAt) },
           { icon: Hash,     label: 'Total de accesos', value: String(profile?.loginCount ?? 0) },
         ].map((s) => (
-          <div key={s.label} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 14 }}>
-            <div style={{
-              width: 30, height: 30, borderRadius: 10, background: 'var(--p-bg-subtle)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: 'var(--p-text-secondary)', flexShrink: 0,
-            }}>
+          <div key={s.label} className="flex items-start gap-[10px] mb-[14px]">
+            <div className="w-[30px] h-[30px] rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
               <s.icon size={13} />
             </div>
             <div>
-              <div style={{ fontSize: 11.5, color: 'var(--p-text-tertiary)', marginBottom: 2 }}>{s.label}</div>
-              <div style={{ fontSize: 13.5, fontWeight: 500, color: 'var(--p-text-primary)' }}>{s.value}</div>
+              <div className="text-[11.5px] text-p-text-tertiary mb-[2px]">{s.label}</div>
+              <div className="text-[13.5px] font-medium text-p-text-primary">{s.value}</div>
             </div>
           </div>
         ))}
@@ -399,16 +355,16 @@ function ProfileCard({ profile, role }) {
 /* ══ Skeleton ══ */
 function SkeletonProfile() {
   return (
-    <div style={{ padding: 24 }}>
-      <div style={{ width: 80, height: 80, borderRadius: '99px', background: 'var(--p-bg-subtle)', margin: '0 auto 18px' }} />
-      <div style={{ height: 18, background: 'var(--p-bg-subtle)', borderRadius: 6, marginBottom: 8, width: '60%', marginInline: 'auto' }} />
-      <div style={{ height: 14, background: 'var(--p-bg-subtle)', borderRadius: 6, marginBottom: 18, width: '80%', marginInline: 'auto' }} />
+    <div className="p-6">
+      <div className="w-20 h-20 rounded-full bg-p-bg-subtle mx-auto mb-[18px]" />
+      <div className="h-[18px] bg-p-bg-subtle rounded-[6px] mb-2 w-3/5 mx-auto" />
+      <div className="h-[14px] bg-p-bg-subtle rounded-[6px] mb-[18px] w-4/5 mx-auto" />
       {[1, 2, 3].map((i) => (
-        <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 14 }}>
-          <div style={{ width: 30, height: 30, borderRadius: 10, background: 'var(--p-bg-subtle)' }} />
-          <div style={{ flex: 1 }}>
-            <div style={{ height: 11, background: 'var(--p-bg-subtle)', borderRadius: 4, width: '40%', marginBottom: 5 }} />
-            <div style={{ height: 14, background: 'var(--p-bg-subtle)', borderRadius: 4, width: '70%' }} />
+        <div key={i} className="flex gap-[10px] mb-[14px]">
+          <div className="w-[30px] h-[30px] rounded-[10px] bg-p-bg-subtle" />
+          <div className="flex-1">
+            <div className="h-[11px] bg-p-bg-subtle rounded-[4px] w-2/5 mb-[5px]" />
+            <div className="h-[14px] bg-p-bg-subtle rounded-[4px] w-[70%]" />
           </div>
         </div>
       ))}
@@ -451,37 +407,26 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div style={{ maxWidth: 920, margin: '0 auto' }}>
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{
-          fontSize: 22, fontWeight: 800, color: 'var(--p-text-primary)',
-          letterSpacing: '-0.03em', marginBottom: 4,
-        }}>
+    <div className="max-w-[920px] mx-auto">
+      <div className="mb-6">
+        <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] mb-1">
           Mi Perfil
         </h1>
-        <p style={{ fontSize: 13.5, color: 'var(--p-text-secondary)', margin: 0 }}>
+        <p className="text-[13.5px] text-p-text-secondary m-0">
           Gestiona tu información personal y seguridad
         </p>
       </div>
 
-      <div className="profile-grid" style={{
-        display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 20, alignItems: 'start',
-      }}>
+      <div className="grid gap-5 items-start [grid-template-columns:1fr_2fr] max-md:[grid-template-columns:1fr]">
         {/* Left card */}
-        <div style={{
-          background: 'var(--p-bg-base)', border: '1px solid var(--p-border)',
-          borderRadius: 24, boxShadow: 'var(--p-shadow-sm)', overflow: 'hidden',
-        }}>
+        <div className="bg-p-bg-base border border-p-border rounded-[24px] shadow-p-sm overflow-hidden">
           {isLoading ? <SkeletonProfile /> : <ProfileCard profile={profile} role={role} />}
         </div>
 
         {/* Right card */}
-        <div style={{
-          background: 'var(--p-bg-base)', border: '1px solid var(--p-border)',
-          borderRadius: 24, boxShadow: 'var(--p-shadow-sm)', overflow: 'hidden',
-        }}>
+        <div className="bg-p-bg-base border border-p-border rounded-[24px] shadow-p-sm overflow-hidden">
           {/* Tabs */}
-          <div style={{ display: 'flex', borderBottom: '1px solid var(--p-border)', padding: '0 24px' }}>
+          <div className="flex border-b border-p-border px-6">
             {TABS.map((t) => {
               const active = tab === t.id;
               const TIcon = t.Icon;
@@ -490,16 +435,12 @@ export default function ProfilePage() {
                   key={t.id}
                   type="button"
                   onClick={() => setTab(t.id)}
-                  style={{
-                    padding: '14px 16px', border: 'none',
-                    borderBottom: active ? '2px solid var(--p-accent)' : '2px solid transparent',
-                    background: 'transparent',
-                    fontSize: 13.5, fontFamily: 'inherit',
-                    fontWeight: active ? 600 : 500, cursor: 'pointer',
-                    color: active ? 'var(--p-text-primary)' : 'var(--p-text-secondary)',
-                    display: 'flex', alignItems: 'center', gap: 7,
-                    marginBottom: -1, transition: 'all 0.12s',
-                  }}
+                  className={cn(
+                    'px-4 py-[14px] border-none bg-transparent text-[13.5px] font-[inherit] cursor-pointer flex items-center gap-[7px] -mb-px transition-all duration-[120ms]',
+                    active
+                      ? 'border-b-2 border-b-p-accent font-semibold text-p-text-primary'
+                      : 'border-b-2 border-b-transparent font-medium text-p-text-secondary',
+                  )}
                 >
                   <TIcon size={14} />
                   {t.label}
@@ -509,13 +450,13 @@ export default function ProfilePage() {
           </div>
 
           {/* Body */}
-          <div style={{ padding: '24px 28px 28px' }}>
+          <div className="px-7 pt-6 pb-7">
             {isLoading ? (
-              <div style={{ padding: 12 }}>
+              <div className="p-3">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} style={{ marginBottom: 18 }}>
-                    <div style={{ height: 12, background: 'var(--p-bg-subtle)', borderRadius: 4, width: '30%', marginBottom: 8 }} />
-                    <div style={{ height: 36, background: 'var(--p-bg-subtle)', borderRadius: 10 }} />
+                  <div key={i} className="mb-[18px]">
+                    <div className="h-3 bg-p-bg-subtle rounded-[4px] w-[30%] mb-2" />
+                    <div className="h-9 bg-p-bg-subtle rounded-[10px]" />
                   </div>
                 ))}
               </div>
@@ -535,11 +476,6 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <style>{`
-        @media (max-width: 768px) {
-          .profile-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </div>
   );
 }

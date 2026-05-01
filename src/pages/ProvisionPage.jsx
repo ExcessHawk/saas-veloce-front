@@ -14,6 +14,7 @@ import AuthLayout from '@/layouts/AuthLayout';
 import {
   AuthHeader, AuthInput, AuthButton, PwStrengthMeter,
 } from '@/components/AuthFormParts';
+import { cn } from '@/lib/utils';
 
 const PLANS = [
   {
@@ -67,32 +68,33 @@ function Stepper({ step }) {
     { n: 2, label: 'Elige tu plan' },
   ];
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
+    <div className="flex items-center gap-3 mb-7">
       {steps.map((s, i) => {
         const done = step > s.n;
         const active = step === s.n;
         return (
-          <div key={s.n} style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{
-                width: 26, height: 26, borderRadius: '99px',
-                background: done || active ? 'oklch(8.5% 0.005 80)' : 'oklch(94.5% 0.006 80)',
-                color: done || active ? 'white' : 'oklch(55% 0.010 80)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 12, fontWeight: 700, transition: 'all 0.15s',
-              }}>
+          <div key={s.n} className="flex items-center gap-3 flex-1">
+            <div className="flex items-center gap-[10px]">
+              <div className={cn(
+                'w-[26px] h-[26px] rounded-full flex items-center justify-center text-[12px] font-bold transition-all duration-150',
+                done || active
+                  ? 'bg-[oklch(8.5%_0.005_80)] text-white'
+                  : 'bg-[oklch(94.5%_0.006_80)] text-[oklch(55%_0.010_80)]',
+              )}>
                 {done ? <Check size={13} /> : s.n}
               </div>
-              <span style={{
-                fontSize: 13,
-                color: active || done ? 'oklch(8.5% 0.005 80)' : 'oklch(55% 0.010 80)',
-                fontWeight: active ? 600 : 500,
-              }}>
+              <span className={cn(
+                'text-[13px]',
+                active || done ? 'text-[oklch(8.5%_0.005_80)] font-semibold' : 'text-[oklch(55%_0.010_80)] font-medium',
+              )}>
                 {s.label}
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div style={{ flex: 1, height: 1, background: done ? 'oklch(8.5% 0.005 80)' : 'oklch(89% 0.007 80)' }} />
+              <div className={cn(
+                'flex-1 h-px',
+                done ? 'bg-[oklch(8.5%_0.005_80)]' : 'bg-[oklch(89%_0.007_80)]',
+              )} />
             )}
           </div>
         );
@@ -107,59 +109,43 @@ function PlanCard({ plan, selected, onSelect }) {
     <button
       type="button"
       onClick={() => onSelect(plan.code)}
-      style={{
-        position: 'relative', textAlign: 'left',
-        background: selected ? 'oklch(99.2% 0.003 80)' : 'white',
-        border: `1.5px solid ${selected ? 'oklch(8.5% 0.005 80)' : 'oklch(89% 0.007 80)'}`,
-        borderRadius: 16, padding: '20px 18px',
-        cursor: 'pointer', transition: 'all 0.15s',
-        boxShadow: selected ? '0 4px 12px oklch(0% 0 0 / 0.08)' : '0 1px 3px oklch(0% 0 0 / 0.04)',
-        display: 'flex', flexDirection: 'column', gap: 12,
-        fontFamily: 'inherit',
-      }}
+      className={cn(
+        'relative text-left rounded-2xl p-[20px_18px] cursor-pointer transition-all duration-150 flex flex-col gap-3 font-[inherit]',
+        selected
+          ? 'bg-[oklch(99.2%_0.003_80)] border-[1.5px] border-[oklch(8.5%_0.005_80)] shadow-[0_4px_12px_oklch(0%_0_0_/_0.08)]'
+          : 'bg-white border-[1.5px] border-[oklch(89%_0.007_80)] shadow-[0_1px_3px_oklch(0%_0_0_/_0.04)]',
+      )}
     >
       {plan.popular && (
-        <div style={{
-          position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)',
-          display: 'inline-flex', alignItems: 'center', gap: 4,
-          padding: '3px 10px', borderRadius: '99px',
-          background: 'oklch(8.5% 0.005 80)', color: 'white',
-          fontSize: 10.5, fontWeight: 700, whiteSpace: 'nowrap',
-        }}>
+        <div className="absolute -top-[10px] left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-[10px] py-[3px] rounded-full bg-[oklch(8.5%_0.005_80)] text-white text-[10.5px] font-bold whitespace-nowrap">
           <Sparkles size={10} /> Más popular
         </div>
       )}
 
       <div>
-        <div style={{
-          fontSize: 11, fontWeight: 700, color: 'oklch(55% 0.010 80)',
-          textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8,
-        }}>
+        <div className="text-[11px] font-bold text-[oklch(55%_0.010_80)] uppercase tracking-[0.08em] mb-2">
           {plan.name}
         </div>
-        <div style={{
-          fontSize: 28, fontWeight: 800,
-          color: 'oklch(8.5% 0.005 80)', letterSpacing: '-0.03em', lineHeight: 1,
-        }}>
+        <div className="text-[28px] font-extrabold text-[oklch(8.5%_0.005_80)] tracking-[-0.03em] leading-none">
           {plan.price}
           {plan.priceSuffix && (
-            <span style={{ fontSize: 13, fontWeight: 500, color: 'oklch(55% 0.010 80)', marginLeft: 4 }}>
+            <span className="text-[13px] font-medium text-[oklch(55%_0.010_80)] ml-1">
               {plan.priceSuffix}
             </span>
           )}
         </div>
-        <div style={{ fontSize: 12, color: 'oklch(55% 0.010 80)', marginTop: 6 }}>{plan.meta}</div>
+        <div className="text-[12px] text-[oklch(55%_0.010_80)] mt-[6px]">{plan.meta}</div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+      <div className="flex flex-col gap-[7px]">
         {plan.features.map((f) => (
-          <div key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 12.5, color: 'oklch(30% 0.009 80)' }}>
-            <span style={{
-              width: 14, height: 14, borderRadius: '99px',
-              background: selected ? 'oklch(8.5% 0.005 80)' : 'oklch(94.5% 0.006 80)',
-              color: selected ? 'white' : 'oklch(42% 0.010 80)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1,
-            }}>
+          <div key={f} className="flex items-start gap-2 text-[12.5px] text-[oklch(30%_0.009_80)]">
+            <span className={cn(
+              'w-[14px] h-[14px] rounded-full flex items-center justify-center flex-shrink-0 mt-px',
+              selected
+                ? 'bg-[oklch(8.5%_0.005_80)] text-white'
+                : 'bg-[oklch(94.5%_0.006_80)] text-[oklch(42%_0.010_80)]',
+            )}>
               <Check size={9} strokeWidth={3} />
             </span>
             {f}
@@ -167,21 +153,17 @@ function PlanCard({ plan, selected, onSelect }) {
         ))}
       </div>
 
-      <div style={{
-        marginTop: 'auto',
-        paddingTop: 12, borderTop: '1px solid oklch(89% 0.007 80)',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
-        <span style={{ fontSize: 12, color: 'oklch(55% 0.010 80)', fontWeight: 500 }}>
+      <div className="mt-auto pt-3 border-t border-[oklch(89%_0.007_80)] flex items-center justify-between">
+        <span className="text-[12px] text-[oklch(55%_0.010_80)] font-medium">
           {selected ? 'Seleccionado' : 'Seleccionar'}
         </span>
-        <div style={{
-          width: 16, height: 16, borderRadius: '99px',
-          border: `1.5px solid ${selected ? 'oklch(8.5% 0.005 80)' : 'oklch(80% 0.009 80)'}`,
-          background: selected ? 'oklch(8.5% 0.005 80)' : 'transparent',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          {selected && <div style={{ width: 6, height: 6, borderRadius: '99px', background: 'white' }} />}
+        <div className={cn(
+          'w-4 h-4 rounded-full flex items-center justify-center',
+          selected
+            ? 'border-[1.5px] border-[oklch(8.5%_0.005_80)] bg-[oklch(8.5%_0.005_80)]'
+            : 'border-[1.5px] border-[oklch(80%_0.009_80)] bg-transparent',
+        )}>
+          {selected && <div className="w-[6px] h-[6px] rounded-full bg-white" />}
         </div>
       </div>
     </button>
@@ -250,7 +232,7 @@ export default function ProvisionPage() {
 
       <Stepper step={step} />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="tab-content" style={{ animation: 'fadeUp 0.22s ease' }}>
+      <form onSubmit={handleSubmit(onSubmit)} className="tab-content [animation:fadeUp_0.22s_ease]">
         {step === 1 && (
           <>
             <AuthInput
@@ -271,7 +253,7 @@ export default function ProvisionPage() {
               {...register('adminEmail')}
             />
 
-            <div style={{ marginBottom: 14 }}>
+            <div className="mb-[14px]">
               <AuthInput
                 label="Contraseña"
                 type={showPw ? 'text' : 'password'}
@@ -283,17 +265,14 @@ export default function ProvisionPage() {
                   <button
                     type="button"
                     onClick={() => setShowPw(!showPw)}
-                    style={{
-                      border: 'none', background: 'transparent', cursor: 'pointer',
-                      color: 'oklch(68% 0.010 80)', display: 'flex', padding: 0,
-                    }}
+                    className="border-none bg-transparent cursor-pointer text-[oklch(68%_0.010_80)] flex p-0"
                   >
                     {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
                 }
                 {...register('adminPassword')}
               />
-              <div style={{ marginTop: -8 }}>
+              <div className="-mt-2">
                 <PwStrengthMeter password={password} />
               </div>
             </div>
@@ -309,10 +288,7 @@ export default function ProvisionPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirm(!showConfirm)}
-                  style={{
-                    border: 'none', background: 'transparent', cursor: 'pointer',
-                    color: 'oklch(68% 0.010 80)', display: 'flex', padding: 0,
-                  }}
+                  className="border-none bg-transparent cursor-pointer text-[oklch(68%_0.010_80)] flex p-0"
                 >
                   {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
@@ -320,15 +296,15 @@ export default function ProvisionPage() {
               {...register('confirmPassword')}
             />
 
-            <div style={{ marginTop: 8 }}>
+            <div className="mt-2">
               <AuthButton type="button" onClick={goNext} icon={ArrowRight}>
                 Continuar
               </AuthButton>
             </div>
 
-            <p style={{ textAlign: 'center', fontSize: 13, color: 'oklch(55% 0.010 80)', marginTop: 22, marginBottom: 0 }}>
+            <p className="text-center text-[13px] text-[oklch(55%_0.010_80)] mt-[22px] mb-0">
               ¿Ya tienes cuenta?{' '}
-              <Link to="/login" style={{ color: 'oklch(8.5% 0.005 80)', fontWeight: 600, textDecoration: 'underline' }}>
+              <Link to="/login" className="text-[oklch(8.5%_0.005_80)] font-semibold underline">
                 Inicia sesión
               </Link>
             </p>
@@ -337,10 +313,7 @@ export default function ProvisionPage() {
 
         {step === 2 && (
           <>
-            <div style={{
-              display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14,
-              marginTop: 8, marginBottom: 24,
-            }}>
+            <div className="grid grid-cols-3 gap-[14px] mt-2 mb-6">
               {PLANS.map((p) => (
                 <PlanCard
                   key={p.code}
@@ -351,21 +324,15 @@ export default function ProvisionPage() {
               ))}
             </div>
 
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div className="flex gap-[10px]">
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                style={{
-                  flex: '0 0 auto', padding: '11px 18px', borderRadius: 10,
-                  border: '1px solid oklch(89% 0.007 80)',
-                  background: 'white', color: 'oklch(30% 0.009 80)',
-                  fontSize: 14, fontFamily: 'inherit', fontWeight: 500, cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', gap: 6,
-                }}
+                className="shrink-0 px-[18px] py-[11px] rounded-[10px] border border-[oklch(89%_0.007_80)] bg-white text-[oklch(30%_0.009_80)] text-sm font-[inherit] font-medium cursor-pointer flex items-center gap-[6px]"
               >
                 <ArrowLeft size={14} /> Atrás
               </button>
-              <div style={{ flex: 1 }}>
+              <div className="flex-1">
                 <AuthButton
                   type="submit"
                   loading={provision.isPending}

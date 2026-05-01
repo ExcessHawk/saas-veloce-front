@@ -35,27 +35,27 @@ export default function AdminSchoolsPage() {
 
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--p-text-primary)', margin: 0 }}>Escuelas</h1>
-        <p style={{ fontSize: 13.5, color: 'var(--p-text-secondary)', marginTop: 4 }}>Todos los tenants del SaaS.</p>
+      <div className="mb-6">
+        <h1 className="text-[22px] font-bold text-p-text-primary m-0">Escuelas</h1>
+        <p className="text-[13.5px] text-p-text-secondary mt-1">Todos los tenants del SaaS.</p>
       </div>
 
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Buscar por nombre o slug…"
-        style={{ marginBottom: 16, padding: '8px 12px', borderRadius: 8, border: '1px solid var(--p-border)', background: 'var(--p-bg-base)', color: 'var(--p-text-primary)', fontSize: 13, fontFamily: 'inherit', width: '100%', maxWidth: 320, outline: 'none' }}
+        className="mb-4 px-3 py-2 rounded-lg border border-p-border bg-p-bg-base text-p-text-primary text-[13px] w-full max-w-xs outline-none font-sans"
       />
 
       {isLoading ? (
-        <div style={{ height: 80, background: 'var(--p-bg-base)', borderRadius: 14, border: '1px solid var(--p-border)' }} />
+        <div className="h-20 bg-p-bg-base rounded-[14px] border border-p-border" />
       ) : (
-        <div style={{ background: 'var(--p-bg-base)', border: '1px solid var(--p-border)', borderRadius: 14, overflow: 'hidden' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+        <div className="bg-p-bg-base border border-p-border rounded-[14px] overflow-hidden">
+          <table className="w-full border-collapse text-[13px]">
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--p-border)' }}>
+              <tr className="border-b border-p-border">
                 {['Escuela', 'Plan', 'Estado', 'Suscripción', 'Creada', 'Acción'].map((h) => (
-                  <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontSize: 11.5, fontWeight: 600, color: 'var(--p-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{h}</th>
+                  <th key={h} className="px-4 py-[10px] text-left text-[11.5px] font-semibold text-p-text-tertiary uppercase tracking-[0.04em]">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -63,24 +63,24 @@ export default function AdminSchoolsPage() {
               {filtered.map((school) => {
                 const sc = STATUS_COLOR[school.status] ?? STATUS_COLOR.inactive;
                 return (
-                  <tr key={school.id} style={{ borderBottom: '1px solid var(--p-border)' }}>
-                    <td style={{ padding: '12px 16px' }}>
-                      <div style={{ fontWeight: 600, color: 'var(--p-text-primary)' }}>{school.name}</div>
-                      <div style={{ fontSize: 11, color: 'var(--p-text-tertiary)', marginTop: 1 }}>{school.slug}</div>
+                  <tr key={school.id} className="border-b border-p-border">
+                    <td className="px-4 py-3">
+                      <div className="font-semibold text-p-text-primary">{school.name}</div>
+                      <div className="text-[11px] text-p-text-tertiary mt-px">{school.slug}</div>
                     </td>
-                    <td style={{ padding: '12px 16px', color: 'var(--p-text-secondary)' }}>{school.planName ?? '—'}</td>
-                    <td style={{ padding: '12px 16px' }}>
-                      <span style={{ fontSize: 12, fontWeight: 600, padding: '3px 8px', borderRadius: 99, color: sc.color, background: sc.bg }}>
+                    <td className="px-4 py-3 text-p-text-secondary">{school.planName ?? '—'}</td>
+                    <td className="px-4 py-3">
+                      <span className="text-[12px] font-semibold px-2 py-[3px] rounded-full" style={{ color: sc.color, background: sc.bg }}>
                         {school.status}
                       </span>
                     </td>
-                    <td style={{ padding: '12px 16px', color: 'var(--p-text-secondary)' }}>{school.subscriptionStatus ?? '—'}</td>
-                    <td style={{ padding: '12px 16px', color: 'var(--p-text-secondary)' }}>{fmtDate(school.createdAt)}</td>
-                    <td style={{ padding: '12px 16px' }}>
+                    <td className="px-4 py-3 text-p-text-secondary">{school.subscriptionStatus ?? '—'}</td>
+                    <td className="px-4 py-3 text-p-text-secondary">{fmtDate(school.createdAt)}</td>
+                    <td className="px-4 py-3">
                       <select
                         value={school.status}
                         onChange={(e) => handleStatus(school.id, e.target.value)}
-                        style={{ padding: '5px 8px', borderRadius: 6, border: '1px solid var(--p-border)', background: 'var(--p-bg-base)', color: 'var(--p-text-primary)', fontSize: 12, fontFamily: 'inherit', cursor: 'pointer' }}
+                        className="px-2 py-[5px] rounded border border-p-border bg-p-bg-base text-p-text-primary text-[12px] font-sans cursor-pointer"
                       >
                         {STATUS_OPTS.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
@@ -89,7 +89,7 @@ export default function AdminSchoolsPage() {
                 );
               })}
               {filtered.length === 0 && (
-                <tr><td colSpan={6} style={{ padding: '24px 16px', textAlign: 'center', color: 'var(--p-text-tertiary)' }}>Sin resultados</td></tr>
+                <tr><td colSpan={6} className="px-4 py-6 text-center text-p-text-tertiary">Sin resultados</td></tr>
               )}
             </tbody>
           </table>

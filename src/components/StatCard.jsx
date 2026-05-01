@@ -1,33 +1,33 @@
+import { cn } from '@/lib/utils';
+
 export function StatCard({ label, value, sub, icon: Icon, warn = false, isLoading = false }) {
   return (
-    <div style={{
-      background: 'var(--p-bg-base)',
-      border: `1px solid ${warn ? 'var(--p-w-500)' : 'var(--p-border)'}`,
-      borderRadius: 16,
-      boxShadow: 'var(--p-shadow-sm)',
-      padding: 20,
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
-        <div style={{
-          width: 38, height: 38, borderRadius: 10,
-          background: warn ? 'var(--p-w-100)' : 'var(--p-bg-subtle)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: warn ? 'var(--p-w-700)' : 'var(--p-text-secondary)',
-        }}>
+    <div className={cn(
+      'bg-p-bg-base rounded-2xl shadow-p-sm p-5',
+      warn ? 'border border-p-w-500' : 'border border-p-border'
+    )}>
+      <div className="flex justify-between items-start mb-[14px]">
+        <div className={cn(
+          'w-[38px] h-[38px] rounded-[10px] flex items-center justify-center',
+          warn ? 'bg-p-w-100 text-p-w-700' : 'bg-p-bg-subtle text-p-text-secondary'
+        )}>
           {Icon && <Icon size={17} />}
         </div>
       </div>
 
       {isLoading ? (
-        <div style={{ height: 36, width: 64, background: 'var(--p-bg-subtle)', borderRadius: 8, animation: 'pulse 1.5s ease-in-out infinite' }} />
+        <div className="h-9 w-16 bg-p-bg-subtle rounded-lg animate-pulse" />
       ) : (
-        <div style={{ fontSize: 30, fontWeight: 700, color: warn ? 'var(--p-w-700)' : 'var(--p-text-primary)', letterSpacing: '-0.04em', lineHeight: 1 }}>
+        <div className={cn(
+          'text-[30px] font-bold tracking-[-0.04em] leading-none',
+          warn ? 'text-p-w-700' : 'text-p-text-primary'
+        )}>
           {value}
         </div>
       )}
 
-      <div style={{ fontSize: 13, color: 'var(--p-text-secondary)', marginTop: 6, fontWeight: 500 }}>{label}</div>
-      {sub && <div style={{ fontSize: 11.5, color: 'var(--p-s-700)', marginTop: 4 }}>{sub}</div>}
+      <div className="text-[13px] text-p-text-secondary mt-[6px] font-medium">{label}</div>
+      {sub && <div className="text-[11.5px] text-p-s-700 mt-1">{sub}</div>}
     </div>
   );
 }

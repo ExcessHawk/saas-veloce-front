@@ -16,20 +16,20 @@ function PlanForm({ initial, onSave, onCancel, loading }) {
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   const field = (label, key, type = 'text', placeholder = '') => (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      <span style={{ fontSize: 12, color: 'var(--p-text-secondary)', fontWeight: 500 }}>{label}</span>
+    <label className="flex flex-col gap-1">
+      <span className="text-[12px] text-p-text-secondary font-medium">{label}</span>
       <input
         type={type}
         value={form[key] ?? ''}
         onChange={(e) => set(key, type === 'number' ? Number(e.target.value) : e.target.value)}
         placeholder={placeholder}
-        style={{ padding: '7px 10px', borderRadius: 8, border: '1px solid var(--p-border)', background: 'var(--p-bg-base)', color: 'var(--p-text-primary)', fontSize: 13, fontFamily: 'inherit', outline: 'none' }}
+        className="px-[10px] py-[7px] rounded-lg border border-p-border bg-p-bg-base text-p-text-primary text-[13px] font-[inherit] outline-none"
       />
     </label>
   );
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
+    <div className="grid gap-[14px] [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
       {field('Código', 'code', 'text', 'ej. pro')}
       {field('Nombre', 'name', 'text', 'ej. Pro')}
       {field('Descripción', 'description', 'text', 'opcional')}
@@ -39,15 +39,22 @@ function PlanForm({ initial, onSave, onCancel, loading }) {
       {field('Máx. docentes', 'maxTeachers', 'number')}
       {field('Máx. cursos', 'maxCourses', 'number')}
       {field('Orden', 'displayOrder', 'number')}
-      <label style={{ display: 'flex', alignItems: 'center', gap: 8, alignSelf: 'end', paddingBottom: 8 }}>
+      <label className="flex items-center gap-2 self-end pb-2">
         <input type="checkbox" checked={form.isActive} onChange={(e) => set('isActive', e.target.checked)} />
-        <span style={{ fontSize: 13, color: 'var(--p-text-primary)' }}>Activo</span>
+        <span className="text-[13px] text-p-text-primary">Activo</span>
       </label>
-      <div style={{ display: 'flex', gap: 8, alignSelf: 'end', paddingBottom: 4, gridColumn: '1 / -1' }}>
-        <button onClick={() => onSave(form)} disabled={loading} style={{ padding: '7px 16px', borderRadius: 8, background: 'var(--p-accent)', color: 'white', border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+      <div className="flex gap-2 self-end pb-1 [grid-column:1_/_-1]">
+        <button
+          onClick={() => onSave(form)}
+          disabled={loading}
+          className="px-4 py-[7px] rounded-lg bg-p-accent text-white border-0 text-[13px] font-semibold cursor-pointer font-[inherit]"
+        >
           {loading ? 'Guardando…' : 'Guardar'}
         </button>
-        <button onClick={onCancel} style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid var(--p-border)', background: 'transparent', color: 'var(--p-text-secondary)', fontSize: 13, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <button
+          onClick={onCancel}
+          className="px-[14px] py-[7px] rounded-lg border border-p-border bg-transparent text-p-text-secondary text-[13px] cursor-pointer font-[inherit]"
+        >
           Cancelar
         </button>
       </div>
@@ -90,53 +97,62 @@ export default function AdminPlansPage() {
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--p-text-primary)', margin: 0 }}>Planes</h1>
-          <p style={{ fontSize: 13.5, color: 'var(--p-text-secondary)', marginTop: 4 }}>Catálogo de suscripciones. Al guardar se sincronizan con Stripe.</p>
+          <h1 className="text-[22px] font-bold text-p-text-primary m-0">Planes</h1>
+          <p className="text-[13.5px] text-p-text-secondary mt-1">Catálogo de suscripciones. Al guardar se sincronizan con Stripe.</p>
         </div>
-        <button onClick={() => setShowCreate(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 14px', borderRadius: 8, background: 'var(--p-accent)', color: 'white', border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+        <button
+          onClick={() => setShowCreate(true)}
+          className="flex items-center gap-[6px] px-[14px] py-[7px] rounded-lg bg-p-accent text-white border-0 text-[13px] font-semibold cursor-pointer font-[inherit]"
+        >
           <Plus size={14} /> Nuevo plan
         </button>
       </div>
 
       {showCreate && (
-        <div style={{ background: 'var(--p-bg-base)', border: '1px solid var(--p-border)', borderRadius: 14, padding: 20, marginBottom: 20 }}>
-          <div style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--p-text-primary)', marginBottom: 14 }}>Nuevo plan</div>
+        <div className="bg-p-bg-base border border-p-border rounded-[14px] p-5 mb-5">
+          <div className="text-[13.5px] font-semibold text-p-text-primary mb-[14px]">Nuevo plan</div>
           <PlanForm onSave={handleCreate} onCancel={() => setShowCreate(false)} loading={create.isPending} />
         </div>
       )}
 
       {isLoading ? (
-        <div style={{ height: 80, background: 'var(--p-bg-base)', borderRadius: 14, border: '1px solid var(--p-border)' }} />
+        <div className="h-20 bg-p-bg-base rounded-[14px] border border-p-border animate-pulse" />
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div className="flex flex-col gap-3">
           {plans?.map((plan) => (
-            <div key={plan.id} style={{ background: 'var(--p-bg-base)', border: '1px solid var(--p-border)', borderRadius: 14, padding: 20 }}>
+            <div key={plan.id} className="bg-p-bg-base border border-p-border rounded-[14px] p-5">
               {editId === plan.id ? (
                 <PlanForm initial={plan} onSave={handleUpdate} onCancel={() => setEditId(null)} loading={update.isPending} />
               ) : (
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                      <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--p-text-primary)' }}>{plan.name}</span>
-                      <code style={{ fontSize: 11, padding: '2px 6px', background: 'var(--p-bg-subtle)', borderRadius: 4, color: 'var(--p-text-secondary)' }}>{plan.code}</code>
-                      {!plan.isActive && <span style={{ fontSize: 11, padding: '2px 6px', background: '#fef2f2', color: '#dc2626', borderRadius: 4 }}>Archivado</span>}
-                      {plan.stripeProductId && <span style={{ fontSize: 11, padding: '2px 6px', background: '#eff6ff', color: '#2563eb', borderRadius: 4 }}>Stripe ✓</span>}
+                <div className="flex items-start gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[15px] font-bold text-p-text-primary">{plan.name}</span>
+                      <code className="text-[11px] px-[6px] py-[2px] bg-p-bg-subtle rounded text-p-text-secondary">{plan.code}</code>
+                      {!plan.isActive && <span className="text-[11px] px-[6px] py-[2px] bg-[#fef2f2] text-[#dc2626] rounded">Archivado</span>}
+                      {plan.stripeProductId && <span className="text-[11px] px-[6px] py-[2px] bg-[#eff6ff] text-[#2563eb] rounded">Stripe ✓</span>}
                     </div>
-                    {plan.description && <div style={{ fontSize: 12.5, color: 'var(--p-text-secondary)', marginBottom: 8 }}>{plan.description}</div>}
-                    <div style={{ display: 'flex', gap: 16, fontSize: 12, color: 'var(--p-text-tertiary)' }}>
+                    {plan.description && <div className="text-[12.5px] text-p-text-secondary mb-2">{plan.description}</div>}
+                    <div className="flex gap-4 text-[12px] text-p-text-tertiary">
                       <span>MXN: {fmtPrice(plan.priceMonthlyMxn)}/mes</span>
                       <span>USD: {fmtPrice(plan.priceMonthlyUsd)}/mes</span>
                       {plan.maxStudents && <span>Alumnos: {plan.maxStudents}</span>}
                     </div>
                   </div>
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    <button onClick={() => setEditId(plan.id)} style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid var(--p-border)', background: 'transparent', color: 'var(--p-text-secondary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontFamily: 'inherit' }}>
+                  <div className="flex gap-[6px]">
+                    <button
+                      onClick={() => setEditId(plan.id)}
+                      className="px-[10px] py-[6px] rounded-[7px] border border-p-border bg-transparent text-p-text-secondary cursor-pointer flex items-center gap-1 text-[12px] font-[inherit]"
+                    >
                       <Pencil size={12} /> Editar
                     </button>
                     {plan.isActive && (
-                      <button onClick={() => handleArchive(plan.id)} style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid #fecaca', background: 'transparent', color: '#dc2626', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontFamily: 'inherit' }}>
+                      <button
+                        onClick={() => handleArchive(plan.id)}
+                        className="px-[10px] py-[6px] rounded-[7px] border border-[#fecaca] bg-transparent text-[#dc2626] cursor-pointer flex items-center gap-1 text-[12px] font-[inherit]"
+                      >
                         <Archive size={12} /> Archivar
                       </button>
                     )}

@@ -9,65 +9,55 @@ import {
   Calendar, School, UserCircle, Users, UserPlus,
   LogOut, Menu, X, Bell, Search, CreditCard,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-/* ── Nav por rol ── */
 const NAV_BY_ROLE = {
   director: [
-    { path: '/dashboard',               label: 'Dashboard',        icon: LayoutDashboard },
-    { path: '/dashboard/classrooms',    label: 'Aulas',            icon: DoorOpen        },
-    { path: '/dashboard/subjects',      label: 'Materias',         icon: BookOpen        },
-    { path: '/dashboard/courses',       label: 'Cursos',           icon: GraduationCap   },
-    { path: '/dashboard/academic-years',label: 'Años Académicos',  icon: Calendar        },
-    { path: '/dashboard/inscriptions',  label: 'Inscripciones',    icon: UserPlus        },
-    { path: '/dashboard/members',       label: 'Miembros',         icon: Users           },
+    { path: '/dashboard',                label: 'Dashboard',       icon: LayoutDashboard },
+    { path: '/dashboard/classrooms',     label: 'Aulas',           icon: DoorOpen        },
+    { path: '/dashboard/subjects',       label: 'Materias',        icon: BookOpen        },
+    { path: '/dashboard/courses',        label: 'Cursos',          icon: GraduationCap   },
+    { path: '/dashboard/academic-years', label: 'Años Académicos', icon: Calendar        },
+    { path: '/dashboard/inscriptions',   label: 'Inscripciones',   icon: UserPlus        },
+    { path: '/dashboard/members',        label: 'Miembros',        icon: Users           },
     { divider: true },
-    { path: '/dashboard/billing',       label: 'Facturación',      icon: CreditCard      },
-    { path: '/dashboard/school',        label: 'Mi Escuela',       icon: School          },
-    { path: '/dashboard/profile',       label: 'Mi Perfil',        icon: UserCircle      },
+    { path: '/dashboard/billing',        label: 'Facturación',     icon: CreditCard      },
+    { path: '/dashboard/school',         label: 'Mi Escuela',      icon: School          },
+    { path: '/dashboard/profile',        label: 'Mi Perfil',       icon: UserCircle      },
   ],
   teacher: [
-    { path: '/dashboard',               label: 'Dashboard',        icon: LayoutDashboard },
-    { path: '/dashboard/mis-cursos',    label: 'Mis Cursos',       icon: GraduationCap   },
+    { path: '/dashboard',            label: 'Dashboard',  icon: LayoutDashboard },
+    { path: '/dashboard/mis-cursos', label: 'Mis Cursos', icon: GraduationCap   },
     { divider: true },
-    { path: '/dashboard/profile',       label: 'Mi Perfil',        icon: UserCircle      },
+    { path: '/dashboard/profile',    label: 'Mi Perfil',  icon: UserCircle      },
   ],
   student: [
-    { path: '/dashboard',               label: 'Dashboard',        icon: LayoutDashboard },
-    { path: '/dashboard/mis-cursos',    label: 'Mis Cursos',       icon: GraduationCap   },
+    { path: '/dashboard',            label: 'Dashboard',  icon: LayoutDashboard },
+    { path: '/dashboard/mis-cursos', label: 'Mis Cursos', icon: GraduationCap   },
     { divider: true },
-    { path: '/dashboard/profile',       label: 'Mi Perfil',        icon: UserCircle      },
+    { path: '/dashboard/profile',    label: 'Mi Perfil',  icon: UserCircle      },
   ],
   parent: [
-    { path: '/dashboard',               label: 'Dashboard',        icon: LayoutDashboard },
-    { path: '/dashboard/mis-hijos',     label: 'Mis Hijos',        icon: Users           },
+    { path: '/dashboard',           label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/dashboard/mis-hijos', label: 'Mis Hijos', icon: Users           },
     { divider: true },
-    { path: '/dashboard/profile',       label: 'Mi Perfil',        icon: UserCircle      },
+    { path: '/dashboard/profile',   label: 'Mi Perfil', icon: UserCircle      },
   ],
 };
 
 const NavItem = ({ item, isActive, onClick }) => {
-  const [hov, setHov] = useState(false);
   const Icon = item.icon;
   return (
-    <Link
-      to={item.path}
-      onClick={onClick}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        display: 'flex', alignItems: 'center', gap: 10,
-        padding: '7px 12px', borderRadius: 10,
-        background: isActive ? 'var(--p-sidebar-active)' : hov ? 'var(--p-sidebar-hover)' : 'transparent',
-        color: isActive || hov ? 'var(--p-sidebar-text-active)' : 'var(--p-sidebar-text)',
-        fontSize: 13.5, fontWeight: isActive ? 500 : 400,
-        textDecoration: 'none', transition: 'all 0.1s',
-      }}
-    >
+    <Link to={item.path} onClick={onClick}
+      className={cn(
+        'flex items-center gap-[10px] px-3 py-[7px] rounded-[10px] no-underline transition-all duration-100 text-[13.5px]',
+        isActive
+          ? 'bg-p-sidebar-active text-p-sidebar-text-active font-medium'
+          : 'text-p-sidebar-text font-normal hover:bg-p-sidebar-hover hover:text-p-sidebar-text-active'
+      )}>
       <Icon size={15} />
-      <span style={{ flex: 1 }}>{item.label}</span>
-      {isActive && (
-        <span style={{ width: 5, height: 5, borderRadius: '99px', background: 'var(--p-sidebar-text-active)', opacity: 0.4 }} />
-      )}
+      <span className="flex-1">{item.label}</span>
+      {isActive && <span className="w-[5px] h-[5px] rounded-full bg-p-sidebar-text-active opacity-40" />}
     </Link>
   );
 };
@@ -100,96 +90,60 @@ export default function DashboardLayout() {
 
   const SidebarContent = ({ onItemClick }) => (
     <>
-      {/* Logo */}
-      <div style={{
-        padding: '14px 18px 12px',
-        borderBottom: '1px solid oklch(99% 0 0 / 0.07)',
-        display: 'flex', flexDirection: 'column', gap: 6,
-      }}>
-        <img src="/logo-pensum.png" alt="Pensum" style={{ height: 30, filter: 'brightness(0) invert(1)', objectFit: 'contain', objectPosition: 'left' }} />
-        <div style={{ fontSize: 10.5, color: 'var(--p-sidebar-text)', paddingLeft: 2 }}>
+      <div className="px-[18px] pt-[14px] pb-3 border-b border-[oklch(99%_0_0/0.07)] flex flex-col gap-[6px]">
+        <img src="/logo-pensum.png" alt="Pensum" className="h-[30px] brightness-0 invert object-contain object-left" />
+        <div className="text-[10.5px] text-p-sidebar-text pl-[2px]">
           {user?.schoolName || 'Instituto Demo'}
         </div>
       </div>
 
-      {/* Nav */}
-      <nav style={{ flex: 1, padding: '10px 8px', display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'auto' }}>
+      <nav className="flex-1 p-2 flex flex-col gap-px overflow-y-auto">
         {navItems.map((item, i) =>
           item.divider ? (
-            <div key={i} style={{ margin: '8px 0', borderTop: '1px solid oklch(99% 0 0 / 0.07)' }} />
+            <div key={i} className="my-2 border-t border-[oklch(99%_0_0/0.07)]" />
           ) : (
-            <NavItem
-              key={item.path}
-              item={item}
-              isActive={isActive(item.path)}
-              onClick={() => { setSidebarOpen(false); onItemClick?.(); }}
-            />
+            <NavItem key={item.path} item={item} isActive={isActive(item.path)}
+              onClick={() => { setSidebarOpen(false); onItemClick?.(); }} />
           )
         )}
       </nav>
 
-      {/* User */}
-      <div style={{
-        margin: 8, padding: '10px 12px',
-        background: 'oklch(99% 0 0 / 0.06)',
-        borderRadius: 10,
-        display: 'flex', alignItems: 'center', gap: 10,
-      }}>
-        <div style={{
-          width: 30, height: 30, borderRadius: '99px',
-          background: userAvatarBg,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 11, fontWeight: 700, color: 'white', flexShrink: 0,
-        }}>
+      <div className="m-2 px-3 py-[10px] bg-[oklch(99%_0_0/0.06)] rounded-[10px] flex items-center gap-[10px]">
+        <div className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+          style={{ background: userAvatarBg }}>
           {userInitials}
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 12.5, fontWeight: 500, color: 'var(--p-sidebar-text-active)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+        <div className="flex-1 min-w-0">
+          <div className="text-[12.5px] font-medium text-p-sidebar-text-active truncate">
             {user?.fullName || user?.email || 'Usuario'}
           </div>
-          <div style={{ fontSize: 10.5, color: 'var(--p-sidebar-text)', textTransform: 'capitalize' }}>
-            {role}
-          </div>
+          <div className="text-[10.5px] text-p-sidebar-text capitalize">{role}</div>
         </div>
       </div>
     </>
   );
 
   return (
-    <div style={{ display: 'flex', height: '100vh', background: 'var(--p-bg-app)', overflow: 'hidden' }}>
-
-      {/* Navigation loading bar */}
+    <div className="flex h-screen bg-p-bg-app overflow-hidden">
       {isNavigating && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, height: 2, overflow: 'hidden', background: 'transparent' }}>
-          <div style={{ height: '100%', width: '33%', background: 'var(--p-accent)', animation: 'slide 0.8s ease-in-out infinite' }} />
+        <div className="fixed top-0 left-0 right-0 z-50 h-0.5 overflow-hidden">
+          <div className="h-full w-1/3 bg-p-accent [animation:slide_0.8s_ease-in-out_infinite]" />
         </div>
       )}
 
-      {/* Sidebar — desktop */}
-      <aside style={{
-        width: 256, flexShrink: 0, height: '100vh',
-        background: 'var(--p-sidebar-bg)',
-        display: 'none',
-        flexDirection: 'column',
-        borderRight: '1px solid oklch(99% 0 0 / 0.06)',
-        position: 'sticky', top: 0,
-      }}
-        className="md-sidebar"
-      >
+      {/* Sidebar desktop */}
+      <aside className="hidden md:flex w-64 shrink-0 h-screen bg-p-sidebar-bg flex-col border-r border-[oklch(99%_0_0/0.06)] sticky top-0">
         <SidebarContent />
       </aside>
 
-      {/* Sidebar — mobile overlay */}
+      {/* Sidebar mobile */}
       {sidebarOpen && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 50 }} className="md:hidden">
-          <div style={{ position: 'fixed', inset: 0, background: 'oklch(0% 0 0 / 0.5)' }} onClick={() => setSidebarOpen(false)} />
-          <aside style={{
-            position: 'fixed', left: 0, top: 0, bottom: 0, width: 256,
-            background: 'var(--p-sidebar-bg)',
-            display: 'flex', flexDirection: 'column', zIndex: 50,
-          }}>
-            <div style={{ padding: '12px 16px', display: 'flex', justifyContent: 'flex-end', borderBottom: '1px solid oklch(99% 0 0 / 0.07)' }}>
-              <button onClick={() => setSidebarOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--p-sidebar-text)', cursor: 'pointer', display: 'flex', padding: 4 }}>
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
+          <aside className="fixed left-0 top-0 bottom-0 w-64 bg-p-sidebar-bg flex flex-col z-50">
+            <div className="px-4 py-3 flex justify-end border-b border-[oklch(99%_0_0/0.07)]">
+              <button onClick={() => setSidebarOpen(false)}
+                className="bg-transparent border-0 text-p-sidebar-text cursor-pointer flex p-1">
                 <X size={18} />
               </button>
             </div>
@@ -199,86 +153,39 @@ export default function DashboardLayout() {
       )}
 
       {/* Main */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
-
-        {/* Header */}
-        <header style={{
-          height: 54, flexShrink: 0,
-          background: 'var(--p-bg-base)',
-          borderBottom: '1px solid var(--p-border)',
-          display: 'flex', alignItems: 'center',
-          padding: '0 20px', gap: 10,
-          position: 'sticky', top: 0, zIndex: 10,
-        }}>
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setSidebarOpen(true)}
-            style={{ background: 'transparent', border: 'none', color: 'var(--p-text-secondary)', cursor: 'pointer', display: 'flex', padding: 4 }}
-            className="md:hidden"
-          >
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        <header className="h-[54px] shrink-0 bg-p-bg-base border-b border-p-border flex items-center px-5 gap-[10px] sticky top-0 z-10">
+          <button onClick={() => setSidebarOpen(true)}
+            className="md:hidden bg-transparent border-0 text-p-text-secondary cursor-pointer flex p-1">
             <Menu size={20} />
           </button>
 
-          {/* Search */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            padding: '6px 11px',
-            background: 'var(--p-bg-subtle)',
-            border: '1px solid var(--p-border)',
-            borderRadius: 10,
-            color: 'var(--p-text-tertiary)', fontSize: 13,
-            cursor: 'text', width: 210,
-          }}>
+          <div className="flex items-center gap-2 px-[11px] py-[6px] bg-p-bg-subtle border border-p-border rounded-[10px] text-p-text-tertiary text-[13px] cursor-text w-[210px]">
             <Search size={13} />
             <span>Buscar…</span>
-            <span style={{ marginLeft: 'auto', fontSize: 10, padding: '1px 5px', background: 'var(--p-bg-muted)', borderRadius: 4 }}>⌘K</span>
+            <span className="ml-auto text-[10px] px-[5px] py-px bg-p-bg-muted rounded">⌘K</span>
           </div>
 
-          <div style={{ flex: 1 }} />
+          <div className="flex-1" />
 
-          {/* Bell */}
-          <button style={{
-            width: 34, height: 34, borderRadius: 10,
-            border: '1px solid var(--p-border)', background: 'transparent',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', color: 'var(--p-text-secondary)', position: 'relative',
-          }}>
+          <button className="w-[34px] h-[34px] rounded-[10px] border border-p-border bg-transparent flex items-center justify-center cursor-pointer text-p-text-secondary relative">
             <Bell size={15} />
-            <span style={{ position: 'absolute', top: 6, right: 6, width: 6, height: 6, borderRadius: '99px', background: 'var(--p-d-500)', border: '1.5px solid var(--p-bg-base)' }} />
+            <span className="absolute top-[6px] right-[6px] w-[6px] h-[6px] rounded-full bg-p-d-500 border-[1.5px] border-p-bg-base" />
           </button>
 
           <ModeToggle />
 
-          {/* Logout */}
-          <button
-            onClick={handleLogout}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '6px 12px',
-              border: '1px solid var(--p-border)', borderRadius: 10,
-              background: 'transparent', color: 'var(--p-text-secondary)',
-              fontSize: 13, fontFamily: 'inherit', fontWeight: 500,
-              cursor: 'pointer', transition: 'all 0.1s',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--p-bg-subtle)'; e.currentTarget.style.color = 'var(--p-text-primary)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--p-text-secondary)'; }}
-          >
+          <button onClick={handleLogout}
+            className="flex items-center gap-[6px] px-3 py-[6px] border border-p-border rounded-[10px] bg-transparent text-p-text-secondary text-[13px] font-sans font-medium cursor-pointer transition-all duration-100 hover:bg-p-bg-subtle hover:text-p-text-primary">
             <LogOut size={13} />
             Salir
           </button>
         </header>
 
-        <main style={{ flex: 1, overflowY: 'auto', padding: 24 }}>
+        <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
       </div>
-
-      <style>{`
-        @media (min-width: 768px) {
-          .md-sidebar { display: flex !important; }
-          .md\\:hidden { display: none !important; }
-        }
-      `}</style>
     </div>
   );
 }
