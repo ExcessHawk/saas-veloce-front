@@ -29,6 +29,7 @@ const BillingCancelPage    = lazy(() => import('@/pages/BillingCancelPage'));
 const AdminDashboardPage   = lazy(() => import('@/pages/AdminDashboardPage'));
 const AdminPlansPage       = lazy(() => import('@/pages/AdminPlansPage'));
 const AdminSchoolsPage     = lazy(() => import('@/pages/AdminSchoolsPage'));
+const AcceptInvitationPage = lazy(() => import('@/pages/AcceptInvitationPage'));
 
 const PageFallback = () => (
   <div className="flex h-full items-center justify-center py-20 px-6">
@@ -46,6 +47,7 @@ export const router = createBrowserRouter([
   { path: '/provision',        element: <PublicRoute>{wrap(<ProvisionPage />)}</PublicRoute> },
   { path: '/forgot-password',  element: <PublicRoute>{wrap(<ForgotPasswordPage />)}</PublicRoute> },
   { path: '/reset-password',   element: wrap(<ResetPasswordPage />) },
+  { path: '/accept-invitation', element: wrap(<AcceptInvitationPage />) },
 
   { path: '/billing/success', element: wrap(<BillingSuccessPage />) },
   { path: '/billing/cancel',  element: wrap(<BillingCancelPage />) },

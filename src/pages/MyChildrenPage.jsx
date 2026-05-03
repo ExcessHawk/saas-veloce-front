@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 const materiaColor = (m) => MATERIA_COLORS[m] ?? { bg: 'var(--p-bg-subtle)', color: 'var(--p-text-secondary)' };
 
 const RoleBadge = () => (
-  <span className="px-[10px] py-[2px] rounded-full text-[11.5px] font-semibold bg-[oklch(91%_0.040_100)] text-[oklch(30%_0.07_100)]">
+  <span className="px-[10px] py-[2px] rounded-full text-[11.5px] font-semibold bg-[oklch(91%_0.040_100)] dark:bg-[oklch(22%_0.040_100)] text-[oklch(30%_0.07_100)] dark:text-[oklch(72%_0.07_100)]">
     Padre
   </span>
 );
@@ -27,7 +27,7 @@ const PadreEmptyState = () => (
         Contacta al director de la institución para vincular a tus hijos a tu cuenta.
       </div>
     </div>
-    <div className="flex items-center gap-2 px-4 py-[10px] bg-[oklch(93%_0.018_250)] border border-[oklch(84%_0.032_250)] rounded-[10px] text-[13px] text-[oklch(30%_0.05_250)]">
+    <div className="flex items-center gap-2 px-4 py-[10px] bg-[oklch(93%_0.018_250)] dark:bg-[oklch(20%_0.018_250)] border border-[oklch(84%_0.032_250)] dark:border-[oklch(35%_0.032_250)] rounded-[10px] text-[13px] text-[oklch(30%_0.05_250)] dark:text-[oklch(72%_0.05_250)]">
       <Mail size={14} />
       <span>Escribe al director de tu escuela</span>
     </div>

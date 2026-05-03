@@ -19,39 +19,27 @@ import { cn } from '@/lib/utils';
 const ROLES_META = {
   director: {
     label: 'Director',
-    bg: 'oklch(8.5%_0.005_80)',
-    color: 'oklch(99.2%_0.003_80)',
-    dot: 'oklch(99.2%_0.003_80)',
-    bgStyle: 'oklch(8.5% 0.005 80)',
-    colorStyle: 'oklch(99.2% 0.003 80)',
-    dotStyle: 'oklch(99.2% 0.003 80)',
+    bgStyle: 'var(--p-bg-muted)',
+    colorStyle: 'var(--p-text-primary)',
+    dotStyle: 'var(--p-text-primary)',
   },
   teacher: {
     label: 'Docente',
-    bg: 'oklch(92%_0.020_250)',
-    color: 'oklch(35%_0.050_250)',
-    dot: 'oklch(35%_0.050_250)',
-    bgStyle: 'oklch(92% 0.020 250)',
-    colorStyle: 'oklch(35% 0.050 250)',
-    dotStyle: 'oklch(35% 0.050 250)',
+    bgStyle: 'var(--p-bg-muted)',
+    colorStyle: 'var(--p-text-secondary)',
+    dotStyle: 'var(--p-text-tertiary)',
   },
   student: {
     label: 'Estudiante',
-    bg: null,
-    color: null,
-    dot: null,
     bgStyle: 'var(--p-s-100)',
     colorStyle: 'var(--p-s-700)',
     dotStyle: 'var(--p-s-500)',
   },
   parent: {
     label: 'Padre/Madre',
-    bg: 'oklch(93%_0.040_50)',
-    color: 'oklch(35%_0.09_50)',
-    dot: 'oklch(50%_0.13_50)',
-    bgStyle: 'oklch(93% 0.040 50)',
-    colorStyle: 'oklch(35% 0.09 50)',
-    dotStyle: 'oklch(50% 0.13 50)',
+    bgStyle: 'var(--p-w-100)',
+    colorStyle: 'var(--p-w-700)',
+    dotStyle: 'var(--p-w-500)',
   },
 };
 
@@ -317,6 +305,7 @@ function ModalShell({ title, subtitle, onClose, children, width = 480 }) {
 /* ── Add member modal ── */
 function AddMemberModal({ onClose }) {
   const inviteMember = useInviteMember();
+  const [invited, setInvited] = useState(null); // { email, role, expiresAt }
   const {
     register, handleSubmit, watch, setValue,
     formState: { errors },
@@ -329,13 +318,55 @@ function AddMemberModal({ onClose }) {
 
   const onSubmit = async (data) => {
     try {
-      await inviteMember.mutateAsync(data);
-      onClose();
+      const result = await inviteMember.mutateAsync(data);
+      if (result.type === 'invited') {
+        setInvited(result.invitation);
+      } else {
+        onClose();
+      }
     } catch { /* handled */ }
   };
 
+  // ── Success state: invitation sent ──
+  if (invited) {
+    const roleLabel = ROLES_META[invited.role]?.label ?? invited.role;
+    const expiresDate = new Date(invited.expiresAt).toLocaleDateString('es-MX', {
+      day: 'numeric', month: 'long', year: 'numeric',
+    });
+    return (
+      <ModalShell title="Invitación enviada" onClose={onClose}>
+        <div className="px-6 py-6 flex flex-col items-center gap-4 text-center">
+          <div className="w-14 h-14 rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
+            <Mail size={24} />
+          </div>
+          <div>
+            <div className="text-[15px] font-bold text-p-text-primary mb-1">
+              Correo enviado a {invited.email}
+            </div>
+            <p className="text-[13.5px] text-p-text-secondary leading-relaxed m-0">
+              Se envió un enlace de invitación para unirse como <strong>{roleLabel}</strong>.
+              El enlace expira el <strong>{expiresDate}</strong>.
+            </p>
+          </div>
+          <div className="px-[13px] py-[10px] bg-p-bg-subtle border border-p-border rounded-[10px] text-[12.5px] text-p-text-secondary text-left w-full">
+            Si el usuario no recibe el correo, verifica que la dirección sea correcta o vuelve a invitarlo.
+          </div>
+        </div>
+        <div className="px-6 py-[14px] border-t border-p-border flex justify-end bg-p-bg-subtle">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-[15px] py-[7px] rounded-[10px] border border-transparent bg-p-accent text-p-accent-text text-[13px] font-[inherit] font-medium cursor-pointer"
+          >
+            Entendido
+          </button>
+        </div>
+      </ModalShell>
+    );
+  }
+
   return (
-    <ModalShell title="Agregar miembro" subtitle="El usuario debe estar registrado en Pensum" onClose={onClose}>
+    <ModalShell title="Agregar miembro" subtitle="Se agrega directamente si ya tiene cuenta, o se envía invitación por correo" onClose={onClose}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="px-6 py-5 flex flex-col gap-4">
           {/* Email */}
@@ -410,7 +441,7 @@ function AddMemberModal({ onClose }) {
             <span className="text-p-text-tertiary shrink-0 mt-[1px] flex">
               <Info size={13} />
             </span>
-            El usuario debe estar previamente registrado en Pensum con este email para poder añadirlo a tu institución.
+            Si el usuario ya tiene cuenta en Pensum se agregará directamente. Si no, recibirá un correo para crear su cuenta y unirse automáticamente.
           </div>
         </div>
 
@@ -431,7 +462,7 @@ function AddMemberModal({ onClose }) {
             )}
           >
             {inviteMember.isPending && <Spinner size={13} />}
-            {inviteMember.isPending ? 'Agregando…' : 'Agregar miembro'}
+            {inviteMember.isPending ? 'Procesando…' : 'Agregar / Invitar'}
           </button>
         </div>
       </form>

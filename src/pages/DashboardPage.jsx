@@ -99,7 +99,7 @@ const ActivityFeed = () => {
                 )}
               >
                 <div
-                  className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[oklch(30%_0.010_80)] shrink-0"
+                  className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[oklch(30%_0.010_80)] dark:text-[oklch(75%_0.010_80)] shrink-0"
                   style={{ background: color }}
                 >
                   <Icon size={14} />
@@ -215,8 +215,9 @@ function DirectorDashboard({ user, classrooms, subjects, courses, members }) {
           {sub && (
             <a href="/dashboard/billing" className="no-underline">
               <div className="bg-p-bg-base border border-p-border rounded-2xl p-[14px] px-4 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-[10px] bg-[oklch(92%_0.020_250)] flex items-center justify-center shrink-0">
-                  <CreditCard size={15} color="oklch(35% 0.050 250)" />
+                <div className="w-8 h-8 rounded-[10px] bg-[oklch(92%_0.020_250)] dark:bg-[oklch(22%_0.020_250)] flex items-center justify-center shrink-0">
+                  <CreditCard size={15} color="oklch(35% 0.050 250)" className="dark:hidden" />
+                  <CreditCard size={15} color="oklch(72% 0.050 250)" className="hidden dark:block" />
                 </div>
                 <div className="flex-1">
                   <div className="text-[12.5px] font-semibold text-p-text-primary">Plan {sub.planName}</div>

@@ -78,14 +78,14 @@ function Stepper({ step }) {
               <div className={cn(
                 'w-[26px] h-[26px] rounded-full flex items-center justify-center text-[12px] font-bold transition-all duration-150',
                 done || active
-                  ? 'bg-[oklch(8.5%_0.005_80)] text-white'
-                  : 'bg-[oklch(94.5%_0.006_80)] text-[oklch(55%_0.010_80)]',
+                  ? 'bg-p-accent text-p-accent-text'
+                  : 'bg-p-bg-subtle text-p-text-tertiary',
               )}>
                 {done ? <Check size={13} /> : s.n}
               </div>
               <span className={cn(
                 'text-[13px]',
-                active || done ? 'text-[oklch(8.5%_0.005_80)] font-semibold' : 'text-[oklch(55%_0.010_80)] font-medium',
+                active || done ? 'text-p-text-primary font-semibold' : 'text-p-text-tertiary font-medium',
               )}>
                 {s.label}
               </span>
@@ -93,7 +93,7 @@ function Stepper({ step }) {
             {i < steps.length - 1 && (
               <div className={cn(
                 'flex-1 h-px',
-                done ? 'bg-[oklch(8.5%_0.005_80)]' : 'bg-[oklch(89%_0.007_80)]',
+                done ? 'bg-p-accent' : 'bg-p-border',
               )} />
             )}
           </div>
@@ -112,39 +112,39 @@ function PlanCard({ plan, selected, onSelect }) {
       className={cn(
         'relative text-left rounded-2xl p-[20px_18px] cursor-pointer transition-all duration-150 flex flex-col gap-3 font-[inherit]',
         selected
-          ? 'bg-[oklch(99.2%_0.003_80)] border-[1.5px] border-[oklch(8.5%_0.005_80)] shadow-[0_4px_12px_oklch(0%_0_0_/_0.08)]'
-          : 'bg-white border-[1.5px] border-[oklch(89%_0.007_80)] shadow-[0_1px_3px_oklch(0%_0_0_/_0.04)]',
+          ? 'bg-p-bg-base border-[1.5px] border-p-accent shadow-[0_4px_12px_oklch(0%_0_0_/_0.08)]'
+          : 'bg-p-bg-subtle border-[1.5px] border-p-border shadow-[0_1px_3px_oklch(0%_0_0_/_0.04)]',
       )}
     >
       {plan.popular && (
-        <div className="absolute -top-[10px] left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-[10px] py-[3px] rounded-full bg-[oklch(8.5%_0.005_80)] text-white text-[10.5px] font-bold whitespace-nowrap">
+        <div className="absolute -top-[10px] left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-[10px] py-[3px] rounded-full bg-p-accent text-p-accent-text text-[10.5px] font-bold whitespace-nowrap">
           <Sparkles size={10} /> Más popular
         </div>
       )}
 
       <div>
-        <div className="text-[11px] font-bold text-[oklch(55%_0.010_80)] uppercase tracking-[0.08em] mb-2">
+        <div className="text-[11px] font-bold text-p-text-tertiary uppercase tracking-[0.08em] mb-2">
           {plan.name}
         </div>
-        <div className="text-[28px] font-extrabold text-[oklch(8.5%_0.005_80)] tracking-[-0.03em] leading-none">
+        <div className="text-[28px] font-extrabold text-p-text-primary tracking-[-0.03em] leading-none">
           {plan.price}
           {plan.priceSuffix && (
-            <span className="text-[13px] font-medium text-[oklch(55%_0.010_80)] ml-1">
+            <span className="text-[13px] font-medium text-p-text-tertiary ml-1">
               {plan.priceSuffix}
             </span>
           )}
         </div>
-        <div className="text-[12px] text-[oklch(55%_0.010_80)] mt-[6px]">{plan.meta}</div>
+        <div className="text-[12px] text-p-text-tertiary mt-[6px]">{plan.meta}</div>
       </div>
 
       <div className="flex flex-col gap-[7px]">
         {plan.features.map((f) => (
-          <div key={f} className="flex items-start gap-2 text-[12.5px] text-[oklch(30%_0.009_80)]">
+          <div key={f} className="flex items-start gap-2 text-[12.5px] text-p-text-secondary">
             <span className={cn(
               'w-[14px] h-[14px] rounded-full flex items-center justify-center flex-shrink-0 mt-px',
               selected
-                ? 'bg-[oklch(8.5%_0.005_80)] text-white'
-                : 'bg-[oklch(94.5%_0.006_80)] text-[oklch(42%_0.010_80)]',
+                ? 'bg-p-accent text-p-accent-text'
+                : 'bg-p-bg-muted text-p-text-secondary',
             )}>
               <Check size={9} strokeWidth={3} />
             </span>
@@ -153,17 +153,17 @@ function PlanCard({ plan, selected, onSelect }) {
         ))}
       </div>
 
-      <div className="mt-auto pt-3 border-t border-[oklch(89%_0.007_80)] flex items-center justify-between">
-        <span className="text-[12px] text-[oklch(55%_0.010_80)] font-medium">
+      <div className="mt-auto pt-3 border-t border-p-border flex items-center justify-between">
+        <span className="text-[12px] text-p-text-tertiary font-medium">
           {selected ? 'Seleccionado' : 'Seleccionar'}
         </span>
         <div className={cn(
           'w-4 h-4 rounded-full flex items-center justify-center',
           selected
-            ? 'border-[1.5px] border-[oklch(8.5%_0.005_80)] bg-[oklch(8.5%_0.005_80)]'
-            : 'border-[1.5px] border-[oklch(80%_0.009_80)] bg-transparent',
+            ? 'border-[1.5px] border-p-accent bg-p-accent'
+            : 'border-[1.5px] border-p-border-strong bg-transparent',
         )}>
-          {selected && <div className="w-[6px] h-[6px] rounded-full bg-white" />}
+          {selected && <div className="w-[6px] h-[6px] rounded-full bg-p-accent-text" />}
         </div>
       </div>
     </button>
@@ -265,7 +265,7 @@ export default function ProvisionPage() {
                   <button
                     type="button"
                     onClick={() => setShowPw(!showPw)}
-                    className="border-none bg-transparent cursor-pointer text-[oklch(68%_0.010_80)] flex p-0"
+                    className="border-none bg-transparent cursor-pointer text-p-text-tertiary flex p-0"
                   >
                     {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
@@ -288,7 +288,7 @@ export default function ProvisionPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirm(!showConfirm)}
-                  className="border-none bg-transparent cursor-pointer text-[oklch(68%_0.010_80)] flex p-0"
+                  className="border-none bg-transparent cursor-pointer text-p-text-tertiary flex p-0"
                 >
                   {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
@@ -302,9 +302,9 @@ export default function ProvisionPage() {
               </AuthButton>
             </div>
 
-            <p className="text-center text-[13px] text-[oklch(55%_0.010_80)] mt-[22px] mb-0">
+            <p className="text-center text-[13px] text-p-text-tertiary mt-[22px] mb-0">
               ¿Ya tienes cuenta?{' '}
-              <Link to="/login" className="text-[oklch(8.5%_0.005_80)] font-semibold underline">
+              <Link to="/login" className="text-p-text-primary font-semibold underline">
                 Inicia sesión
               </Link>
             </p>
@@ -328,7 +328,7 @@ export default function ProvisionPage() {
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="shrink-0 px-[18px] py-[11px] rounded-[10px] border border-[oklch(89%_0.007_80)] bg-white text-[oklch(30%_0.009_80)] text-sm font-[inherit] font-medium cursor-pointer flex items-center gap-[6px]"
+                className="shrink-0 px-[18px] py-[11px] rounded-[10px] border border-p-border bg-p-bg-base text-p-text-secondary text-sm font-[inherit] font-medium cursor-pointer flex items-center gap-[6px] hover:bg-p-bg-subtle transition-colors duration-150"
               >
                 <ArrowLeft size={14} /> Atrás
               </button>

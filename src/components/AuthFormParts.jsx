@@ -7,10 +7,10 @@ import { cn } from '@/lib/utils';
 export function AuthHeader({ title, subtitle }) {
   return (
     <div className="mb-7">
-      <h1 className="text-[22px] font-extrabold text-[oklch(8.5%_0.005_80)] tracking-[-0.03em] mb-[6px]">
+      <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] mb-[6px]">
         {title}
       </h1>
-      <p className="text-[13.5px] text-[oklch(55%_0.010_80)] m-0">{subtitle}</p>
+      <p className="text-[13.5px] text-p-text-secondary m-0">{subtitle}</p>
     </div>
   );
 }
@@ -22,7 +22,7 @@ export function AuthTabs({ active }) {
     { id: 'register', label: 'Crear cuenta',   path: '/register' },
   ];
   return (
-    <div className="flex bg-[oklch(94.5%_0.006_80)] rounded-[10px] p-[3px] gap-[3px] mb-7">
+    <div className="flex bg-p-bg-subtle rounded-[10px] p-[3px] gap-[3px] mb-7">
       {tabs.map(({ id, label, path }) => {
         const isActive = active === id;
         return (
@@ -30,8 +30,8 @@ export function AuthTabs({ active }) {
             className={cn(
               'flex-1 py-2 rounded-lg border-0 text-[13.5px] font-sans cursor-pointer transition-all duration-150',
               isActive
-                ? 'bg-white text-[oklch(8.5%_0.005_80)] font-semibold shadow-[0_1px_4px_oklch(0%_0_0/0.08)]'
-                : 'bg-transparent text-[oklch(55%_0.010_80)] font-medium'
+                ? 'bg-p-bg-base text-p-text-primary font-semibold shadow-[0_1px_4px_oklch(0%_0_0/0.08)]'
+                : 'bg-transparent text-p-text-tertiary font-medium'
             )}>
             {label}
           </button>
@@ -47,7 +47,7 @@ export const AuthInput = forwardRef(function AuthInput(
   return (
     <div className="mb-[14px]">
       {label && (
-        <label className="flex items-center gap-[6px] text-[12.5px] font-semibold text-[oklch(30%_0.009_80)] mb-[6px]">
+        <label className="flex items-center gap-[6px] text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
           {label}
         </label>
       )}
@@ -62,9 +62,9 @@ export const AuthInput = forwardRef(function AuthInput(
           type={type}
           className={cn(
             'w-full py-[10px] px-3 text-[14px] border-[1.5px] rounded-[10px]',
-            'bg-[oklch(99.2%_0.003_80)] text-[oklch(8.5%_0.005_80)] outline-none',
+            'bg-p-bg-base text-p-text-primary outline-none',
             'transition-[border-color,box-shadow] duration-[120ms]',
-            'focus:border-[oklch(30%_0.009_80)] focus:ring-[3px] focus:ring-black/7',
+            'focus:border-p-border-strong focus:ring-[3px] focus:ring-black/7',
             error
               ? 'border-p-d-500 focus:ring-p-d-500/10'
               : 'border-p-border',
@@ -87,11 +87,11 @@ export function AuthButton({ children, loading, type = 'button', onClick, disabl
   return (
     <button type={type} onClick={onClick} disabled={disabled || loading}
       className={cn(
-        'w-full py-[11px] rounded-[10px] border-0 text-white text-[14.5px] font-sans font-semibold',
+        'w-full py-[11px] rounded-[10px] border-0 text-p-accent-text text-[14.5px] font-sans font-semibold',
         'flex items-center justify-center gap-2 transition-all duration-150',
         loading || disabled
-          ? 'bg-[oklch(30%_0.009_80)] cursor-not-allowed'
-          : 'bg-[oklch(8.5%_0.005_80)] cursor-pointer hover:bg-[oklch(20%_0.008_80)]'
+          ? 'bg-p-bg-muted text-p-text-tertiary cursor-not-allowed'
+          : 'bg-p-accent cursor-pointer hover:bg-p-accent-hover'
       )}>
       {loading
         ? <><Spinner /> {children}</>
@@ -123,7 +123,7 @@ export function Divider({ children = 'o continúa con' }) {
 export function GoogleBtn({ label = 'Continuar con Google' }) {
   return (
     <button type="button" onClick={() => toast.info('Inicio con Google estará disponible pronto')}
-      className="w-full py-[10px] rounded-[10px] border-[1.5px] border-p-border bg-white text-[oklch(20%_0.008_80)] text-[14px] font-sans font-medium cursor-pointer flex items-center justify-center gap-[10px] transition-all duration-100 hover:border-p-text-tertiary hover:bg-p-bg-subtle">
+      className="w-full py-[10px] rounded-[10px] border-[1.5px] border-p-border bg-p-bg-base text-p-text-primary text-[14px] font-sans font-medium cursor-pointer flex items-center justify-center gap-[10px] transition-all duration-100 hover:border-p-text-tertiary hover:bg-p-bg-subtle">
       <svg width="18" height="18" viewBox="0 0 24 24">
         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
@@ -192,8 +192,8 @@ export function AuthCheckbox({ checked, onChange, label }) {
         className={cn(
           'w-4 h-4 rounded shrink-0 flex items-center justify-center transition-all duration-100 cursor-pointer border-[1.5px]',
           checked
-            ? 'bg-[oklch(8.5%_0.005_80)] border-[oklch(8.5%_0.005_80)]'
-            : 'bg-transparent border-[oklch(80%_0.009_80)]'
+            ? 'bg-p-accent border-p-accent'
+            : 'bg-transparent border-p-border-strong'
         )}>
         {checked && (
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round">

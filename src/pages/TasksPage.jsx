@@ -1121,7 +1121,7 @@ function StudentView({ cursoId, courseName, curso, tasks, mySubmissions }) {
           Tareas · {subjectName}
         </h1>
         <div className="flex items-center gap-[10px] mt-2 flex-wrap">
-          <span className="px-[10px] py-[2px] rounded-full text-[11.5px] font-semibold bg-[oklch(93%_0.040_50)] text-[oklch(35%_0.09_50)]">Estudiante</span>
+          <span className="px-[10px] py-[2px] rounded-full text-[11.5px] font-semibold bg-[oklch(93%_0.040_50)] dark:bg-[oklch(25%_0.040_50)] text-[oklch(35%_0.09_50)] dark:text-[oklch(75%_0.09_50)]">Estudiante</span>
           {teacherName !== '—' && <span className="text-[13px] text-p-text-secondary">{teacherName}</span>}
           {classroomName && classroomName !== '—' && (
             <>

@@ -15,9 +15,13 @@ export function useInviteMember() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data) => api.post('/api/members/invite', data).then((res) => res.data),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: KEY });
-      showSuccess('Miembro agregado exitosamente');
+      if (data.type === 'invited') {
+        showSuccess('Invitación enviada por correo');
+      } else {
+        showSuccess('Miembro agregado exitosamente');
+      }
     },
     onError: (error) => showApiError(error),
   });

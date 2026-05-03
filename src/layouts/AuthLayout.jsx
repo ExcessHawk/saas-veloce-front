@@ -75,7 +75,7 @@ export default function AuthLayout({ children, maxWidth = 420 }) {
       {/* Panel derecho */}
       <div className="flex-1 bg-p-bg-subtle flex items-center justify-center px-6 py-8 overflow-auto">
         <div
-          className="w-full bg-white border border-[oklch(89%_0.007_80)] rounded-[24px] px-9 py-9 shadow-[0_4px_24px_oklch(0%_0_0/0.06),0_1px_3px_oklch(0%_0_0/0.04)] max-md:rounded-none max-md:shadow-none max-md:border-none max-md:px-5 max-md:py-7"
+          className="w-full bg-p-bg-base border border-p-border rounded-[24px] px-9 py-9 shadow-[0_4px_24px_oklch(0%_0_0/0.06),0_1px_3px_oklch(0%_0_0/0.04)] max-md:rounded-none max-md:shadow-none max-md:border-none max-md:px-5 max-md:py-7"
           style={{ maxWidth }}
         >
           {children}

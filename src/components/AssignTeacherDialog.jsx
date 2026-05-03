@@ -104,7 +104,7 @@ export function AssignTeacherDialog({ open, onOpenChange, course, subjectName, c
                     {currentTeacher.fullName || currentTeacher.email}
                   </div>
                   <div className="flex items-center gap-2 mt-[3px]">
-                    <span className="px-2 py-px rounded-full text-[11px] font-semibold bg-[oklch(90%_0.035_200)] text-[oklch(30%_0.07_200)]">Docente</span>
+                    <span className="px-2 py-px rounded-full text-[11px] font-semibold bg-[oklch(90%_0.035_200)] dark:bg-[oklch(25%_0.035_200)] text-[oklch(30%_0.07_200)] dark:text-[oklch(75%_0.07_200)]">Docente</span>
                     <span className="text-[11.5px] text-p-text-tertiary">
                       {teacherCourseCount(currentTeacher.id)} curso{teacherCourseCount(currentTeacher.id) === 1 ? '' : 's'} activo{teacherCourseCount(currentTeacher.id) === 1 ? '' : 's'}
                     </span>

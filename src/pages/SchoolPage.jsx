@@ -277,12 +277,12 @@ export default function SchoolPage() {
 
       {/* Edit mode banner */}
       {editing && (
-        <div className="px-4 py-[11px] bg-[oklch(93%_0.025_250)] border border-[oklch(84%_0.032_250)] rounded-[16px] flex items-center gap-[10px] mb-5 animate-[fadeUp_0.2s_ease]">
-          <span className="text-[oklch(32%_0.07_250)] flex"><Pencil size={14} /></span>
-          <span className="text-[13.5px] text-[oklch(28%_0.07_250)] font-medium">
+        <div className="px-4 py-[11px] bg-[oklch(93%_0.025_250)] dark:bg-[oklch(20%_0.025_250)] border border-[oklch(84%_0.032_250)] dark:border-[oklch(35%_0.032_250)] rounded-[16px] flex items-center gap-[10px] mb-5 animate-[fadeUp_0.2s_ease]">
+          <span className="text-[oklch(32%_0.07_250)] dark:text-[oklch(72%_0.07_250)] flex"><Pencil size={14} /></span>
+          <span className="text-[13.5px] text-[oklch(28%_0.07_250)] dark:text-[oklch(75%_0.07_250)] font-medium">
             Estás editando la información de la escuela. Los cambios se publicarán al guardar.
           </span>
-          <button type="button" onClick={cancelEdit} className="ml-auto border-none bg-transparent text-[oklch(45%_0.07_250)] cursor-pointer flex p-[2px]">
+          <button type="button" onClick={cancelEdit} className="ml-auto border-none bg-transparent text-[oklch(45%_0.07_250)] dark:text-[oklch(65%_0.07_250)] cursor-pointer flex p-[2px]">
             <X size={14} />
           </button>
         </div>
@@ -334,7 +334,7 @@ export default function SchoolPage() {
           )}
 
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-[10px] py-[3px] rounded-full text-[12px] font-bold bg-[oklch(92%_0.020_250)] text-[oklch(35%_0.050_250)] flex items-center gap-[5px]">
+            <span className="px-[10px] py-[3px] rounded-full text-[12px] font-bold bg-[oklch(92%_0.020_250)] dark:bg-[oklch(22%_0.020_250)] text-[oklch(35%_0.050_250)] dark:text-[oklch(72%_0.050_250)] flex items-center gap-[5px]">
               <Star size={11} /> {sub ? `Plan ${planName}` : 'Sin plan'}
             </span>
             <span className="px-[10px] py-[3px] rounded-full text-[12px] font-bold bg-p-s-100 text-p-s-700 flex items-center gap-[5px]">
@@ -388,7 +388,7 @@ export default function SchoolPage() {
           <div className="flex items-center justify-between flex-wrap gap-[10px]">
             <div>
               <div className="flex items-center gap-2 mb-[6px]">
-                <span className="px-3 py-1 rounded-full text-[13px] font-extrabold bg-[oklch(92%_0.020_250)] text-[oklch(35%_0.050_250)]">
+                <span className="px-3 py-1 rounded-full text-[13px] font-extrabold bg-[oklch(92%_0.020_250)] dark:bg-[oklch(22%_0.020_250)] text-[oklch(35%_0.050_250)] dark:text-[oklch(72%_0.050_250)]">
                   Pensum {sub ? planName : '—'}
                 </span>
               </div>
@@ -415,7 +415,7 @@ export default function SchoolPage() {
           <button
             type="button"
             onClick={() => navigate('/dashboard/billing')}
-            className="flex items-center gap-[7px] text-[13.5px] font-semibold text-[oklch(35%_0.050_250)] bg-transparent border border-[oklch(84%_0.032_250)] px-4 py-2 rounded-[10px] cursor-pointer font-[inherit] transition-all duration-[100ms] w-full justify-center hover:bg-[oklch(92%_0.020_250)]"
+            className="flex items-center gap-[7px] text-[13.5px] font-semibold text-[oklch(35%_0.050_250)] dark:text-[oklch(72%_0.050_250)] bg-transparent border border-[oklch(84%_0.032_250)] dark:border-[oklch(35%_0.032_250)] px-4 py-2 rounded-[10px] cursor-pointer font-[inherit] transition-all duration-[100ms] w-full justify-center hover:bg-[oklch(92%_0.020_250)] dark:hover:bg-[oklch(22%_0.020_250)]"
           >
             Gestionar facturación <ArrowRight size={13} />
           </button>
