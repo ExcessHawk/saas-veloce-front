@@ -116,7 +116,7 @@ export default function GradesPage() {
         <div className="h-7 bg-p-bg-subtle rounded-lg w-40 animate-pulse" />
         <div className="h-10 bg-p-bg-subtle rounded-xl w-72 animate-pulse" />
         <div className="grid gap-3 [grid-template-columns:repeat(3,1fr)]">
-          {[1,2,3].map((i) => <div key={i} className="h-[72px] bg-p-bg-subtle rounded-2xl animate-pulse" />)}
+          {[1,2,3].map((i) => <div key={`skeleton-grade-${i}`} className="h-[72px] bg-p-bg-subtle rounded-2xl animate-pulse" />)}
         </div>
         <div className="h-[320px] bg-p-bg-subtle rounded-2xl animate-pulse" />
       </div>

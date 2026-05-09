@@ -166,8 +166,8 @@ export default function LandingPage() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 28 }}>
                 <div style={{ display: 'flex' }}>
-                  {TRUST_AVATARS.map((a, i) => (
-                    <div key={i} style={{ width: 28, height: 28, borderRadius: 99, background: a.grad, border: '2px solid white', marginLeft: i > 0 ? -8 : 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'white' }}>{a.initials}</div>
+                  {TRUST_AVATARS.map((a) => (
+                    <div key={a.initials} style={{ width: 28, height: 28, borderRadius: 99, background: a.grad, border: '2px solid white', marginLeft: TRUST_AVATARS.indexOf(a) > 0 ? -8 : 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'white' }}>{a.initials}</div>
                   ))}
                 </div>
                 <p style={{ fontSize: 13, color: 'var(--n-500)', margin: 0 }}><strong style={{ color: 'var(--n-700)' }}>+850 directores</strong> ya usan Pensum</p>
@@ -466,7 +466,7 @@ export default function LandingPage() {
               { initials: 'JV', grad: 'linear-gradient(135deg,oklch(65% 0.14 50),oklch(58% 0.16 80))', name: 'Jorge Vidal', school: 'Director · Academia Siglo XXI, Guadalajara', quote: 'La facilidad para crear cursos, asignar docentes y gestionar inscripciones es impresionante. Mis docentes lo aprendieron solos en menos de una hora.' },
             ].map(({ initials, grad, name, school, quote }) => (
               <div key={name} className="lp-testi-card">
-                <div style={{ display: 'flex', gap: 3, marginBottom: 14 }}>{Array(5).fill(0).map((_, i) => <StarIcon key={i} />)}</div>
+                <div style={{ display: 'flex', gap: 3, marginBottom: 14 }}>{Array(5).fill(0).map((_, i) => <StarIcon key={`star-${i}`} />)}</div>
                 <p style={{ fontSize: 15, lineHeight: 1.7, color: 'var(--n-800)', marginBottom: 24, fontStyle: 'italic' }}>"{quote}"</p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{ width: 40, height: 40, borderRadius: 99, background: grad, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'white', flexShrink: 0 }}>{initials}</div>
@@ -507,7 +507,7 @@ export default function LandingPage() {
                   <><path key="li1" d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect key="li2" x="2" y="9" width="4" height="12" /><circle key="li3" cx="4" cy="4" r="2" /></>,
                   <><rect key="ig1" x="2" y="2" width="20" height="20" rx="5" /><path key="ig2" d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line key="ig3" x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></>,
                 ].map((icon, i) => (
-                  <div key={i} style={{ width: 32, height: 32, borderRadius: 8, background: 'oklch(99% 0 0/0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'oklch(55% 0.010 80)', cursor: 'pointer' }}>
+                  <div key={`social-${i}`} style={{ width: 32, height: 32, borderRadius: 8, background: 'oklch(99% 0 0/0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'oklch(55% 0.010 80)', cursor: 'pointer' }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">{icon}</svg>
                   </div>
                 ))}

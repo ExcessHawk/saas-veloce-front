@@ -60,7 +60,7 @@ export default function BillingPage() {
   return (
     <div className="max-w-[720px] mx-auto">
       <div className="mb-7">
-        <h1 className="text-[22px] font-bold text-p-text-primary m-0">Facturación</h1>
+        <h1 className="text-[22px] font-semibold text-p-text-primary m-0">Facturación</h1>
         <p className="text-[13.5px] text-p-text-secondary mt-1">
           Gestiona tu suscripción y métodos de pago.
         </p>

@@ -182,40 +182,15 @@ export default function AcademicYearsPage() {
     } catch { /* handled by hook */ }
   };
 
-  const DateFields = ({ register, control, errors }) => (
-    <>
-      <div>
-        <Label htmlFor="startDate">Fecha de Inicio</Label>
-        <Input id="startDate" type="date" {...register('startDate')} />
-        {errors.startDate && <p className="text-sm text-red-500 mt-1">{errors.startDate.message}</p>}
-      </div>
-      <div>
-        <Label htmlFor="endDate">Fecha de Fin</Label>
-        <Input id="endDate" type="date" {...register('endDate')} />
-        {errors.endDate && <p className="text-sm text-red-500 mt-1">{errors.endDate.message}</p>}
-      </div>
-      <Controller
-        control={control}
-        name="isCurrent"
-        render={({ field }) => (
-          <div className="flex items-center gap-2">
-            <Checkbox id="isCurrent" checked={field.value} onCheckedChange={field.onChange} />
-            <Label htmlFor="isCurrent">Es el año actual</Label>
-          </div>
-        )}
-      />
-    </>
-  );
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Años Académicos</h1>
+        <h1 className="text-2xl font-semibold">Años Académicos</h1>
 
         <RoleGate roles={['director']}>
           <Dialog open={open} onOpenChange={(v) => { if (!v) createForm.reset(); setOpen(v); }}>
             <DialogTrigger asChild>
-              <Button><Plus className="mr-1 h-4 w-4" />Crear Año Académico</Button>
+              <Button><Plus className="mr-1 size-4" />Crear Año Académico</Button>
             </DialogTrigger>
             <DialogContent className="max-w-[480px] p-0 overflow-hidden gap-0">
               <DialogHeader className="px-6 pt-6 pb-4 border-b border-p-border">
@@ -260,7 +235,7 @@ export default function AcademicYearsPage() {
         <TableBody>
           {academicYears.isLoading ? (
             Array.from({ length: 3 }).map((_, i) => (
-              <TableRow key={i}>
+              <TableRow key={`skeleton-${i}`}>
                 <TableCell><Skeleton className="h-4 w-32" /></TableCell>
                 <TableCell><Skeleton className="h-4 w-24" /></TableCell>
                 <TableCell><Skeleton className="h-4 w-24" /></TableCell>
@@ -295,10 +270,10 @@ export default function AcademicYearsPage() {
                   <RoleGate roles={['director']}>
                     <div className="flex gap-1">
                       <Button variant="ghost" size="icon" onClick={() => setEditingItem(year)}>
-                        <Pencil className="h-4 w-4" />
+                        <Pencil className="size-4" />
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => setDeletingItem(year)}>
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="size-4" />
                       </Button>
                     </div>
                   </RoleGate>

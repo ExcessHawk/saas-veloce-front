@@ -691,7 +691,7 @@ function TeacherView({ cursoId, courseName, curso, tasks, createTask, updateTask
       {/* Task list */}
       {tasks.isLoading ? (
         <div className="flex flex-col gap-3">
-          {[1, 2, 3].map((i) => <div key={i} className="h-[100px] bg-p-bg-subtle rounded-2xl animate-pulse" />)}
+          {[1, 2, 3].map((i) => <div key={`skeleton-task-docente-${i}`} className="h-[100px] bg-p-bg-subtle rounded-2xl animate-pulse" />)}
         </div>
       ) : filtered.length === 0 ? (
         filter === 'todas'
@@ -1368,7 +1368,7 @@ function StudentView({ cursoId, courseName, curso, tasks, mySubmissions }) {
       {/* Tab content */}
       {tasks.isLoading || mySubmissions.isLoading ? (
         <div className="flex flex-col gap-3">
-          {[1, 2, 3].map((i) => <div key={i} className="h-[100px] bg-p-bg-subtle rounded-2xl animate-pulse" />)}
+          {[1, 2, 3].map((i) => <div key={`skeleton-task-student-${i}`} className="h-[100px] bg-p-bg-subtle rounded-2xl animate-pulse" />)}
         </div>
       ) : (
         <>

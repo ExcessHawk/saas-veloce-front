@@ -415,7 +415,7 @@ export default function SchoolPage() {
             <div className="flex flex-col gap-[7px]">
               {currentFeatures.map((f) => (
                 <div key={f} className="flex items-center gap-2 text-[13px] text-p-text-secondary">
-                  <span className="w-4 h-4 rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700 shrink-0">
+                  <span className="size-4 rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700 shrink-0">
                     <Check size={9} strokeWidth={3} />
                   </span>
                   {f}

@@ -301,9 +301,13 @@ function ProfileCard({ profile, role }) {
       {/* Avatar */}
       <div className="flex justify-center px-6 pt-7 pb-[22px] border-b border-p-border">
         <div
+          role="button"
+          tabIndex={0}
           onClick={() => !uploading && fileInputRef.current?.click()}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); !uploading && fileInputRef.current?.click(); } }}
           onMouseEnter={() => setHov(true)}
           onMouseLeave={() => setHov(false)}
+          aria-label="Cambiar foto de perfil"
           className="relative cursor-pointer"
         >
           {avatarDisplayUrl ? (
@@ -404,7 +408,7 @@ function SkeletonProfile() {
       <div className="h-[18px] bg-p-bg-subtle rounded-[6px] mb-2 w-3/5 mx-auto" />
       <div className="h-[14px] bg-p-bg-subtle rounded-[6px] mb-[18px] w-4/5 mx-auto" />
       {[1, 2, 3].map((i) => (
-        <div key={i} className="flex gap-[10px] mb-[14px]">
+        <div key={`skeleton-stat-${i}`} className="flex gap-[10px] mb-[14px]">
           <div className="w-[30px] h-[30px] rounded-[10px] bg-p-bg-subtle" />
           <div className="flex-1">
             <div className="h-[11px] bg-p-bg-subtle rounded-[4px] w-2/5 mb-[5px]" />
@@ -499,7 +503,7 @@ export default function ProfilePage() {
             {isLoading ? (
               <div className="p-3">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="mb-[18px]">
+                  <div key={`skeleton-field-${i}`} className="mb-[18px]">
                     <div className="h-3 bg-p-bg-subtle rounded-[4px] w-[30%] mb-2" />
                     <div className="h-9 bg-p-bg-subtle rounded-[10px]" />
                   </div>

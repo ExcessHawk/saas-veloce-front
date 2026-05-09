@@ -58,9 +58,9 @@ export default function AuthLayout({ children, maxWidth = 420 }) {
         <div className="relative z-10 max-md:hidden">
           <div className="flex items-center gap-[10px]">
             <div className="flex">
-              {TRUST_AVATARS.map((a, i) => (
-                <div key={i} className="w-7 h-7 rounded-full border-2 border-white/15 flex items-center justify-center text-[10px] font-bold text-white"
-                  style={{ background: a.grad, marginLeft: i > 0 ? -8 : 0 }}>
+              {TRUST_AVATARS.map((a) => (
+                <div key={a.initials} className="w-7 h-7 rounded-full border-2 border-white/15 flex items-center justify-center text-[10px] font-bold text-white first:ml-0 -ml-2"
+                  style={{ background: a.grad }}>
                   {a.initials}
                 </div>
               ))}

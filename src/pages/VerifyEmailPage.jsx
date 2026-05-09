@@ -18,18 +18,22 @@ export default function VerifyEmailPage() {
       return;
     }
 
+    let timeoutId;
+
     api
       .get(`/api/auth/verify-email?token=${encodeURIComponent(token)}`)
       .then(() => {
         setStatus('success');
         setMessage('¡Tu correo fue verificado exitosamente!');
-        setTimeout(() => navigate('/dashboard', { replace: true }), 3000);
+        timeoutId = setTimeout(() => navigate('/dashboard', { replace: true }), 3000);
       })
       .catch((err) => {
         const msg = err?.response?.data?.error || 'El token es inválido o ya expiró.';
         setStatus('error');
         setMessage(msg);
       });
+
+    return () => clearTimeout(timeoutId);
   }, [token]);
 
   return (

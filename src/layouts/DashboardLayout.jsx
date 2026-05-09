@@ -100,7 +100,7 @@ export default function DashboardLayout() {
       <nav className="flex-1 p-2 flex flex-col gap-px overflow-y-auto">
         {navItems.map((item, i) =>
           item.divider ? (
-            <div key={i} className="my-2 border-t border-[oklch(99%_0_0/0.07)]" />
+            <div key={`divider-${i}`} className="my-2 border-t border-[oklch(99%_0_0/0.07)]" />
           ) : (
             <NavItem key={item.path} item={item} isActive={isActive(item.path)}
               onClick={() => { setSidebarOpen(false); onItemClick?.(); }} />

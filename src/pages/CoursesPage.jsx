@@ -221,7 +221,7 @@ export default function CoursesPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Cursos</h1>
+        <h1 className="text-2xl font-semibold">Cursos</h1>
 
         <RoleGate roles={['director', 'teacher']}>
           <Dialog open={open} onOpenChange={(v) => { if (!v) createForm.reset(); setOpen(v); }}>
@@ -274,7 +274,7 @@ export default function CoursesPage() {
         <TableBody>
           {courses.isLoading ? (
             Array.from({ length: 3 }).map((_, i) => (
-              <TableRow key={i}>
+              <TableRow key={`skeleton-${i}`}>
                 <TableCell><Skeleton className="h-4 w-32" /></TableCell>
                 <TableCell><Skeleton className="h-4 w-32" /></TableCell>
                 <TableCell><Skeleton className="h-4 w-28" /></TableCell>

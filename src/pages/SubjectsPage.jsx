@@ -202,7 +202,7 @@ export default function SubjectsPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Materias</h1>
+        <h1 className="text-2xl font-semibold">Materias</h1>
 
         <RoleGate roles={['director']}>
           <Dialog open={open} onOpenChange={(v) => { if (!v) createForm.reset(); setOpen(v); }}>
@@ -255,7 +255,7 @@ export default function SubjectsPage() {
         <TableBody>
           {subjects.isLoading ? (
             Array.from({ length: 3 }).map((_, i) => (
-              <TableRow key={i}>
+              <TableRow key={`skeleton-${i}`}>
                 <TableCell><Skeleton className="h-4 w-32" /></TableCell>
                 <TableCell><Skeleton className="h-4 w-20" /></TableCell>
                 <TableCell><Skeleton className="h-4 w-20" /></TableCell>
@@ -276,8 +276,8 @@ export default function SubjectsPage() {
                 <TableCell>{subject.code || '—'}</TableCell>
                 <TableCell>
                   {subject.color ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full border border-p-border shrink-0" style={{ background: subject.color }} />
+                      <div className="flex items-center gap-2">
+                      <div className="size-4 rounded-full border border-p-border shrink-0" style={{ background: subject.color }} />
                       <span className="text-[12px] font-mono text-p-text-tertiary">{subject.code || '—'}</span>
                     </div>
                   ) : '—'}

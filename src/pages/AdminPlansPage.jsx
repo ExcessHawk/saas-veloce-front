@@ -99,7 +99,7 @@ export default function AdminPlansPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-[22px] font-bold text-p-text-primary m-0">Planes</h1>
+          <h1 className="text-[22px] font-semibold text-p-text-primary m-0">Planes</h1>
           <p className="text-[13.5px] text-p-text-secondary mt-1">Catálogo de suscripciones. Al guardar se sincronizan con Stripe.</p>
         </div>
         <button

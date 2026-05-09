@@ -15,7 +15,7 @@ export default function AdminDashboardPage() {
   return (
     <div>
       <div className="mb-7">
-        <h1 className="text-[22px] font-bold text-p-text-primary m-0">Panel Super Admin</h1>
+        <h1 className="text-[22px] font-semibold text-p-text-primary m-0">Panel Super Admin</h1>
         <p className="text-[13.5px] text-p-text-secondary mt-1">Vista global del SaaS.</p>
       </div>
 

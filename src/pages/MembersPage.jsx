@@ -758,7 +758,7 @@ export default function MembersPage() {
         {members.isLoading ? (
           <div className="px-5 py-8">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex items-center gap-[11px] py-3 border-b border-p-border">
+              <div key={`skeleton-member-${i}`} className="flex items-center gap-[11px] py-3 border-b border-p-border">
                 <div className="w-[34px] h-[34px] rounded-full bg-p-bg-subtle" />
                 <div className="flex-1">
                   <div className="h-3 bg-p-bg-subtle rounded w-[40%] mb-[6px]" />
@@ -775,12 +775,12 @@ export default function MembersPage() {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-p-bg-subtle border-b border-p-border">
-                  {['Nombre', 'Email', 'Rol', 'Miembro desde', ''].map((h, i) => (
+                  {['Nombre', 'Email', 'Rol', 'Miembro desde', ''].map((h) => (
                     <th
-                      key={i}
+                      key={h || 'actions'}
                       className={cn(
-                      'px-5 py-[9px] text-left text-[11px] font-bold text-p-text-tertiary uppercase tracking-[0.06em] whitespace-nowrap',
-                      i === 4 && 'w-[44px]',
+                      'px-5 py-[9px] text-left text-[11px] font-semibold text-p-text-tertiary uppercase tracking-[0.06em] whitespace-nowrap',
+                      h === '' && 'w-[44px]',
                     )}
                     >
                       {h}

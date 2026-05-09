@@ -92,7 +92,7 @@ export default function GradeLevelsPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Niveles de Grado</h1>
+          <h1 className="text-2xl font-semibold">Niveles de Grado</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Define los niveles académicos de tu institución (ej. 1° Primaria, 2° Secundaria).
           </p>
@@ -122,7 +122,7 @@ export default function GradeLevelsPage() {
         <TableBody>
           {isLoading ? (
             Array.from({ length: 3 }).map((_, i) => (
-              <TableRow key={i}>
+              <TableRow key={`skeleton-${i}`}>
                 {[1, 2, 3].map((j) => <TableCell key={j}><Skeleton className="h-4 w-24" /></TableCell>)}
               </TableRow>
             ))

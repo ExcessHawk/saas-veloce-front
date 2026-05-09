@@ -38,7 +38,7 @@ export default function AdminSchoolsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-[22px] font-bold text-p-text-primary m-0">Escuelas</h1>
+        <h1 className="text-[22px] font-semibold text-p-text-primary m-0">Escuelas</h1>
         <p className="text-[13.5px] text-p-text-secondary mt-1">Todos los tenants del SaaS.</p>
       </div>
 

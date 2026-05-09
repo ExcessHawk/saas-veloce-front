@@ -158,7 +158,7 @@ function PlanCard({ plan, selected, onSelect }) {
           {selected ? 'Seleccionado' : 'Seleccionar'}
         </span>
         <div className={cn(
-          'w-4 h-4 rounded-full flex items-center justify-center',
+          'size-4 rounded-full flex items-center justify-center',
           selected
             ? 'border-[1.5px] border-p-accent bg-p-accent'
             : 'border-[1.5px] border-p-border-strong bg-transparent',

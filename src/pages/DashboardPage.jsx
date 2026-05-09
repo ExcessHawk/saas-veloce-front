@@ -92,7 +92,7 @@ const ActivityFeed = () => {
       <div className="text-sm font-semibold text-p-text-primary mb-4">Actividad reciente</div>
       {isLoading ? (
         <div className="flex flex-col gap-[10px]">
-          {[1, 2, 3].map((i) => <div key={i} className="h-9 bg-p-bg-subtle rounded-lg animate-pulse" />)}
+          {[1, 2, 3].map((i) => <div key={`skeleton-activity-${i}`} className="h-9 bg-p-bg-subtle rounded-lg animate-pulse" />)}
         </div>
       ) : !activities?.length ? (
         <div className="text-[13px] text-p-text-tertiary text-center py-4">Sin actividad reciente</div>
@@ -103,7 +103,7 @@ const ActivityFeed = () => {
             const colorCls = TYPE_COLOR[a.type] ?? 'bg-p-bg-subtle';
             return (
               <div
-                key={i}
+                key={a.id ?? `activity-${i}`}
                 className={cn(
                   'flex gap-3',
                   i < activities.length - 1 && 'pb-[14px] mb-[14px] border-b border-p-border',
@@ -181,7 +181,7 @@ function DirectorDashboard({ user, currentYearName }) {
             </a>
           </div>
           {courses.isLoading ? (
-            <div className="p-5">{[1, 2, 3].map((i) => <div key={i} className="h-11 bg-p-bg-subtle rounded-lg mb-2 animate-pulse" />)}</div>
+            <div className="p-5">{[1, 2, 3].map((i) => <div key={`skeleton-course-dir-${i}`} className="h-11 bg-p-bg-subtle rounded-lg mb-2 animate-pulse" />)}</div>
           ) : courses.data?.length === 0 ? (
             <div className="px-5 py-10 text-center text-p-text-tertiary text-[13.5px]">No hay cursos registrados aún</div>
           ) : (
@@ -266,7 +266,7 @@ function TeacherDashboard({ user, currentYearName }) {
       </div>
 
       {myCourses.isLoading ? (
-        <div className="flex flex-col gap-3">{[1, 2, 3].map((i) => <div key={i} className="h-20 bg-p-bg-subtle rounded-2xl animate-pulse" />)}</div>
+        <div className="flex flex-col gap-3">{[1, 2, 3].map((i) => <div key={`skeleton-course-teacher-${i}`} className="h-20 bg-p-bg-subtle rounded-2xl animate-pulse" />)}</div>
       ) : courses.length === 0 ? (
         <div className="bg-p-bg-base border border-p-border rounded-2xl px-6 py-12 text-center">
           <GraduationCap size={36} className="text-p-text-tertiary mx-auto mb-3" />
@@ -347,7 +347,7 @@ function StudentDashboard({ user, currentYearName }) {
             <div className="text-sm font-semibold text-p-text-primary">Mis cursos</div>
           </div>
           {myCourses.isLoading ? (
-            <div className="p-4 flex flex-col gap-2">{[1,2,3].map((i) => <div key={i} className="h-12 bg-p-bg-subtle rounded-lg animate-pulse" />)}</div>
+            <div className="p-4 flex flex-col gap-2">{[1,2,3].map((i) => <div key={`skeleton-course-student-${i}`} className="h-12 bg-p-bg-subtle rounded-lg animate-pulse" />)}</div>
           ) : courses.length === 0 ? (
             <div className="py-10 text-center text-p-text-tertiary text-[13.5px]">No estás inscrito en ningún curso aún.</div>
           ) : (
@@ -376,7 +376,7 @@ function StudentDashboard({ user, currentYearName }) {
             <div className="text-sm font-semibold text-p-text-primary">Últimas calificaciones</div>
           </div>
           {mySubmissions.isLoading ? (
-            <div className="p-4 flex flex-col gap-2">{[1,2,3].map((i) => <div key={i} className="h-10 bg-p-bg-subtle rounded-lg animate-pulse" />)}</div>
+            <div className="p-4 flex flex-col gap-2">{[1,2,3].map((i) => <div key={`skeleton-grade-student-${i}`} className="h-10 bg-p-bg-subtle rounded-lg animate-pulse" />)}</div>
           ) : recentGrades.length === 0 ? (
             <div className="py-8 text-center text-[13px] text-p-text-tertiary">Sin calificaciones aún</div>
           ) : (

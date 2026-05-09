@@ -6,7 +6,7 @@ export default function BillingCancelPage() {
   return (
     <div className="flex flex-col items-center justify-center h-screen gap-4 bg-p-bg-app">
       <XCircle size={56} color="#dc2626" />
-      <h1 className="text-2xl font-bold text-p-text-primary m-0">Pago cancelado</h1>
+      <h1 className="text-2xl font-semibold text-p-text-primary m-0">Pago cancelado</h1>
       <p className="text-sm text-p-text-secondary m-0">No se realizó ningún cargo.</p>
       <button
         onClick={() => navigate('/dashboard/billing')}

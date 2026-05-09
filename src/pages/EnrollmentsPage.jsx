@@ -183,7 +183,7 @@ export default function EnrollmentsPage() {
       <div className="flex-1 min-w-0 flex flex-col gap-[18px]">
         <div className="flex items-start justify-between flex-wrap gap-[10px]">
           <div>
-            <h1 className="text-[21px] font-bold text-p-text-primary tracking-[-0.03em] m-0">Inscripciones</h1>
+            <h1 className="text-[21px] font-semibold text-p-text-primary tracking-[-0.03em] m-0">Inscripciones</h1>
             <p className="text-[13px] text-p-text-secondary mt-1 mb-0">Selecciona un curso para gestionar sus alumnos</p>
           </div>
           <div className="flex items-center gap-2">
@@ -205,7 +205,7 @@ export default function EnrollmentsPage() {
         {courses.isLoading ? (
           <div className="grid gap-[14px] [grid-template-columns:repeat(auto-fill,minmax(220px,1fr))]">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-[140px] bg-p-bg-subtle rounded-2xl animate-pulse" />
+              <div key={`skeleton-enroll-${i}`} className="h-[140px] bg-p-bg-subtle rounded-2xl animate-pulse" />
             ))}
           </div>
         ) : yearCourses.length === 0 ? (

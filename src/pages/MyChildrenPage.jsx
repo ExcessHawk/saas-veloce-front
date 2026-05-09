@@ -163,7 +163,7 @@ export default function MyChildrenPage() {
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <div className="flex items-center gap-[10px] mb-1">
-            <h1 className="text-[21px] font-bold text-p-text-primary tracking-[-0.03em] m-0">
+            <h1 className="text-[21px] font-semibold text-p-text-primary tracking-[-0.03em] m-0">
               {user?.fullName ? `Hola, ${user.fullName.split(' ')[0]}` : 'Panel de Padre'}
             </h1>
             <RoleBadge />
@@ -200,7 +200,7 @@ export default function MyChildrenPage() {
       {isLoading ? (
         <div className="flex flex-col gap-[14px]">
           {[1, 2].map((i) => (
-            <div key={i} className="h-[120px] bg-p-bg-subtle rounded-[24px] animate-pulse" />
+            <div key={`skeleton-child-${i}`} className="h-[120px] bg-p-bg-subtle rounded-[24px] animate-pulse" />
           ))}
         </div>
       ) : error || hijos.length === 0 ? (

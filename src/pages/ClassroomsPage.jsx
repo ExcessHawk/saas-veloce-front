@@ -299,7 +299,7 @@ function StudentsDialog({ classroom, onClose }) {
 
           <div className="max-h-[300px] overflow-y-auto space-y-[6px]">
             {isLoading ? (
-              Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-10 w-full" />)
+              Array.from({ length: 3 }).map((_, i) => <Skeleton key={`skeleton-${i}`} className="h-10 w-full" />)
             ) : students.length === 0 ? (
               <p className="text-center text-[13px] text-p-text-tertiary py-6">
                 No hay alumnos asignados a esta aula
@@ -389,7 +389,7 @@ export default function ClassroomsPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Aulas</h1>
+          <h1 className="text-2xl font-semibold">Aulas</h1>
           <p className="text-sm text-muted-foreground mt-1">Espacios físicos donde ocurren los cursos. Asigna nivel de grado y capacidad.</p>
         </div>
         <RoleGate roles={['director']}>
@@ -435,7 +435,7 @@ export default function ClassroomsPage() {
             <TableBody>
               {classrooms.isLoading ? (
                 Array.from({ length: 3 }).map((_, i) => (
-                  <TableRow key={i}>
+                  <TableRow key={`skeleton-${i}`}>
                     {[1,2,3,4].map((j) => <TableCell key={j}><Skeleton className="h-4 w-24" /></TableCell>)}
                   </TableRow>
                 ))

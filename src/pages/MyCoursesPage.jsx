@@ -217,7 +217,7 @@ export default function MyCoursesPage() {
       <div className="flex items-center justify-between flex-wrap gap-[10px]">
         <div>
           <div className="flex items-center gap-[10px] mb-1">
-            <h1 className="text-[21px] font-bold text-p-text-primary tracking-[-0.03em] m-0">Mis Cursos</h1>
+            <h1 className="text-[21px] font-semibold text-p-text-primary tracking-[-0.03em] m-0">Mis Cursos</h1>
             <span
               className="px-[10px] py-[2px] rounded-full text-[11.5px] font-semibold"
               style={{ background: badge.bg, color: badge.color }}
@@ -264,7 +264,7 @@ export default function MyCoursesPage() {
       {myCourses.isLoading ? (
         <div className="grid gap-4 [grid-template-columns:repeat(auto-fill,minmax(272px,1fr))]">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-[200px] bg-p-bg-subtle rounded-2xl animate-pulse" />
+            <div key={`skeleton-course-${i}`} className="h-[200px] bg-p-bg-subtle rounded-2xl animate-pulse" />
           ))}
         </div>
       ) : filtered.length === 0 ? (

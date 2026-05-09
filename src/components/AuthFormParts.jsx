@@ -176,7 +176,7 @@ export function PwStrengthMeter({ password }) {
     <div className="mt-2">
       <div className="flex gap-1 mb-[5px]">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className={cn('flex-1 h-[3px] rounded-full transition-[background] duration-200', i <= s ? meta.colorCls : 'bg-p-border')} />
+          <div key={`strength-bar-${i}`} className={cn('flex-1 h-[3px] rounded-full transition-[background] duration-200', i <= s ? meta.colorCls : 'bg-p-border')} />
         ))}
       </div>
       <div className={cn('text-[11.5px] font-medium', meta.textCls)}>{meta.label}</div>
@@ -187,9 +187,14 @@ export function PwStrengthMeter({ password }) {
 export function AuthCheckbox({ checked, onChange, label }) {
   return (
     <label className="flex items-center gap-[7px] cursor-pointer select-none">
-      <div onClick={() => onChange(!checked)}
+      <div
+        role="checkbox"
+        aria-checked={checked}
+        tabIndex={0}
+        onClick={() => onChange(!checked)}
+        onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); onChange(!checked); } }}
         className={cn(
-          'w-4 h-4 rounded shrink-0 flex items-center justify-center transition-all duration-100 cursor-pointer border-[1.5px]',
+          'size-4 rounded shrink-0 flex items-center justify-center transition-all duration-100 cursor-pointer border-[1.5px]',
           checked
             ? 'bg-p-accent border-p-accent'
             : 'bg-transparent border-p-border-strong'

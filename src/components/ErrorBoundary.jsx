@@ -26,7 +26,7 @@ export class ErrorBoundary extends Component {
         <div className="flex min-h-screen items-center justify-center p-6">
           <div className="text-center space-y-4 max-w-md">
             <AlertTriangle className="mx-auto h-12 w-12 text-destructive" />
-            <h1 className="text-2xl font-bold">Algo salió mal</h1>
+            <h1 className="text-2xl font-semibold">Algo salió mal</h1>
             <p className="text-muted-foreground text-sm">
               {this.state.error?.message || 'Error inesperado en la aplicación.'}
             </p>
