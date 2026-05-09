@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -8,17 +8,19 @@ import {
   Lock, Eye, EyeOff, Check,
 } from 'lucide-react';
 
-import { useProfile, useUpdateProfile, useChangePassword } from '@/hooks/useProfile';
+import { useProfile, useUpdateProfile, useChangePassword, useUpdateAvatar } from '@/hooks/useProfile';
+import { useAuthStore } from '@/stores/authStore';
+import { uploadFile, useSignedUrl } from '@/hooks/useUploads';
 import { showApiError } from '@/lib/errors';
 import { PwStrengthMeter, Spinner } from '@/components/AuthFormParts';
 import { cn } from '@/lib/utils';
 
 /* ── Role config ── */
 const ROLES = {
-  director: { label: 'Director',     bg: 'oklch(93% 0.025 250)', color: 'oklch(30% 0.06 250)', grad: 'oklch(65% 0.14 260),oklch(58% 0.16 300)' },
-  teacher:  { label: 'Docente',      bg: 'oklch(90% 0.035 200)', color: 'oklch(30% 0.07 200)', grad: 'oklch(65% 0.14 150),oklch(58% 0.16 180)' },
-  student:  { label: 'Estudiante',   bg: 'oklch(93% 0.040 50)',  color: 'oklch(35% 0.09 50)',  grad: 'oklch(65% 0.14 50),oklch(58% 0.16 30)'   },
-  parent:   { label: 'Padre/Madre',  bg: 'oklch(91% 0.040 100)', color: 'oklch(30% 0.07 100)', grad: 'oklch(65% 0.14 100),oklch(58% 0.16 130)' },
+  director: { label: 'Director',    cls: 'bg-[oklch(91%_0.040_250)] dark:bg-[oklch(22%_0.040_250)] text-[oklch(30%_0.06_250)] dark:text-[oklch(75%_0.06_250)]', grad: 'oklch(65% 0.14 260),oklch(58% 0.16 300)' },
+  teacher:  { label: 'Docente',     cls: 'bg-[oklch(90%_0.035_200)] dark:bg-[oklch(22%_0.035_200)] text-[oklch(30%_0.07_200)] dark:text-[oklch(75%_0.07_200)]', grad: 'oklch(65% 0.14 150),oklch(58% 0.16 180)' },
+  student:  { label: 'Estudiante',  cls: 'bg-[oklch(93%_0.040_50)]  dark:bg-[oklch(22%_0.040_50)]  text-[oklch(35%_0.09_50)]  dark:text-[oklch(75%_0.09_50)]',  grad: 'oklch(65% 0.14 50),oklch(58% 0.16 30)'   },
+  parent:   { label: 'Padre/Madre', cls: 'bg-[oklch(91%_0.040_100)] dark:bg-[oklch(22%_0.040_100)] text-[oklch(30%_0.07_100)] dark:text-[oklch(75%_0.07_100)]', grad: 'oklch(65% 0.14 100),oklch(58% 0.16 130)' },
 };
 
 const initials = (n) => (n || '?').split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase();
@@ -259,6 +261,25 @@ function TabSeguridad({ isPending, onSubmit }) {
 function ProfileCard({ profile, role }) {
   const rc = ROLES[role] || ROLES.student;
   const [hov, setHov] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
+  const updateAvatar = useUpdateAvatar();
+  const { url: avatarDisplayUrl } = useSignedUrl(profile?.avatarUrl || '');
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = '';
+    setUploading(true);
+    try {
+      const { url } = await uploadFile(file, { kind: 'avatar' });
+      await updateAvatar.mutateAsync(url);
+    } catch (err) {
+      showApiError(err);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const fmtDate = (d) => {
     if (!d) return '—';
@@ -271,37 +292,61 @@ function ProfileCard({ profile, role }) {
     catch { return '—'; }
   };
 
+  const ringCls = hov || uploading
+    ? 'shadow-[0_0_0_4px_var(--p-bg-base),0_0_0_6px_var(--p-border)]'
+    : 'shadow-[0_0_0_3px_var(--p-bg-base),0_0_0_4px_var(--p-border)]';
+
   return (
     <div className="flex flex-col">
       {/* Avatar */}
       <div className="flex justify-center px-6 pt-7 pb-[22px] border-b border-p-border">
         <div
+          onClick={() => !uploading && fileInputRef.current?.click()}
           onMouseEnter={() => setHov(true)}
           onMouseLeave={() => setHov(false)}
           className="relative cursor-pointer"
         >
-          <div
-            className={cn(
-              'w-20 h-20 rounded-full flex items-center justify-center text-[26px] font-extrabold text-white transition-[box-shadow] duration-[150ms]',
-              hov
-                ? 'shadow-[0_0_0_4px_var(--p-bg-base),0_0_0_6px_var(--p-border)]'
-                : 'shadow-[0_0_0_3px_var(--p-bg-base),0_0_0_4px_var(--p-border)]',
-            )}
-            style={{ background: `linear-gradient(135deg, ${rc.grad})` }}
-          >
-            {initials(profile?.fullName)}
-          </div>
+          {avatarDisplayUrl ? (
+            <img
+              src={avatarDisplayUrl}
+              alt={profile?.fullName || ''}
+              className={cn('w-20 h-20 rounded-full object-cover transition-[box-shadow] duration-[150ms]', ringCls)}
+            />
+          ) : (
+            <div
+              className={cn(
+                'w-20 h-20 rounded-full flex items-center justify-center text-[26px] font-extrabold text-white transition-[box-shadow] duration-[150ms]',
+                ringCls,
+              )}
+              style={{ background: `linear-gradient(135deg, ${rc.grad})` }}
+            >
+              {initials(profile?.fullName)}
+            </div>
+          )}
           <div
             className={cn(
               'absolute inset-0 rounded-full bg-[oklch(0%_0_0_/_0.50)] flex flex-col items-center justify-center gap-[3px] pointer-events-none transition-opacity duration-[150ms]',
-              hov ? 'opacity-100' : 'opacity-0',
+              hov || uploading ? 'opacity-100' : 'opacity-0',
             )}
           >
-            <Camera size={18} color="white" />
-            <span className="text-[9px] font-bold text-white tracking-[0.02em] uppercase">
-              Cambiar
-            </span>
+            {uploading ? (
+              <Spinner size={18} />
+            ) : (
+              <>
+                <Camera size={18} color="white" />
+                <span className="text-[9px] font-bold text-white tracking-[0.02em] uppercase">
+                  Cambiar
+                </span>
+              </>
+            )}
           </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="hidden"
+            onChange={handleFileChange}
+          />
         </div>
       </div>
 
@@ -315,8 +360,7 @@ function ProfileCard({ profile, role }) {
         </div>
         <div className="flex justify-center gap-[7px] flex-wrap">
           <span
-            className="px-[10px] py-[3px] rounded-full text-[12px] font-bold"
-            style={{ background: rc.bg, color: rc.color }}
+            className={cn('px-[10px] py-[3px] rounded-full text-[12px] font-bold', rc.cls)}
           >
             {rc.label}
           </span>
@@ -379,12 +423,13 @@ export default function ProfilePage() {
   const { data: profile, isLoading, error } = useProfile();
   const updateProfile = useUpdateProfile();
   const changePassword = useChangePassword();
+  const authUser = useAuthStore((s) => s.user);
 
   useEffect(() => {
     if (error) showApiError(error);
   }, [error]);
 
-  const role = profile?.role || 'student';
+  const role = authUser?.role || 'student';
 
   const handleSaveInfo = async (data) => {
     try { await updateProfile.mutateAsync(data); }

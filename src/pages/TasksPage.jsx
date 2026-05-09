@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useTasks, useCreateTask, useUpdateTask, useDeleteTask } from '@/hooks/useTasks';
+import { useMyCourses } from '@/hooks/useMyCourses';
 import { useMySubmissions, useSubmitTask, useTaskSubmissions, useGradeSubmission } from '@/hooks/useSubmissions';
 import { useEnrollments } from '@/hooks/useEnrollments';
 import { uploadFile, MAX_FILE_SIZE, ALLOWED_MIME_TYPES, useSignedUrl } from '@/hooks/useUploads';
@@ -601,12 +602,20 @@ const EmptyStateDocente = ({ onNew }) => (
   </div>
 );
 
-function TeacherView({ cursoId, courseName, tasks, createTask, updateTask, deleteTask }) {
+function TeacherView({ cursoId, courseName, curso, tasks, createTask, updateTask, deleteTask }) {
   const [modal,     setModal]     = useState(null);
   const [deleteT,   setDeleteT]   = useState(null);
   const [reviewing, setReviewing] = useState(null);
   const [filter,    setFilter]    = useState('todas');
   const navigate = useNavigate();
+  const goToGrades = () => navigate(`/dashboard/calificaciones/${cursoId}`, { state: { curso } });
+
+  const subjects      = useSubjects();
+  const academicYears = useAcademicYears();
+  const subjectName   = curso ? findName(subjects.data, curso.subjectId) : '';
+  const yearName      = curso ? findName(academicYears.data, curso.academicYearId) : '';
+  const resolvedName  = subjectName || courseName;
+  const fullCourseName = yearName && yearName !== '—' ? `${resolvedName} · ${yearName}` : resolvedName;
 
   useEffect(() => { if (tasks.error) showApiError(tasks.error); }, [tasks.error]);
 
@@ -643,7 +652,7 @@ function TeacherView({ cursoId, courseName, tasks, createTask, updateTask, delet
         <div className="flex items-start justify-between flex-wrap gap-3">
           <div>
             <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] m-0 mb-[6px]">
-              Tareas · {courseName}
+              Tareas · {fullCourseName}
             </h1>
             <div className="flex gap-[14px] flex-wrap">
               <span className="text-[13px] text-p-text-secondary flex items-center gap-[5px]">
@@ -658,6 +667,7 @@ function TeacherView({ cursoId, courseName, tasks, createTask, updateTask, delet
               )}
             </div>
           </div>
+          <Btn variant="secondary" onClick={goToGrades}>Calificaciones</Btn>
           <Btn variant="primary" icon="plus" size="lg" onClick={() => setModal({ mode: 'create' })}>Nueva Tarea</Btn>
         </div>
       </div>
@@ -704,6 +714,193 @@ function TeacherView({ cursoId, courseName, tasks, createTask, updateTask, delet
     </div>
   );
 }
+
+/* ════════════════════════════════════════════
+   MI ENTREGA MODAL (student — read-only detail)
+   ════════════════════════════════════════════ */
+
+function renderContent(text) {
+  if (!text) return null;
+  return text.split('\n\n').map((part, i) => {
+    const trimmed = part.trim();
+    if (/^https?:\/\//i.test(trimmed)) {
+      return (
+        <a key={i} href={trimmed} target="_blank" rel="noreferrer"
+          className="text-p-accent underline break-all block text-[13.5px]">
+          {trimmed}
+        </a>
+      );
+    }
+    return (
+      <p key={i} className="text-[13.5px] text-p-text-primary leading-[1.6] m-0 whitespace-pre-wrap">
+        {part}
+      </p>
+    );
+  });
+}
+
+const MiEntregaModal = ({ tarea, submission, onClose }) => {
+  const tm  = TIPO_META[tarea?.type] || TIPO_META.tarea;
+  const att = (submission?.attachments ?? [])[0];
+  const { url: attUrl, loading: attLoading } = useSignedUrl(att?.url ?? null, att?.contentType ?? '');
+
+  const graded   = submission?.status === 'graded' || submission?.status === 'returned';
+  const pct      = graded && submission.score !== null && tarea.maxScore
+    ? Math.round((submission.score / tarea.maxScore) * 100)
+    : null;
+  const aprobado = pct !== null && pct >= 60;
+
+  return (
+    <Modal open onClose={onClose}
+      title={`Mi entrega — ${tarea?.title}`}
+      subtitle={`Entregada el ${fmtDate(submission?.submittedAt) ?? '—'}`}
+      width={att && (isImage(att.contentType) || isPdf(att.contentType)) ? 700 : 520}
+    >
+      <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-[18px]">
+
+        {/* Task summary chip */}
+        <div className="flex items-center gap-[10px] px-[14px] py-[10px] bg-p-bg-subtle border border-p-border rounded-2xl">
+          <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0"
+            style={{ background: tm.bg, color: tm.color }}>
+            <Icon name={tm.icon} size={14} />
+          </div>
+          <div>
+            <div className="text-[13px] font-semibold text-p-text-primary">{tarea?.title}</div>
+            <div className="text-[11.5px] text-p-text-tertiary mt-px">
+              {tm.label} · {tarea?.maxScore} pts
+              {tarea?.dueDate && ` · Límite: ${fmtDate(tarea.dueDate)}`}
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        {submission?.content && (
+          <div>
+            <div className="text-[11.5px] font-bold text-p-text-tertiary uppercase tracking-[0.07em] mb-[8px]">
+              Contenido entregado
+            </div>
+            <div className="px-[14px] py-3 bg-p-bg-subtle rounded-[12px] border border-p-border flex flex-col gap-[6px]">
+              {renderContent(submission.content)}
+            </div>
+          </div>
+        )}
+
+        {/* Attachment */}
+        {att && (
+          <div>
+            <div className="text-[11.5px] font-bold text-p-text-tertiary uppercase tracking-[0.07em] mb-2">
+              Archivo adjunto
+            </div>
+            {attLoading ? (
+              <div className="h-16 bg-p-bg-subtle rounded-[12px] flex items-center justify-center text-p-text-tertiary text-[13px]">
+                Cargando…
+              </div>
+            ) : isImage(att.contentType) ? (
+              attUrl
+                ? <img src={attUrl} alt={att.filename} className="max-w-full max-h-[400px] rounded-[12px] border border-p-border object-contain block" />
+                : null
+            ) : isPdf(att.contentType) ? (
+              attUrl
+                ? <iframe key={attUrl} src={attUrl} title={att.filename} className="w-full h-[380px] rounded-[12px] border border-p-border bg-[#f5f5f5]" />
+                : null
+            ) : (
+              <div className="px-4 py-[14px] bg-p-bg-subtle border border-p-border rounded-[12px] flex items-center gap-3">
+                <Icon name="inbox" size={16} />
+                <div className="flex-1 min-w-0">
+                  <div className="text-[13.5px] font-medium text-p-text-primary truncate">{att.filename}</div>
+                  {att.size && (
+                    <div className="text-[11.5px] text-p-text-tertiary">
+                      {(att.size / 1024).toFixed(1)} KB · {att.contentType || 'archivo'}
+                    </div>
+                  )}
+                </div>
+                {attUrl && (
+                  <a href={attUrl} download={att.filename} target="_blank" rel="noreferrer" className="no-underline">
+                    <Btn variant="secondary" size="sm" icon="upload">Descargar</Btn>
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {!submission?.content && !att && (
+          <div className="text-center py-4 text-[13.5px] text-p-text-tertiary">
+            Sin contenido adjunto en esta entrega.
+          </div>
+        )}
+
+        {/* Calificación */}
+        <div className="border-t border-p-border pt-[18px]">
+          <div className="text-[11.5px] font-bold text-p-text-tertiary uppercase tracking-[0.07em] mb-[12px]">
+            Calificación
+          </div>
+          {!graded ? (
+            <div className="flex items-center gap-[10px] px-4 py-3 bg-p-bg-subtle rounded-[12px] border border-p-border">
+              <Icon name="clock" size={15} />
+              <span className="text-[13.5px] text-p-text-secondary">
+                Pendiente de revisión por el docente.
+              </span>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-[14px]">
+              <div className="flex items-end gap-4 flex-wrap">
+                {submission.score !== null && (
+                  <div>
+                    <div className="text-[11px] text-p-text-tertiary mb-1">Puntaje</div>
+                    <div className="text-[32px] font-extrabold tracking-[-0.04em] leading-none"
+                      style={{ color: aprobado ? 'var(--p-s-700)' : 'var(--p-d-500)' }}>
+                      {submission.score}
+                      <span className="text-[18px] font-medium text-p-text-tertiary">/{tarea.maxScore}</span>
+                    </div>
+                    {pct !== null && (
+                      <span className="mt-[6px] inline-block px-2 py-[2px] rounded-full text-[11.5px] font-bold"
+                        style={{
+                          background: aprobado ? 'var(--p-s-100)' : 'var(--p-d-100)',
+                          color: aprobado ? 'var(--p-s-700)' : 'var(--p-d-700)',
+                        }}>
+                        {aprobado ? 'Aprobado' : 'Reprobado'} · {pct}%
+                      </span>
+                    )}
+                  </div>
+                )}
+                <div>
+                  <div className="text-[11px] text-p-text-tertiary mb-1">Estado</div>
+                  <span className={cn(
+                    'px-[10px] py-[4px] rounded-full text-[12.5px] font-semibold',
+                    submission.status === 'graded'
+                      ? 'bg-p-s-100 text-p-s-700'
+                      : 'bg-p-w-100 text-p-w-700',
+                  )}>
+                    {submission.status === 'graded' ? 'Calificada' : 'Devuelta'}
+                  </span>
+                  {submission.reviewedAt && (
+                    <div className="text-[11.5px] text-p-text-tertiary mt-[4px]">
+                      {fmtDate(submission.reviewedAt)}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {submission.feedback && (
+                <div>
+                  <div className="text-[11px] text-p-text-tertiary mb-[6px]">Retroalimentación del docente</div>
+                  <div className="px-[14px] py-3 bg-p-bg-subtle rounded-[12px] border border-p-border text-[13.5px] text-p-text-primary leading-[1.6] whitespace-pre-wrap">
+                    {submission.feedback}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="px-6 py-[14px] border-t border-p-border bg-p-bg-subtle shrink-0">
+        <Btn variant="secondary" onClick={onClose}>Cerrar</Btn>
+      </div>
+    </Modal>
+  );
+};
 
 /* ════════════════════════════════════════════
    STUDENT VIEW
@@ -933,7 +1130,7 @@ const TabPendientes = ({ tareas, onEntregar }) => {
   );
 };
 
-const TabEntregadas = ({ tareas, submissionsByTaskId }) => {
+const TabEntregadas = ({ tareas, submissionsByTaskId, onVerEntrega }) => {
   if (tareas.length === 0) return (
     <div className="flex flex-col items-center py-[60px] px-6 gap-[14px]">
       <div className="w-[52px] h-[52px] rounded-full bg-p-bg-subtle flex items-center justify-center text-p-text-tertiary">
@@ -971,24 +1168,31 @@ const TabEntregadas = ({ tareas, submissionsByTaskId }) => {
                 </span>
               </div>
             </div>
-            <div className="shrink-0 text-center">
-              {!graded ? (
-                <span className="inline-flex items-center gap-[6px] px-[11px] py-1 rounded-full text-[12px] font-medium bg-p-bg-subtle text-p-text-secondary border border-p-border">
-                  <Icon name="clock" size={12} />Por revisar
-                </span>
-              ) : sub.score === null ? (
-                <span className="text-[13px] text-p-text-tertiary">—</span>
-              ) : (
-                <div className="flex flex-col items-center gap-1">
-                  <div className="text-[22px] font-extrabold tracking-[-0.04em] leading-none"
-                    style={{ color: aprobado ? 'var(--p-s-700)' : 'var(--p-d-500)' }}>
-                    {sub.score}<span className="text-[14px] font-medium text-p-text-tertiary">/{t.maxScore}</span>
-                  </div>
-                  <span className="px-2 py-[2px] rounded-full text-[11px] font-bold"
-                    style={{ background: aprobado ? 'var(--p-s-100)' : 'var(--p-d-100)', color: aprobado ? 'var(--p-s-700)' : 'var(--p-d-700)' }}>
-                    {aprobado ? 'Aprobado' : 'Reprobado'}
+            <div className="shrink-0 flex flex-col items-end gap-2">
+              <div className="text-center">
+                {!graded ? (
+                  <span className="inline-flex items-center gap-[6px] px-[11px] py-1 rounded-full text-[12px] font-medium bg-p-bg-subtle text-p-text-secondary border border-p-border">
+                    <Icon name="clock" size={12} />Por revisar
                   </span>
-                </div>
+                ) : sub.score === null ? (
+                  <span className="text-[13px] text-p-text-tertiary">—</span>
+                ) : (
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="text-[22px] font-extrabold tracking-[-0.04em] leading-none"
+                      style={{ color: aprobado ? 'var(--p-s-700)' : 'var(--p-d-500)' }}>
+                      {sub.score}<span className="text-[14px] font-medium text-p-text-tertiary">/{t.maxScore}</span>
+                    </div>
+                    <span className="px-2 py-[2px] rounded-full text-[11px] font-bold"
+                      style={{ background: aprobado ? 'var(--p-s-100)' : 'var(--p-d-100)', color: aprobado ? 'var(--p-s-700)' : 'var(--p-d-700)' }}>
+                      {aprobado ? 'Aprobado' : 'Reprobado'}
+                    </span>
+                  </div>
+                )}
+              </div>
+              {onVerEntrega && sub && (
+                <Btn variant="secondary" size="sm" onClick={() => onVerEntrega(t, sub)}>
+                  Ver entrega
+                </Btn>
               )}
             </div>
           </div>
@@ -1061,8 +1265,9 @@ const TabVencidas = ({ tareas }) => {
 
 function StudentView({ cursoId, courseName, curso, tasks, mySubmissions }) {
   const navigate = useNavigate();
-  const [tab,       setTab]       = useState('pendientes');
-  const [entregarT, setEntregarT] = useState(null);
+  const [tab,        setTab]        = useState('pendientes');
+  const [entregarT,  setEntregarT]  = useState(null);
+  const [verEntregaT, setVerEntregaT] = useState(null);
 
   const classrooms    = useClassrooms();
   const subjects      = useSubjects();
@@ -1168,13 +1373,16 @@ function StudentView({ cursoId, courseName, curso, tasks, mySubmissions }) {
       ) : (
         <>
           {tab === 'pendientes' && <TabPendientes tareas={pendientes} onEntregar={setEntregarT} />}
-          {tab === 'entregadas' && <TabEntregadas tareas={entregadas} submissionsByTaskId={submissionsByTaskId} />}
+          {tab === 'entregadas' && <TabEntregadas tareas={entregadas} submissionsByTaskId={submissionsByTaskId} onVerEntrega={(t, sub) => setVerEntregaT({ tarea: t, submission: sub })} />}
           {tab === 'vencidas'   && <TabVencidas   tareas={vencidas} />}
         </>
       )}
 
       {entregarT && (
         <EntregarModal tarea={entregarT} courseId={cursoId} onClose={() => setEntregarT(null)} onSuccess={() => setEntregarT(null)} />
+      )}
+      {verEntregaT && (
+        <MiEntregaModal tarea={verEntregaT.tarea} submission={verEntregaT.submission} onClose={() => setVerEntregaT(null)} />
       )}
     </div>
   );
@@ -1190,7 +1398,10 @@ export default function TasksPage() {
 
   const location   = useLocation();
   const { cursoId } = useParams();
-  const curso      = location.state?.curso ?? null;
+  const myCourses  = useMyCourses();
+
+  const stateCurso = location.state?.curso ?? null;
+  const curso      = stateCurso ?? (myCourses.data?.find((c) => c.id === cursoId) ?? null);
   const courseName = curso?.name || 'Curso';
 
   const tasks         = useTasks(cursoId);
@@ -1200,7 +1411,7 @@ export default function TasksPage() {
   const mySubmissions = useMySubmissions(!isDocente);
 
   if (isDocente) {
-    return <TeacherView cursoId={cursoId} courseName={courseName} tasks={tasks} createTask={createTask} updateTask={updateTask} deleteTask={deleteTask} />;
+    return <TeacherView cursoId={cursoId} courseName={courseName} curso={curso} tasks={tasks} createTask={createTask} updateTask={updateTask} deleteTask={deleteTask} />;
   }
 
   return <StudentView cursoId={cursoId} courseName={courseName} curso={curso} tasks={tasks} mySubmissions={mySubmissions} />;

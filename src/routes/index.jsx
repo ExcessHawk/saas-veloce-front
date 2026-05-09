@@ -30,6 +30,9 @@ const AdminDashboardPage   = lazy(() => import('@/pages/AdminDashboardPage'));
 const AdminPlansPage       = lazy(() => import('@/pages/AdminPlansPage'));
 const AdminSchoolsPage     = lazy(() => import('@/pages/AdminSchoolsPage'));
 const AcceptInvitationPage = lazy(() => import('@/pages/AcceptInvitationPage'));
+const VerifyEmailPage      = lazy(() => import('@/pages/VerifyEmailPage'));
+const GradeLevelsPage      = lazy(() => import('@/pages/GradeLevelsPage'));
+const GradesPage           = lazy(() => import('@/pages/GradesPage'));
 
 const PageFallback = () => (
   <div className="flex h-full items-center justify-center py-20 px-6">
@@ -49,6 +52,8 @@ export const router = createBrowserRouter([
   { path: '/reset-password',   element: wrap(<ResetPasswordPage />) },
   { path: '/accept-invitation', element: wrap(<AcceptInvitationPage />) },
 
+  { path: '/verify-email',    element: wrap(<VerifyEmailPage />) },
+
   { path: '/billing/success', element: wrap(<BillingSuccessPage />) },
   { path: '/billing/cancel',  element: wrap(<BillingCancelPage />) },
 
@@ -62,6 +67,7 @@ export const router = createBrowserRouter([
           { index: true,                  element: wrap(<DashboardPage />) },
           // Director only
           { path: 'classrooms',           element: wrap(<ClassroomsPage />) },
+          { path: 'grade-levels',         element: wrap(<GradeLevelsPage />) },
           { path: 'subjects',             element: wrap(<SubjectsPage />) },
           { path: 'courses',              element: wrap(<CoursesPage />) },
           { path: 'academic-years',       element: wrap(<AcademicYearsPage />) },
@@ -69,7 +75,8 @@ export const router = createBrowserRouter([
           { path: 'inscriptions',         element: wrap(<EnrollmentsPage />) },
           // Teacher + Student
           { path: 'mis-cursos',           element: wrap(<MyCoursesPage />) },
-          { path: 'tareas/:cursoId',      element: wrap(<TasksPage />) },
+          { path: 'tareas/:cursoId',          element: wrap(<TasksPage />) },
+          { path: 'calificaciones/:cursoId', element: wrap(<GradesPage />) },
           // Parent
           { path: 'mis-hijos',            element: wrap(<MyChildrenPage />) },
           // All roles

@@ -2,6 +2,42 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/axios';
 import { showSuccess, showApiError } from '@/lib/errors';
 
+const studentsKey = (id) => ['classroom-students', id];
+
+export function useClassroomStudents(classroomId) {
+  return useQuery({
+    queryKey: studentsKey(classroomId),
+    queryFn: () => api.get(`/api/classrooms/${classroomId}/students`).then((r) => r.data),
+    enabled: !!classroomId,
+  });
+}
+
+export function useAddClassroomStudent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ classroomId, studentMemberId }) =>
+      api.post(`/api/classrooms/${classroomId}/students`, { studentMemberId }).then((r) => r.data),
+    onSuccess: (_data, { classroomId }) => {
+      queryClient.invalidateQueries({ queryKey: studentsKey(classroomId) });
+      showSuccess('Alumno asignado al aula');
+    },
+    onError: (error) => showApiError(error),
+  });
+}
+
+export function useRemoveClassroomStudent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ classroomId, studentId }) =>
+      api.delete(`/api/classrooms/${classroomId}/students/${studentId}`),
+    onSuccess: (_data, { classroomId }) => {
+      queryClient.invalidateQueries({ queryKey: studentsKey(classroomId) });
+      showSuccess('Alumno removido del aula');
+    },
+    onError: (error) => showApiError(error),
+  });
+}
+
 const KEY = ['classrooms'];
 
 export function useClassrooms() {

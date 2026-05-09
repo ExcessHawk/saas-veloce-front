@@ -141,9 +141,9 @@ export function Tooltip({ text }) {
     <span className="relative inline-flex" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
       <span className="text-p-text-tertiary cursor-help flex"><HelpCircle size={14} /></span>
       {show && (
-        <div className="absolute bottom-[calc(100%+7px)] left-1/2 -translate-x-1/2 bg-[oklch(8.5%_0.005_80)] text-white text-[12px] px-[11px] py-[7px] rounded-[10px] max-w-[240px] w-max shadow-[0_4px_12px_oklch(0%_0_0/0.2)] pointer-events-none z-[100] leading-[1.4] font-normal">
+        <div className="absolute bottom-[calc(100%+7px)] left-1/2 -translate-x-1/2 bg-p-text-primary text-p-accent-text text-[12px] px-[11px] py-[7px] rounded-[10px] max-w-[240px] w-max shadow-[0_4px_12px_oklch(0%_0_0/0.2)] pointer-events-none z-[100] leading-[1.4] font-normal">
           {text}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-r-[5px] border-t-[5px] border-l-transparent border-r-transparent border-t-[oklch(8.5%_0.005_80)]" />
+          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-r-[5px] border-t-[5px] border-l-transparent border-r-transparent border-t-p-text-primary" />
         </div>
       )}
     </span>
@@ -161,11 +161,11 @@ function getPwStrength(pw) {
 }
 
 const PW_STRENGTH_META = [
-  { label: '',           color: 'transparent' },
-  { label: 'Muy débil',  color: 'oklch(58% 0.200 25)' },
-  { label: 'Débil',      color: 'oklch(72% 0.150 72)' },
-  { label: 'Aceptable',  color: 'oklch(72% 0.150 72)' },
-  { label: 'Segura',     color: 'oklch(55% 0.140 150)' },
+  { label: '',           colorCls: 'bg-transparent',                                                    textCls: '' },
+  { label: 'Muy débil',  colorCls: 'bg-p-d-500',                                                        textCls: 'text-p-d-500' },
+  { label: 'Débil',      colorCls: 'bg-p-w-500',                                                        textCls: 'text-p-w-500' },
+  { label: 'Aceptable',  colorCls: 'bg-p-w-500',                                                        textCls: 'text-p-w-500' },
+  { label: 'Segura',     colorCls: 'bg-p-s-500',                                                        textCls: 'text-p-s-700' },
 ];
 
 export function PwStrengthMeter({ password }) {
@@ -176,11 +176,10 @@ export function PwStrengthMeter({ password }) {
     <div className="mt-2">
       <div className="flex gap-1 mb-[5px]">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="flex-1 h-[3px] rounded-full transition-[background] duration-200"
-            style={{ background: i <= s ? meta.color : 'oklch(89% 0.007 80)' }} />
+          <div key={i} className={cn('flex-1 h-[3px] rounded-full transition-[background] duration-200', i <= s ? meta.colorCls : 'bg-p-border')} />
         ))}
       </div>
-      <div className="text-[11.5px] font-medium" style={{ color: meta.color }}>{meta.label}</div>
+      <div className={cn('text-[11.5px] font-medium', meta.textCls)}>{meta.label}</div>
     </div>
   );
 }

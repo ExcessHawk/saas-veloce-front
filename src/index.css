@@ -155,10 +155,11 @@
     --card-foreground: oklch(97.5% 0.004 80);
     --popover: oklch(13% 0.006 80);
     --popover-foreground: oklch(97.5% 0.004 80);
-    --primary: oklch(94.5% 0.006 80);
-    --primary-foreground: oklch(13% 0.006 80);
+    /* primary button: medium-light surface with dark text — visible but not blinding */
+    --primary: oklch(30% 0.009 80);
+    --primary-foreground: oklch(94.5% 0.006 80);
     --secondary: oklch(20% 0.008 80);
-    --secondary-foreground: oklch(97.5% 0.004 80);
+    --secondary-foreground: oklch(80% 0.009 80);
     --muted: oklch(20% 0.008 80);
     --muted-foreground: oklch(68% 0.010 80);
     --accent: oklch(20% 0.008 80);

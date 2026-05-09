@@ -47,13 +47,13 @@ function PlanForm({ initial, onSave, onCancel, loading }) {
         <button
           onClick={() => onSave(form)}
           disabled={loading}
-          className="px-4 py-[7px] rounded-lg bg-p-accent text-white border-0 text-[13px] font-semibold cursor-pointer font-[inherit]"
+          className="px-4 py-[7px] rounded-lg bg-p-accent text-p-accent-text border-0 text-[13px] font-semibold cursor-pointer font-[inherit] hover:bg-p-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? 'Guardando…' : 'Guardar'}
         </button>
         <button
           onClick={onCancel}
-          className="px-[14px] py-[7px] rounded-lg border border-p-border bg-transparent text-p-text-secondary text-[13px] cursor-pointer font-[inherit]"
+          className="px-[14px] py-[7px] rounded-lg border border-p-border bg-p-bg-base text-p-text-secondary text-[13px] cursor-pointer font-[inherit] hover:bg-p-bg-subtle hover:text-p-text-primary transition-colors"
         >
           Cancelar
         </button>
@@ -104,7 +104,7 @@ export default function AdminPlansPage() {
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-[6px] px-[14px] py-[7px] rounded-lg bg-p-accent text-white border-0 text-[13px] font-semibold cursor-pointer font-[inherit]"
+          className="flex items-center gap-[6px] px-[14px] py-[7px] rounded-lg bg-p-accent text-p-accent-text border-0 text-[13px] font-semibold cursor-pointer font-[inherit] hover:bg-p-accent-hover transition-colors"
         >
           <Plus size={14} /> Nuevo plan
         </button>
@@ -131,8 +131,8 @@ export default function AdminPlansPage() {
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[15px] font-bold text-p-text-primary">{plan.name}</span>
                       <code className="text-[11px] px-[6px] py-[2px] bg-p-bg-subtle rounded text-p-text-secondary">{plan.code}</code>
-                      {!plan.isActive && <span className="text-[11px] px-[6px] py-[2px] bg-[#fef2f2] text-[#dc2626] rounded">Archivado</span>}
-                      {plan.stripeProductId && <span className="text-[11px] px-[6px] py-[2px] bg-[#eff6ff] text-[#2563eb] rounded">Stripe ✓</span>}
+                      {!plan.isActive && <span className="text-[11px] px-[6px] py-[2px] bg-p-d-100 text-p-d-700 rounded">Archivado</span>}
+                      {plan.stripeProductId && <span className="text-[11px] px-[6px] py-[2px] bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded">Stripe ✓</span>}
                     </div>
                     {plan.description && <div className="text-[12.5px] text-p-text-secondary mb-2">{plan.description}</div>}
                     <div className="flex gap-4 text-[12px] text-p-text-tertiary">
@@ -144,14 +144,14 @@ export default function AdminPlansPage() {
                   <div className="flex gap-[6px]">
                     <button
                       onClick={() => setEditId(plan.id)}
-                      className="px-[10px] py-[6px] rounded-[7px] border border-p-border bg-transparent text-p-text-secondary cursor-pointer flex items-center gap-1 text-[12px] font-[inherit]"
+                      className="px-[10px] py-[6px] rounded-[7px] border border-p-border bg-p-bg-base text-p-text-secondary cursor-pointer flex items-center gap-1 text-[12px] font-[inherit] hover:bg-p-bg-subtle hover:text-p-text-primary transition-colors"
                     >
                       <Pencil size={12} /> Editar
                     </button>
                     {plan.isActive && (
                       <button
                         onClick={() => handleArchive(plan.id)}
-                        className="px-[10px] py-[6px] rounded-[7px] border border-[#fecaca] bg-transparent text-[#dc2626] cursor-pointer flex items-center gap-1 text-[12px] font-[inherit]"
+                        className="px-[10px] py-[6px] rounded-[7px] border border-p-d-500/40 bg-transparent text-p-d-500 cursor-pointer flex items-center gap-1 text-[12px] font-[inherit] hover:bg-p-d-100 transition-colors"
                       >
                         <Archive size={12} /> Archivar
                       </button>

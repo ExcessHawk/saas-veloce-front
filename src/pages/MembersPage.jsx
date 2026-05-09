@@ -5,10 +5,10 @@ import { z } from 'zod';
 import { format } from 'date-fns';
 import {
   Plus, MoreHorizontal, Pencil, Trash2, Check, X,
-  Mail, Info, Search, AlertTriangle,
+  Mail, Info, Search, AlertTriangle, Link2,
 } from 'lucide-react';
 
-import { useMembers, useInviteMember, useUpdateMemberRole, useRemoveMember } from '@/hooks/useMembers';
+import { useMembers, useInviteMember, useUpdateMemberRole, useRemoveMember, useLinkChild, useUnlinkChild } from '@/hooks/useMembers';
 import { useAuthStore } from '@/stores/authStore';
 import { showApiError } from '@/lib/errors';
 import { avatarColor, getInitials } from '@/lib/materia-colors';
@@ -120,7 +120,7 @@ function InlineRoleSelect({ value, onChange, onClose }) {
 }
 
 /* ── Dots menu ── */
-function DotsMenu({ onChangeRole, onDelete, isSelf }) {
+function DotsMenu({ onChangeRole, onDelete, onLinkChildren, isSelf, isParent }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -148,6 +148,15 @@ function DotsMenu({ onChangeRole, onDelete, isSelf }) {
           >
             <Pencil size={13} /> Cambiar rol
           </button>
+          {isParent && (
+            <button
+              type="button"
+              onClick={() => { onLinkChildren(); setOpen(false); }}
+              className="flex items-center gap-[9px] w-full px-[14px] py-[9px] border-none bg-transparent cursor-pointer font-[inherit] text-[13.5px] text-p-text-primary text-left hover:bg-p-bg-subtle"
+            >
+              <Link2 size={13} /> Vincular hijo/a
+            </button>
+          )}
           {!isSelf && (
             <button
               type="button"
@@ -164,7 +173,7 @@ function DotsMenu({ onChangeRole, onDelete, isSelf }) {
 }
 
 /* ── Member row ── */
-function MemberRow({ member, isSelf, isDirector, onRoleChange, onDelete }) {
+function MemberRow({ member, isSelf, isDirector, onRoleChange, onDelete, onLinkChildren }) {
   const [editRole, setEditRole] = useState(false);
   const desde = member.joinedAt
     ? format(new Date(member.joinedAt), 'dd MMM yyyy')
@@ -225,8 +234,10 @@ function MemberRow({ member, isSelf, isDirector, onRoleChange, onDelete }) {
         {isDirector && (
           <DotsMenu
             isSelf={isSelf}
+            isParent={member.role === 'parent'}
             onChangeRole={() => setEditRole(true)}
             onDelete={onDelete}
+            onLinkChildren={onLinkChildren}
           />
         )}
       </td>
@@ -470,6 +481,99 @@ function AddMemberModal({ onClose }) {
   );
 }
 
+/* ── Link children modal ── */
+function LinkChildrenModal({ parent, onClose }) {
+  const { data: allMembers = [] } = useMembers();
+  const linkChild = useLinkChild();
+  const unlinkChild = useUnlinkChild();
+  const [selectedId, setSelectedId] = useState('');
+
+  const children = parent.children ?? [];
+  const linkedIds = new Set(children.map((c) => c.memberId ?? c));
+  const availableStudents = allMembers.filter((m) => m.role === 'student' && !linkedIds.has(m.id));
+
+  const handleLink = async () => {
+    if (!selectedId) return;
+    try {
+      await linkChild.mutateAsync({ parentId: parent.id, studentMemberId: selectedId });
+      setSelectedId('');
+    } catch { /* handled */ }
+  };
+
+  const handleUnlink = async (memberId) => {
+    try { await unlinkChild.mutateAsync({ parentId: parent.id, studentId: memberId }); }
+    catch { /* handled */ }
+  };
+
+  const selectCls = 'flex-1 px-[10px] py-[9px] rounded-[10px] border border-p-border bg-p-bg-base text-p-text-primary text-[13.5px] font-[inherit] outline-none transition-[border-color] duration-[120ms] focus:border-p-border-strong';
+
+  return (
+    <ModalShell title="Vincular hijos" subtitle={parent.fullName || parent.email} onClose={onClose}>
+      <div className="px-6 py-5 flex flex-col gap-4">
+        <div>
+          <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
+            Agregar vínculo
+          </label>
+          <div className="flex gap-2">
+            <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} className={selectCls}>
+              <option value="">— Seleccionar alumno —</option>
+              {availableStudents.map((s) => (
+                <option key={s.id} value={s.id}>{s.fullName || s.email}</option>
+              ))}
+            </select>
+            <button
+              onClick={handleLink}
+              disabled={!selectedId || linkChild.isPending}
+              className="px-4 py-[9px] rounded-[10px] bg-p-accent text-p-accent-text text-[13.5px] font-semibold border-none cursor-pointer disabled:opacity-50 whitespace-nowrap"
+            >
+              Vincular
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
+            Hijos vinculados
+          </label>
+          {children.length === 0 ? (
+            <p className="text-[13px] text-p-text-tertiary py-2">No hay hijos vinculados aún.</p>
+          ) : (
+            <div className="space-y-[6px]">
+              {children.map((child) => {
+                const memberId = child.memberId ?? child;
+                const student = allMembers.find((m) => m.id === memberId);
+                const name = child.fullName ?? student?.fullName ?? child.email ?? student?.email ?? memberId;
+                return (
+                  <div key={memberId} className="flex items-center gap-3 px-3 py-[7px] bg-p-bg-subtle rounded-[10px]">
+                    <Av nombre={name} size={28} />
+                    <span className="flex-1 text-[13px] font-medium text-p-text-primary truncate">{name}</span>
+                    <button
+                      onClick={() => handleUnlink(memberId)}
+                      disabled={unlinkChild.isPending}
+                      className="w-7 h-7 rounded-[8px] border border-p-border bg-p-bg-base text-p-text-tertiary flex items-center justify-center cursor-pointer hover:bg-p-d-100 hover:text-p-d-500 hover:border-p-d-500 disabled:opacity-50"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="px-6 py-[14px] border-t border-p-border flex justify-end bg-p-bg-subtle">
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-[15px] py-[7px] rounded-[10px] border border-p-border bg-p-bg-base text-p-text-primary text-[13px] font-[inherit] font-medium cursor-pointer"
+        >
+          Cerrar
+        </button>
+      </div>
+    </ModalShell>
+  );
+}
+
 /* ── Delete confirm modal ── */
 function DeleteModal({ member, isPending, onClose, onConfirm }) {
   if (!member) return null;
@@ -525,6 +629,7 @@ function DeleteModal({ member, isPending, onClose, onConfirm }) {
 export default function MembersPage() {
   const [showAdd, setShowAdd] = useState(false);
   const [deletingItem, setDeletingItem] = useState(null);
+  const [linkParent, setLinkParent] = useState(null);
   const [tabRole, setTabRole] = useState('todos');
   const [query, setQuery] = useState('');
 
@@ -692,6 +797,7 @@ export default function MembersPage() {
                     isDirector={isDirector}
                     onRoleChange={onRoleChange}
                     onDelete={() => setDeletingItem(m)}
+                    onLinkChildren={() => setLinkParent(m)}
                   />
                 ))}
               </tbody>
@@ -708,6 +814,7 @@ export default function MembersPage() {
 
       {/* Modals */}
       {showAdd && <AddMemberModal onClose={() => setShowAdd(false)} />}
+      {linkParent && <LinkChildrenModal parent={linkParent} onClose={() => setLinkParent(null)} />}
       <DeleteModal
         member={deletingItem}
         isPending={removeMember.isPending}

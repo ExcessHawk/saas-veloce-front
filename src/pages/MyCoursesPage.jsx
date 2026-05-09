@@ -8,7 +8,7 @@ import { useAcademicYears } from '@/hooks/useAcademicYears';
 import { useMembers } from '@/hooks/useMembers';
 import { getMateriaColor, getInitials, avatarColor } from '@/lib/materia-colors';
 import { showApiError } from '@/lib/errors';
-import { Eye, Plus } from 'lucide-react';
+import { Eye, BarChart2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 function findName(list, id) {
@@ -33,7 +33,7 @@ const FilterTabs = ({ value, onChange, options }) => (
 );
 
 /* ── Curso card (Docente) ── */
-const DocenteCursoCard = ({ curso, subjectName, classroomName, yearName, onVerTareas }) => {
+const DocenteCursoCard = ({ curso, subjectName, classroomName, yearName, onVerTareas, onCalificaciones }) => {
   const mc = getMateriaColor(subjectName);
 
   return (
@@ -68,10 +68,10 @@ const DocenteCursoCard = ({ curso, subjectName, classroomName, yearName, onVerTa
           <Eye size={13} /> Ver Tareas
         </button>
         <button
-          onClick={onVerTareas}
+          onClick={onCalificaciones}
           className="flex-1 py-[7px] rounded-[10px] border border-transparent bg-p-accent text-p-accent-text text-[12.5px] font-medium font-sans cursor-pointer flex items-center justify-center gap-[5px] transition-all duration-100 hover:bg-p-accent-hover"
         >
-          <Plus size={13} /> Agregar Tarea
+          <BarChart2 size={13} /> Calificaciones
         </button>
       </div>
     </div>
@@ -207,6 +207,10 @@ export default function MyCoursesPage() {
     navigate(`/dashboard/tareas/${curso.id}`, { state: { curso } });
   };
 
+  const onCalificaciones = (curso) => {
+    navigate(`/dashboard/calificaciones/${curso.id}`, { state: { curso } });
+  };
+
   return (
     <div className="flex flex-col gap-5">
       {/* Header */}
@@ -276,7 +280,8 @@ export default function MyCoursesPage() {
               return (
                 <DocenteCursoCard key={curso.id} curso={curso}
                   subjectName={subjectName} classroomName={classroomName} yearName={yearName}
-                  onVerTareas={() => onVerTareas(curso)} />
+                  onVerTareas={() => onVerTareas(curso)}
+                  onCalificaciones={() => onCalificaciones(curso)} />
               );
             }
 

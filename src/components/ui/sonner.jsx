@@ -1,10 +1,13 @@
 import { Toaster as Sonner } from "sonner";
+import { useTheme } from "next-themes";
 import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
 
 const Toaster = ({ ...props }) => {
+  // Detect dark class on <html> since we use class-based dark mode
+  const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
   return (
     <Sonner
-      theme="light"
+      theme={isDark ? "dark" : "light"}
       className="toaster group"
       icons={{
         success: <CircleCheckIcon className="size-4" />,

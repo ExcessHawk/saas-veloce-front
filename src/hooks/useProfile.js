@@ -30,3 +30,15 @@ export function useChangePassword() {
     onError: (error) => showApiError(error),
   });
 }
+
+export function useUpdateAvatar() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (avatarUrl) => api.patch('/api/auth/avatar', { avatarUrl }).then((res) => res.data),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(KEY, updated);
+      showSuccess('Avatar actualizado exitosamente');
+    },
+    onError: (error) => showApiError(error),
+  });
+}

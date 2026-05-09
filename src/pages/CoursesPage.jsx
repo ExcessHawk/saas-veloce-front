@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
-import { Plus, Pencil, Trash2, UserCog } from 'lucide-react';
+import { Plus, Pencil, Trash2, UserCog, GraduationCap, DoorOpen, BookOpen, Calendar } from 'lucide-react';
 import { useCourses, useCreateCourse, useUpdateCourse, useDeleteCourse } from '@/hooks/useCourses';
 import { useClassrooms } from '@/hooks/useClassrooms';
 import { useSubjects } from '@/hooks/useSubjects';
@@ -19,99 +19,121 @@ import { ConfirmDeleteDialog } from '@/components/ConfirmDeleteDialog';
 import { SearchInput } from '@/components/SearchInput';
 import { DataTablePagination } from '@/components/DataTablePagination';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 
 function findName(list, id) {
   return list?.find((i) => i.id === id)?.name || '—';
 }
 
-function CourseSelects({ control, errors, classroomsData, subjectsData, academicYearsData }) {
+/* ── Field primitive ── */
+function Field({ label, hint, error, children }) {
   return (
-    <>
-      <div>
-        <Label>Aula</Label>
-        <Controller control={control} name="classroomId" render={({ field }) => (
-          <Select onValueChange={field.onChange} value={field.value}>
-            <SelectTrigger><SelectValue placeholder="Selecciona un aula" /></SelectTrigger>
-            <SelectContent>
-              {classroomsData?.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        )} />
-        {errors.classroomId && <p className="text-sm text-red-500 mt-1">{errors.classroomId.message}</p>}
-      </div>
-      <div>
-        <Label>Materia</Label>
-        <Controller control={control} name="subjectId" render={({ field }) => (
-          <Select onValueChange={field.onChange} value={field.value}>
-            <SelectTrigger><SelectValue placeholder="Selecciona una materia" /></SelectTrigger>
-            <SelectContent>
-              {subjectsData?.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        )} />
-        {errors.subjectId && <p className="text-sm text-red-500 mt-1">{errors.subjectId.message}</p>}
-      </div>
-      <div>
-        <Label>Año Académico</Label>
-        <Controller control={control} name="academicYearId" render={({ field }) => (
-          <Select onValueChange={field.onChange} value={field.value}>
-            <SelectTrigger><SelectValue placeholder="Selecciona un año académico" /></SelectTrigger>
-            <SelectContent>
-              {academicYearsData?.map((ay) => <SelectItem key={ay.id} value={ay.id}>{ay.name}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        )} />
-        {errors.academicYearId && <p className="text-sm text-red-500 mt-1">{errors.academicYearId.message}</p>}
-      </div>
-    </>
+    <div>
+      <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">{label}</label>
+      {children}
+      {hint && <p className="text-[11.5px] text-p-text-tertiary mt-[5px]">{hint}</p>}
+      {error && <p className="text-[11.5px] text-p-d-500 mt-[5px]">{error}</p>}
+    </div>
   );
 }
 
-function EditCourseForm({ course, classroomsData, subjectsData, academicYearsData, onSave, loading }) {
-  const form = useForm({
-    resolver: zodResolver(updateCourseSchema),
-    defaultValues: {
-      classroomId: course.classroomId ?? '',
-      subjectId: course.subjectId ?? '',
-      academicYearId: course.academicYearId ?? '',
-    },
-  });
+/* ── Course form ── */
+function CourseForm({ form, classroomsData, subjectsData, academicYearsData, onSubmit, loading, submitLabel, onCancel }) {
+  const { control, handleSubmit, formState: { errors } } = form;
+
+  const selectCls = 'w-full';
+
   return (
-    <form onSubmit={form.handleSubmit(onSave)} className="space-y-4">
-      <CourseSelects
-        control={form.control}
-        errors={form.formState.errors}
-        classroomsData={classroomsData}
-        subjectsData={subjectsData}
-        academicYearsData={academicYearsData}
-      />
-      <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? 'Guardando…' : 'Guardar Cambios'}
-      </Button>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <Field label="Materia *" error={errors.subjectId?.message}>
+        <Controller control={control} name="subjectId" render={({ field }) => (
+          <Select onValueChange={field.onChange} value={field.value}>
+            <SelectTrigger className={selectCls}>
+              <div className="flex items-center gap-2">
+                <BookOpen size={14} className="text-p-text-tertiary shrink-0" />
+                <SelectValue placeholder="Selecciona una materia" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              {subjectsData?.length === 0 && <SelectItem value="_empty" disabled>Sin materias registradas</SelectItem>}
+              {subjectsData?.map((s) => (
+                <SelectItem key={s.id} value={s.id}>
+                  <div className="flex items-center gap-2">
+                    {s.color && <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: s.color }} />}
+                    {s.name}
+                    {s.code && <span className="text-muted-foreground text-xs">· {s.code}</span>}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )} />
+      </Field>
+
+      <Field label="Aula *" error={errors.classroomId?.message}>
+        <Controller control={control} name="classroomId" render={({ field }) => (
+          <Select onValueChange={field.onChange} value={field.value}>
+            <SelectTrigger className={selectCls}>
+              <div className="flex items-center gap-2">
+                <DoorOpen size={14} className="text-p-text-tertiary shrink-0" />
+                <SelectValue placeholder="Selecciona un aula" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              {classroomsData?.length === 0 && <SelectItem value="_empty" disabled>Sin aulas registradas</SelectItem>}
+              {classroomsData?.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.name}{c.capacity ? ` · ${c.capacity} alumnos` : ''}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )} />
+      </Field>
+
+      <Field label="Año académico *" error={errors.academicYearId?.message}>
+        <Controller control={control} name="academicYearId" render={({ field }) => (
+          <Select onValueChange={field.onChange} value={field.value}>
+            <SelectTrigger className={selectCls}>
+              <div className="flex items-center gap-2">
+                <Calendar size={14} className="text-p-text-tertiary shrink-0" />
+                <SelectValue placeholder="Selecciona un año académico" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              {academicYearsData?.length === 0 && <SelectItem value="_empty" disabled>Sin años académicos</SelectItem>}
+              {academicYearsData?.map((ay) => (
+                <SelectItem key={ay.id} value={ay.id}>
+                  {ay.name}{ay.isCurrent ? ' · Actual' : ''}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )} />
+      </Field>
+
+      <div className="flex gap-2 pt-1">
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex-1 py-[9px] rounded-[10px] bg-p-accent text-p-accent-text text-[13.5px] font-semibold font-sans border-none cursor-pointer transition-colors hover:bg-p-accent-hover disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? 'Guardando…' : submitLabel}
+        </button>
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-5 py-[9px] rounded-[10px] border border-p-border bg-p-bg-base text-p-text-secondary text-[13.5px] font-medium font-sans cursor-pointer transition-colors hover:bg-p-bg-subtle"
+          >
+            Cancelar
+          </button>
+        )}
+      </div>
     </form>
   );
 }
@@ -134,6 +156,11 @@ export default function CoursesPage() {
 
   const createForm = useForm({
     resolver: zodResolver(createCourseSchema),
+    defaultValues: { classroomId: '', subjectId: '', academicYearId: '' },
+  });
+
+  const editForm = useForm({
+    resolver: zodResolver(updateCourseSchema),
     defaultValues: { classroomId: '', subjectId: '', academicYearId: '' },
   });
 
@@ -181,64 +208,15 @@ export default function CoursesPage() {
     } catch { /* handled by hook */ }
   };
 
-  const CourseSelects = ({ control, errors, prefix = '' }) => (
-    <>
-      <div>
-        <Label>Aula</Label>
-        <Controller
-          control={control}
-          name="classroomId"
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger><SelectValue placeholder="Selecciona un aula" /></SelectTrigger>
-              <SelectContent>
-                {classrooms.data?.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.classroomId && <p className="text-sm text-red-500 mt-1">{errors.classroomId.message}</p>}
-      </div>
-      <div>
-        <Label>Materia</Label>
-        <Controller
-          control={control}
-          name="subjectId"
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger><SelectValue placeholder="Selecciona una materia" /></SelectTrigger>
-              <SelectContent>
-                {subjects.data?.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.subjectId && <p className="text-sm text-red-500 mt-1">{errors.subjectId.message}</p>}
-      </div>
-      <div>
-        <Label>Año Académico</Label>
-        <Controller
-          control={control}
-          name="academicYearId"
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger><SelectValue placeholder="Selecciona un año académico" /></SelectTrigger>
-              <SelectContent>
-                {academicYears.data?.map((ay) => (
-                  <SelectItem key={ay.id} value={ay.id}>{ay.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.academicYearId && <p className="text-sm text-red-500 mt-1">{errors.academicYearId.message}</p>}
-      </div>
-    </>
-  );
+  useEffect(() => {
+    if (editingItem) {
+      editForm.reset({
+        classroomId: editingItem.classroomId ?? '',
+        subjectId: editingItem.subjectId ?? '',
+        academicYearId: editingItem.academicYearId ?? '',
+      });
+    }
+  }, [editingItem]);
 
   return (
     <div className="space-y-4">
@@ -248,25 +226,31 @@ export default function CoursesPage() {
         <RoleGate roles={['director', 'teacher']}>
           <Dialog open={open} onOpenChange={(v) => { if (!v) createForm.reset(); setOpen(v); }}>
             <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-1 h-4 w-4" />
-                Crear Curso
-              </Button>
+              <Button><Plus className="mr-1 h-4 w-4" />Crear Curso</Button>
             </DialogTrigger>
-            <DialogContent>
-              <DialogHeader><DialogTitle>Crear Curso</DialogTitle></DialogHeader>
-              <form onSubmit={createForm.handleSubmit(onSubmitCreate)} className="space-y-4">
-                <CourseSelects
-                  control={createForm.control}
-                  errors={createForm.formState.errors}
+            <DialogContent className="max-w-[480px] p-0 overflow-hidden gap-0">
+              <DialogHeader className="px-6 pt-6 pb-4 border-b border-p-border">
+                <div className="flex items-center gap-3 mb-1">
+                  <div className="w-9 h-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
+                    <GraduationCap size={16} />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-[15px] font-bold text-p-text-primary tracking-[-0.02em]">Nuevo curso</DialogTitle>
+                    <p className="text-[12.5px] text-p-text-secondary mt-px">Vincula una materia con un aula y año académico</p>
+                  </div>
+                </div>
+              </DialogHeader>
+              <div className="px-6 py-5">
+                <CourseForm
+                  form={createForm}
                   classroomsData={classrooms.data}
                   subjectsData={subjects.data}
                   academicYearsData={academicYears.data}
+                  onSubmit={onSubmitCreate}
+                  loading={createCourse.isPending}
+                  submitLabel="Crear curso"
                 />
-                <Button type="submit" className="w-full" disabled={createCourse.isPending}>
-                  {createCourse.isPending ? 'Creando...' : 'Crear Curso'}
-                </Button>
-              </form>
+              </div>
             </DialogContent>
           </Dialog>
         </RoleGate>
@@ -343,20 +327,37 @@ export default function CoursesPage() {
         <DataTablePagination {...pagination} total={filtered.length} />
       )}
 
-      <Dialog open={!!editingItem} onOpenChange={(v) => !v && setEditingItem(null)}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>Editar Curso</DialogTitle></DialogHeader>
-          {editingItem && (
-            <EditCourseForm
-              key={editingItem.id}
-              course={editingItem}
-              classroomsData={classrooms.data}
-              subjectsData={subjects.data}
-              academicYearsData={academicYears.data}
-              onSave={onSubmitEdit}
-              loading={updateCourse.isPending}
-            />
-          )}
+      {/* Edit dialog */}
+      <Dialog open={!!editingItem} onOpenChange={(v) => { if (!v) { editForm.reset(); setEditingItem(null); } }}>
+        <DialogContent className="max-w-[480px] p-0 overflow-hidden gap-0">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b border-p-border">
+            <div className="flex items-center gap-3 mb-1">
+              <div className="w-9 h-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
+                <GraduationCap size={16} />
+              </div>
+              <div>
+                <DialogTitle className="text-[15px] font-bold text-p-text-primary tracking-[-0.02em]">Editar curso</DialogTitle>
+                <p className="text-[12.5px] text-p-text-secondary mt-px">
+                  {editingItem ? `${findName(subjects.data, editingItem.subjectId)} · ${findName(classrooms.data, editingItem.classroomId)}` : ''}
+                </p>
+              </div>
+            </div>
+          </DialogHeader>
+          <div className="px-6 py-5">
+            {editingItem && (
+              <CourseForm
+                key={editingItem.id}
+                form={editForm}
+                classroomsData={classrooms.data}
+                subjectsData={subjects.data}
+                academicYearsData={academicYears.data}
+                onSubmit={onSubmitEdit}
+                loading={updateCourse.isPending}
+                submitLabel="Guardar cambios"
+                onCancel={() => { editForm.reset(); setEditingItem(null); }}
+              />
+            )}
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -364,8 +365,8 @@ export default function CoursesPage() {
         open={!!deletingItem}
         onOpenChange={(v) => !v && setDeletingItem(null)}
         onConfirm={onConfirmDelete}
-        title="Eliminar Curso"
-        description="¿Estás seguro de que deseas eliminar este curso? Esta acción no se puede deshacer."
+        title="Eliminar curso"
+        description={`¿Eliminar el curso de ${deletingItem ? findName(subjects.data, deletingItem.subjectId) : ''}? Se perderán las inscripciones asociadas.`}
         isPending={deleteCourse.isPending}
       />
 

@@ -337,10 +337,21 @@ export default function SchoolPage() {
             <span className="px-[10px] py-[3px] rounded-full text-[12px] font-bold bg-[oklch(92%_0.020_250)] dark:bg-[oklch(22%_0.020_250)] text-[oklch(35%_0.050_250)] dark:text-[oklch(72%_0.050_250)] flex items-center gap-[5px]">
               <Star size={11} /> {sub ? `Plan ${planName}` : 'Sin plan'}
             </span>
-            <span className="px-[10px] py-[3px] rounded-full text-[12px] font-bold bg-p-s-100 text-p-s-700 flex items-center gap-[5px]">
-              <span className="w-[6px] h-[6px] rounded-full bg-p-s-500" />
-              {school?.status === 'active' ? 'Activo' : (school?.status || 'Activo')}
-            </span>
+            {(() => {
+              const STATUS = {
+                active:    { label: 'Activo',     dot: 'bg-p-s-500',                   cls: 'bg-p-s-100 text-p-s-700' },
+                trial:     { label: 'En prueba',  dot: 'bg-[oklch(72%_0.15_72)]',      cls: 'bg-[oklch(94%_0.04_72)] text-[oklch(38%_0.10_72)]' },
+                inactive:  { label: 'Inactivo',   dot: 'bg-p-text-tertiary',            cls: 'bg-p-bg-subtle text-p-text-secondary' },
+                suspended: { label: 'Suspendido', dot: 'bg-p-d-500',                   cls: 'bg-p-d-100 text-p-d-700' },
+              };
+              const s = STATUS[school?.status] ?? STATUS.active;
+              return (
+                <span className={`px-[10px] py-[3px] rounded-full text-[12px] font-bold flex items-center gap-[5px] ${s.cls}`}>
+                  <span className={`w-[6px] h-[6px] rounded-full ${s.dot}`} />
+                  {s.label}
+                </span>
+              );
+            })()}
             {school?.country && (
               <span className="px-[10px] py-[3px] rounded-full text-[12px] font-semibold bg-p-bg-subtle text-p-text-secondary border border-p-border">
                 {school.country}
@@ -412,13 +423,15 @@ export default function SchoolPage() {
               ))}
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => navigate('/dashboard/billing')}
-            className="flex items-center gap-[7px] text-[13.5px] font-semibold text-[oklch(35%_0.050_250)] dark:text-[oklch(72%_0.050_250)] bg-transparent border border-[oklch(84%_0.032_250)] dark:border-[oklch(35%_0.032_250)] px-4 py-2 rounded-[10px] cursor-pointer font-[inherit] transition-all duration-[100ms] w-full justify-center hover:bg-[oklch(92%_0.020_250)] dark:hover:bg-[oklch(22%_0.020_250)]"
-          >
-            Gestionar facturación <ArrowRight size={13} />
-          </button>
+          {isDirector && (
+            <button
+              type="button"
+              onClick={() => navigate('/dashboard/billing')}
+              className="flex items-center gap-[7px] text-[13.5px] font-semibold text-[oklch(35%_0.050_250)] dark:text-[oklch(72%_0.050_250)] bg-transparent border border-[oklch(84%_0.032_250)] dark:border-[oklch(35%_0.032_250)] px-4 py-2 rounded-[10px] cursor-pointer font-[inherit] transition-all duration-[100ms] w-full justify-center hover:bg-[oklch(92%_0.020_250)] dark:hover:bg-[oklch(22%_0.020_250)]"
+            >
+              Gestionar facturación <ArrowRight size={13} />
+            </button>
+          )}
         </SectionCard>
 
         {/* Stats */}

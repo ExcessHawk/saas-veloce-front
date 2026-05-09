@@ -48,6 +48,32 @@ export function useUpdateMemberRole() {
   });
 }
 
+export function useLinkChild() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ parentId, studentMemberId }) =>
+      api.post(`/api/members/${parentId}/children`, { studentMemberId }).then((r) => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: KEY });
+      showSuccess('Vínculo padre-hijo creado');
+    },
+    onError: (error) => showApiError(error),
+  });
+}
+
+export function useUnlinkChild() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ parentId, studentId }) =>
+      api.delete(`/api/members/${parentId}/children/${studentId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: KEY });
+      showSuccess('Vínculo eliminado');
+    },
+    onError: (error) => showApiError(error),
+  });
+}
+
 export function useRemoveMember() {
   const queryClient = useQueryClient();
   return useMutation({

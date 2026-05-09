@@ -2,14 +2,16 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { useAdminSchools, useUpdateSchoolStatus } from '@/hooks/useAdminSchools';
 import { showApiError } from '@/lib/errors';
+import { cn } from '@/lib/utils';
 
 const STATUS_OPTS = ['active', 'inactive', 'suspended', 'trial', 'churned'];
-const STATUS_COLOR = {
-  active:    { color: '#16a34a', bg: '#f0fdf4' },
-  trial:     { color: '#2563eb', bg: '#eff6ff' },
-  inactive:  { color: '#6b7280', bg: '#f9fafb' },
-  suspended: { color: '#d97706', bg: '#fffbeb' },
-  churned:   { color: '#dc2626', bg: '#fef2f2' },
+// Uses semantic CSS vars so they adapt to dark mode automatically
+const STATUS_CLS = {
+  active:    'bg-p-s-100 text-p-s-700',
+  trial:     'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+  inactive:  'bg-p-bg-muted text-p-text-secondary',
+  suspended: 'bg-p-w-100 text-p-w-700',
+  churned:   'bg-p-d-100 text-p-d-700',
 };
 
 function fmtDate(d) {
@@ -61,7 +63,7 @@ export default function AdminSchoolsPage() {
             </thead>
             <tbody>
               {filtered.map((school) => {
-                const sc = STATUS_COLOR[school.status] ?? STATUS_COLOR.inactive;
+                const sc = STATUS_CLS[school.status] ?? STATUS_CLS.inactive;
                 return (
                   <tr key={school.id} className="border-b border-p-border">
                     <td className="px-4 py-3">
@@ -70,7 +72,7 @@ export default function AdminSchoolsPage() {
                     </td>
                     <td className="px-4 py-3 text-p-text-secondary">{school.planName ?? '—'}</td>
                     <td className="px-4 py-3">
-                      <span className="text-[12px] font-semibold px-2 py-[3px] rounded-full" style={{ color: sc.color, background: sc.bg }}>
+                      <span className={cn('text-[12px] font-semibold px-2 py-[3px] rounded-full', STATUS_CLS[school.status] ?? STATUS_CLS.inactive)}>
                         {school.status}
                       </span>
                     </td>
