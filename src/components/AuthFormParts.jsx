@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 export function AuthHeader({ title, subtitle }) {
   return (
     <div className="mb-7">
-      <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] mb-[6px]">
+      <h1 className="text-[22px] font-semibold text-p-text-primary tracking-[-0.03em] mb-[6px]">
         {title}
       </h1>
       <p className="text-[13.5px] text-p-text-secondary m-0">{subtitle}</p>

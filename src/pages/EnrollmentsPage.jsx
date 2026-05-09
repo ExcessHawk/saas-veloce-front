@@ -193,7 +193,7 @@ export default function EnrollmentsPage() {
               onChange={(e) => { setSelectedYear(e.target.value); setSelected(null); }}
               className="px-3 py-[6px] text-[13px] font-medium border border-p-border rounded-[10px] bg-p-bg-base text-p-text-primary cursor-pointer font-[inherit] outline-none"
             >
-              <option value="">— Todos —</option>
+              <option value="">Todos</option>
               {(academicYears.data ?? []).map((y) => (
                 <option key={y.id} value={y.id}>{y.name}{y.isCurrent ? ' (actual)' : ''}</option>
               ))}
@@ -247,7 +247,7 @@ export default function EnrollmentsPage() {
             <div className="px-5 pt-4 pb-[14px] border-b border-p-border">
               <div className="flex items-start justify-between mb-[10px]">
                 <div>
-                  <div className="text-sm font-bold text-p-text-primary">{selectedSubject} — {selectedClassroom}</div>
+                  <div className="text-sm font-bold text-p-text-primary">{selectedSubject} · {selectedClassroom}</div>
                   <div className="text-xs text-p-text-secondary mt-[2px]">{teacherName || 'Sin docente'}</div>
                 </div>
                 <button

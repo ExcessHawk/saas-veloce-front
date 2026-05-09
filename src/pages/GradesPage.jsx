@@ -149,7 +149,7 @@ export default function GradesPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
-          <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] m-0 mb-[6px]">
+          <h1 className="text-[22px] font-semibold text-p-text-primary tracking-[-0.03em] m-0 mb-[6px]">
             Calificaciones · {subjectName}
           </h1>
           <div className="flex items-center gap-2 flex-wrap text-[13px] text-p-text-secondary">

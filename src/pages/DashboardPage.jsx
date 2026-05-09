@@ -109,7 +109,7 @@ const ActivityFeed = () => {
                   i < activities.length - 1 && 'pb-[14px] mb-[14px] border-b border-p-border',
                 )}
               >
-                <div className={cn('w-8 h-8 rounded-[10px] flex items-center justify-center text-p-text-primary dark:text-p-text-secondary shrink-0', colorCls)}>
+                <div className={cn('size-8 rounded-[10px] flex items-center justify-center text-p-text-primary dark:text-p-text-secondary shrink-0', colorCls)}>
                   <Icon size={14} />
                 </div>
                 <div className="flex-1">
@@ -215,7 +215,7 @@ function DirectorDashboard({ user, currentYearName }) {
           {sub && (
             <a href="/dashboard/billing" className="no-underline">
               <div className="bg-p-bg-base border border-p-border rounded-2xl p-[14px] px-4 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-[10px] bg-[oklch(92%_0.020_250)] dark:bg-[oklch(22%_0.020_250)] flex items-center justify-center shrink-0">
+                <div className="size-8 rounded-[10px] bg-[oklch(92%_0.020_250)] dark:bg-[oklch(22%_0.020_250)] flex items-center justify-center shrink-0">
                   <CreditCard size={15} color="oklch(35% 0.050 250)" className="dark:hidden" />
                   <CreditCard size={15} color="oklch(72% 0.050 250)" className="hidden dark:block" />
                 </div>

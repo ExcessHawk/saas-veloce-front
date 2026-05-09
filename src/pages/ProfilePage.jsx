@@ -314,12 +314,12 @@ function ProfileCard({ profile, role }) {
             <img
               src={avatarDisplayUrl}
               alt={profile?.fullName || ''}
-              className={cn('w-20 h-20 rounded-full object-cover transition-[box-shadow] duration-[150ms]', ringCls)}
+              className={cn('size-20 rounded-full object-cover transition-[box-shadow] duration-[150ms]', ringCls)}
             />
           ) : (
             <div
               className={cn(
-                'w-20 h-20 rounded-full flex items-center justify-center text-[26px] font-extrabold text-white transition-[box-shadow] duration-[150ms]',
+                'size-20 rounded-full flex items-center justify-center text-[26px] font-extrabold text-white transition-[box-shadow] duration-[150ms]',
                 ringCls,
               )}
               style={{ background: `linear-gradient(135deg, ${rc.grad})` }}
@@ -404,7 +404,7 @@ function ProfileCard({ profile, role }) {
 function SkeletonProfile() {
   return (
     <div className="p-6">
-      <div className="w-20 h-20 rounded-full bg-p-bg-subtle mx-auto mb-[18px]" />
+      <div className="size-20 rounded-full bg-p-bg-subtle mx-auto mb-[18px]" />
       <div className="h-[18px] bg-p-bg-subtle rounded-[6px] mb-2 w-3/5 mx-auto" />
       <div className="h-[14px] bg-p-bg-subtle rounded-[6px] mb-[18px] w-4/5 mx-auto" />
       {[1, 2, 3].map((i) => (
@@ -458,7 +458,7 @@ export default function ProfilePage() {
   return (
     <div className="max-w-[920px] mx-auto">
       <div className="mb-6">
-        <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] mb-1">
+        <h1 className="text-[22px] font-semibold text-p-text-primary tracking-[-0.03em] mb-1">
           Mi Perfil
         </h1>
         <p className="text-[13.5px] text-p-text-secondary m-0">

@@ -44,7 +44,7 @@ export function DataTablePagination({ page, setPage, pageSize, setPageSize, tota
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8"
+            className="size-8"
             onClick={() => setPage(page - 1)}
             disabled={page <= 1}
           >
@@ -56,7 +56,7 @@ export function DataTablePagination({ page, setPage, pageSize, setPageSize, tota
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8"
+            className="size-8"
             onClick={() => setPage(page + 1)}
             disabled={page >= totalPages}
           >

@@ -3,7 +3,7 @@ import { Users, Globe, Shield } from 'lucide-react';
 
 const Point = ({ icon: Icon, title, sub }) => (
   <div className="flex items-start gap-[14px]">
-    <div className="w-9 h-9 rounded-[10px] bg-white/10 flex items-center justify-center text-white/80 shrink-0">
+    <div className="size-9 rounded-[10px] bg-white/10 flex items-center justify-center text-white/80 shrink-0">
       <Icon size={16} />
     </div>
     <div>
@@ -43,7 +43,7 @@ export default function AuthLayout({ children, maxWidth = 420 }) {
             <img src="/logo-pensum.png" alt="Pensum" className="h-10 brightness-0 invert object-contain" />
           </Link>
 
-          <h2 className="text-[32px] font-extrabold text-white tracking-[-0.04em] leading-[1.15] mb-10 max-w-[380px] max-md:text-[18px] max-md:mb-0 max-md:mt-[10px]">
+          <h2 className="text-[32px] font-semibold text-white tracking-[-0.04em] leading-[1.15] mb-10 max-w-[380px] max-md:text-[18px] max-md:mb-0 max-md:mt-[10px]">
             Educación organizada,<br />simple y moderna
           </h2>
 
@@ -59,7 +59,7 @@ export default function AuthLayout({ children, maxWidth = 420 }) {
           <div className="flex items-center gap-[10px]">
             <div className="flex">
               {TRUST_AVATARS.map((a) => (
-                <div key={a.initials} className="w-7 h-7 rounded-full border-2 border-white/15 flex items-center justify-center text-[10px] font-bold text-white first:ml-0 -ml-2"
+                <div key={a.initials} className="size-7 rounded-full border-2 border-white/15 flex items-center justify-center text-[10px] font-bold text-white first:ml-0 -ml-2"
                   style={{ background: a.grad }}>
                   {a.initials}
                 </div>

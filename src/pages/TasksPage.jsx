@@ -136,7 +136,7 @@ const Modal = ({ open, onClose, title, subtitle, children, width = 520 }) => {
             {subtitle && <div className="text-[12.5px] text-p-text-secondary mt-[3px]">{subtitle}</div>}
           </div>
           <button onClick={onClose}
-            className="w-7 h-7 rounded-[10px] border border-p-border bg-transparent cursor-pointer text-p-text-tertiary flex items-center justify-center text-[16px] leading-none shrink-0">
+            className="size-7 rounded-[10px] border border-p-border bg-transparent cursor-pointer text-p-text-tertiary flex items-center justify-center text-[16px] leading-none shrink-0">
             ×
           </button>
         </div>
@@ -212,7 +212,7 @@ const EvidenceModal = ({ submission, task, courseId, onClose }) => {
 
   return (
     <Modal open onClose={onClose}
-      title={`Revisión — ${submission.studentFullName}`}
+      title={`Revisión: ${submission.studentFullName}`}
       subtitle={`${task.title} · Entregada ${fmtDate(submission.submittedAt) ?? '—'}`}
       width={att && (isImage(att.contentType) || isPdf(att.contentType)) ? 720 : 540}>
       <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-[18px]">
@@ -299,7 +299,7 @@ const SubmissionsModal = ({ task, courseId, onClose }) => {
   return (
     <>
       <Modal open onClose={onClose}
-        title={`Entregas — ${task.title}`}
+        title={`Entregas: ${task.title}`}
         subtitle={`${subs.length} de ${enrolled.length} inscritos entregaron`}
         width={680}>
         <div className="flex-1 overflow-y-auto px-6 py-[18px] flex flex-col gap-[18px]">
@@ -335,7 +335,7 @@ const SubmissionsModal = ({ task, courseId, onClose }) => {
                   const ini = getInitials(sub.studentFullName || sub.studentEmail);
                   return (
                     <div key={sub.id} className="flex items-center gap-3 px-[14px] py-[10px] bg-p-bg-base border border-p-border rounded-[12px]">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+                      <div className="size-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
                         style={{ background: bg }}>{ini}</div>
                       <div className="flex-1 min-w-0">
                         <div className="text-[13.5px] font-medium text-p-text-primary">{sub.studentFullName}</div>
@@ -366,7 +366,7 @@ const SubmissionsModal = ({ task, courseId, onClose }) => {
                   const ini = getInitials(e.fullName || e.email);
                   return (
                     <div key={e.id} className="flex items-center gap-3 px-[14px] py-2 bg-p-bg-subtle border border-p-border rounded-[12px] opacity-65">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0 grayscale-[0.6]"
+                      <div className="size-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0 grayscale-[0.6]"
                         style={{ background: bg }}>{ini}</div>
                       <div className="flex-1"><div className="text-[13.5px] text-p-text-secondary">{e.fullName || e.email}</div></div>
                       <span className="px-2 py-[2px] rounded-full text-[11.5px] font-medium bg-p-bg-muted text-p-text-tertiary">Pendiente</span>
@@ -498,7 +498,7 @@ const DeleteModal = ({ open, tarea, onClose, onConfirm, isPending }) => (
     {tarea && (
       <>
         <div className="px-6 py-5">
-          <div className="w-11 h-11 rounded-2xl bg-p-d-100 flex items-center justify-center text-p-d-500 mb-[14px]">
+          <div className="size-11 rounded-2xl bg-p-d-100 flex items-center justify-center text-p-d-500 mb-[14px]">
             <Icon name="trash" size={20} />
           </div>
           <p className="text-[14px] text-p-text-secondary leading-[1.65] m-0">
@@ -524,7 +524,7 @@ const TareaCard = ({ tarea, onEdit, onDelete, onReview }) => {
 
   return (
     <div className="bg-p-bg-base border border-p-border rounded-2xl shadow-p-sm px-5 py-[18px] flex gap-4 items-start transition-[box-shadow] duration-[120ms] hover:shadow-p-md">
-      <div className="w-10 h-10 rounded-[10px] flex items-center justify-center shrink-0"
+      <div className="size-10 rounded-[10px] flex items-center justify-center shrink-0"
         style={{ background: tm.bg, color: tm.color }}>
         <Icon name={tm.icon} size={18} />
       </div>
@@ -651,7 +651,7 @@ function TeacherView({ cursoId, courseName, curso, tasks, createTask, updateTask
         </button>
         <div className="flex items-start justify-between flex-wrap gap-3">
           <div>
-            <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] m-0 mb-[6px]">
+            <h1 className="text-[22px] font-semibold text-p-text-primary tracking-[-0.03em] m-0 mb-[6px]">
               Tareas · {fullCourseName}
             </h1>
             <div className="flex gap-[14px] flex-wrap">
@@ -752,7 +752,7 @@ const MiEntregaModal = ({ tarea, submission, onClose }) => {
 
   return (
     <Modal open onClose={onClose}
-      title={`Mi entrega — ${tarea?.title}`}
+      title={`Mi entrega: ${tarea?.title}`}
       subtitle={`Entregada el ${fmtDate(submission?.submittedAt) ?? '—'}`}
       width={att && (isImage(att.contentType) || isPdf(att.contentType)) ? 700 : 520}
     >
@@ -760,7 +760,7 @@ const MiEntregaModal = ({ tarea, submission, onClose }) => {
 
         {/* Task summary chip */}
         <div className="flex items-center gap-[10px] px-[14px] py-[10px] bg-p-bg-subtle border border-p-border rounded-2xl">
-          <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0"
+          <div className="size-8 rounded-[10px] flex items-center justify-center shrink-0"
             style={{ background: tm.bg, color: tm.color }}>
             <Icon name={tm.icon} size={14} />
           </div>
@@ -940,7 +940,7 @@ const SubmissionFilePicker = ({ file, progress, uploading, error, onPick, onClea
         </label>
       ) : (
         <div className="flex items-center gap-[10px] px-3 py-[10px] border border-p-border rounded-[12px] bg-p-bg-subtle">
-          <div className="w-8 h-8 rounded-lg bg-p-accent text-p-accent-text flex items-center justify-center shrink-0">
+          <div className="size-8 rounded-lg bg-p-accent text-p-accent-text flex items-center justify-center shrink-0">
             <Icon name="upload" size={14} />
           </div>
           <div className="flex-1 min-w-0">
@@ -1004,7 +1004,7 @@ const EntregarModal = ({ tarea, courseId, onClose, onSuccess }) => {
   if (done) return (
     <Modal open onClose={onClose} title="Entrega registrada" width={400}>
       <div className="py-9 px-6 flex flex-col items-center gap-4 text-center">
-        <div className="w-16 h-16 rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
+        <div className="size-16 rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
           <Icon name="check" size={30} />
         </div>
         <div>
@@ -1018,10 +1018,10 @@ const EntregarModal = ({ tarea, courseId, onClose, onSuccess }) => {
   );
 
   return (
-    <Modal open onClose={onClose} title={`Entregar — ${tarea?.title}`} subtitle={`${tm.label} · ${tarea?.maxScore} pts`}>
+    <Modal open onClose={onClose} title={`Entregar: ${tarea?.title}`} subtitle={`${tm.label} · ${tarea?.maxScore} pts`}>
       <div className="px-6 py-5 flex flex-col gap-4 overflow-y-auto flex-1">
         <div className="px-[14px] py-[10px] bg-p-bg-subtle border border-p-border rounded-2xl flex items-center gap-[10px]">
-          <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0" style={{ background: tm.bg, color: tm.color }}>
+          <div className="size-8 rounded-[10px] flex items-center justify-center shrink-0" style={{ background: tm.bg, color: tm.color }}>
             <Icon name="book" size={14} />
           </div>
           <div>
@@ -1223,7 +1223,7 @@ const TabVencidas = ({ tareas }) => {
         return (
           <div key={t.id} className="bg-p-bg-base border border-p-d-100 rounded-2xl px-5 py-4 flex gap-[14px] items-start shadow-p-sm opacity-85">
             <div className="w-[3px] self-stretch rounded-full bg-p-d-500 shrink-0 min-h-[36px]" />
-            <div className="w-9 h-9 rounded-[10px] bg-p-d-100 flex items-center justify-center text-p-d-500 shrink-0">
+            <div className="size-9 rounded-[10px] bg-p-d-100 flex items-center justify-center text-p-d-500 shrink-0">
               <Icon name="lock" size={16} />
             </div>
             <div className="flex-1 min-w-0">
@@ -1322,7 +1322,7 @@ function StudentView({ cursoId, courseName, curso, tasks, mySubmissions }) {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] m-0">
+        <h1 className="text-[22px] font-semibold text-p-text-primary tracking-[-0.03em] m-0">
           Tareas · {subjectName}
         </h1>
         <div className="flex items-center gap-[10px] mt-2 flex-wrap">

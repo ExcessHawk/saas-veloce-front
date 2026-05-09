@@ -146,7 +146,7 @@ export default function GradeLevelsPage() {
                     />
                   ) : (
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-[8px] bg-p-bg-subtle flex items-center justify-center shrink-0">
+                      <div className="size-7 rounded-[8px] bg-p-bg-subtle flex items-center justify-center shrink-0">
                         <GraduationCap size={13} className="text-p-text-secondary" />
                       </div>
                       <span className="text-[14px] font-medium text-p-text-primary">{level.name}</span>

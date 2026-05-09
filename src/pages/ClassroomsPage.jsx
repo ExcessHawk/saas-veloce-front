@@ -40,7 +40,7 @@ function GradeLevelSelect({ value, onChange, levels }) {
       onChange={(e) => onChange(e.target.value || null)}
       className="w-full px-[10px] py-[9px] rounded-[10px] border border-p-border bg-p-bg-base text-p-text-primary text-[13.5px] font-[inherit] outline-none transition-[border-color] duration-[120ms] focus:border-p-border-strong"
     >
-      <option value="">— Sin nivel —</option>
+      <option value="">Sin nivel</option>
       {(levels ?? []).map((l) => (
         <option key={l.id} value={l.id}>{l.name}</option>
       ))}
@@ -94,7 +94,7 @@ function ClassroomForm({ initial, levels, academicYears, teachers, onSave, onCan
           onChange={(e) => setAcademicYearId(e.target.value || null)}
           className={selectCls}
         >
-          <option value="">— Sin año —</option>
+          <option value="">Sin año</option>
           {(academicYears ?? []).map((y) => (
             <option key={y.id} value={y.id}>{y.name}{y.isCurrent ? ' (vigente)' : ''}</option>
           ))}
@@ -106,7 +106,7 @@ function ClassroomForm({ initial, levels, academicYears, teachers, onSave, onCan
           onChange={(e) => setTutorMemberId(e.target.value || null)}
           className={selectCls}
         >
-          <option value="">— Sin tutor —</option>
+          <option value="">Sin tutor</option>
           {(teachers ?? []).map((t) => (
             <option key={t.id} value={t.id}>{t.fullName || t.email}</option>
           ))}
@@ -265,7 +265,7 @@ function StudentsDialog({ classroom, onClose }) {
       <DialogContent className="max-w-[480px] p-0 overflow-hidden gap-0">
         <DialogHeader className="px-6 pt-6 pb-4 border-b border-p-border">
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-9 h-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
+            <div className="size-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
               <Users size={16} />
             </div>
             <div>
@@ -282,7 +282,7 @@ function StudentsDialog({ classroom, onClose }) {
                 onChange={(e) => setSelectedMemberId(e.target.value)}
                 className={cn(selectCls, 'flex-1')}
               >
-                <option value="">— Seleccionar alumno —</option>
+                <option value="">Seleccionar alumno</option>
                 {availableStudents.map((m) => (
                   <option key={m.id} value={m.id}>{m.fullName || m.email}</option>
                 ))}
@@ -307,7 +307,7 @@ function StudentsDialog({ classroom, onClose }) {
             ) : (
               students.map((s) => (
                 <div key={s.id} className="flex items-center gap-3 px-3 py-[7px] bg-p-bg-subtle rounded-[10px]">
-                  <div className="w-7 h-7 rounded-full bg-p-bg-base border border-p-border flex items-center justify-center text-[11px] font-bold text-p-text-secondary shrink-0">
+                  <div className="size-7 rounded-full bg-p-bg-base border border-p-border flex items-center justify-center text-[11px] font-bold text-p-text-secondary shrink-0">
                     {(s.fullName || '?').slice(0, 1).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -318,7 +318,7 @@ function StudentsDialog({ classroom, onClose }) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 shrink-0"
+                      className="size-7 shrink-0"
                       onClick={() => handleRemove(s.id)}
                       disabled={removeStudent.isPending}
                     >
@@ -400,7 +400,7 @@ export default function ClassroomsPage() {
             <DialogContent className="max-w-[460px] p-0 overflow-hidden gap-0">
               <DialogHeader className="px-6 pt-6 pb-4 border-b border-p-border">
                 <div className="flex items-center gap-3 mb-1">
-                  <div className="w-9 h-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
+                  <div className="size-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
                     <DoorOpen size={16} />
                   </div>
                   <div>
@@ -483,7 +483,7 @@ export default function ClassroomsPage() {
         <DialogContent className="max-w-[460px] p-0 overflow-hidden gap-0">
           <DialogHeader className="px-6 pt-6 pb-4 border-b border-p-border">
             <div className="flex items-center gap-3 mb-1">
-              <div className="w-9 h-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
+              <div className="size-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
                 <DoorOpen size={16} />
               </div>
               <div>

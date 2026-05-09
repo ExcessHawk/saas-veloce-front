@@ -231,7 +231,7 @@ export default function CoursesPage() {
             <DialogContent className="max-w-[480px] p-0 overflow-hidden gap-0">
               <DialogHeader className="px-6 pt-6 pb-4 border-b border-p-border">
                 <div className="flex items-center gap-3 mb-1">
-                  <div className="w-9 h-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
+                  <div className="size-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
                     <GraduationCap size={16} />
                   </div>
                   <div>
@@ -332,7 +332,7 @@ export default function CoursesPage() {
         <DialogContent className="max-w-[480px] p-0 overflow-hidden gap-0">
           <DialogHeader className="px-6 pt-6 pb-4 border-b border-p-border">
             <div className="flex items-center gap-3 mb-1">
-              <div className="w-9 h-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
+              <div className="size-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
                 <GraduationCap size={16} />
               </div>
               <div>

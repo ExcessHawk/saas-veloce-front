@@ -12,7 +12,7 @@ export function ConfirmDeleteDialog({ open, onOpenChange, onConfirm, title, desc
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[420px] p-0 overflow-hidden gap-0">
         <DialogHeader className="px-6 pt-6 pb-0">
-          <div className="w-11 h-11 rounded-2xl bg-p-d-100 flex items-center justify-center text-p-d-500 mb-4">
+          <div className="size-11 rounded-2xl bg-p-d-100 flex items-center justify-center text-p-d-500 mb-4">
             <AlertTriangle size={20} />
           </div>
           <DialogTitle className="text-[16px] font-bold text-p-text-primary tracking-[-0.02em]">

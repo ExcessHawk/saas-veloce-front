@@ -84,7 +84,7 @@ function SubjectForm({ form, onSubmit, loading, submitLabel, onCancel }) {
               title={c.label}
               onClick={() => setValue('color', selectedColor === c.value ? '' : c.value)}
               className={cn(
-                'w-7 h-7 rounded-full border-2 transition-[transform,box-shadow] duration-100',
+                'size-7 rounded-full border-2 transition-[transform,box-shadow] duration-100',
                 selectedColor === c.value
                   ? 'border-p-text-primary scale-110 shadow-[0_0_0_2px_var(--p-bg-base),0_0_0_4px_var(--p-text-primary)]'
                   : 'border-transparent hover:scale-105',
@@ -93,7 +93,7 @@ function SubjectForm({ form, onSubmit, loading, submitLabel, onCancel }) {
             />
           ))}
           {selectedColor && !PRESET_COLORS.find((c) => c.value === selectedColor) && (
-            <div className="w-7 h-7 rounded-full border-2 border-p-text-primary" style={{ background: selectedColor }} />
+            <div className="size-7 rounded-full border-2 border-p-text-primary" style={{ background: selectedColor }} />
           )}
         </div>
         {selectedColor && (
@@ -215,7 +215,7 @@ export default function SubjectsPage() {
             <DialogContent className="max-w-[480px] p-0 overflow-hidden gap-0">
               <DialogHeader className="px-6 pt-6 pb-4 border-b border-p-border">
                 <div className="flex items-center gap-3 mb-1">
-                  <div className="w-9 h-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
+                  <div className="size-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
                     <BookOpen size={16} />
                   </div>
                   <div>
@@ -322,7 +322,7 @@ export default function SubjectsPage() {
         <DialogContent className="max-w-[480px] p-0 overflow-hidden gap-0">
           <DialogHeader className="px-6 pt-6 pb-4 border-b border-p-border">
             <div className="flex items-center gap-3 mb-1">
-              <div className="w-9 h-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
+              <div className="size-9 rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
                 <BookOpen size={16} />
               </div>
               <div>

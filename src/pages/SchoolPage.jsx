@@ -252,7 +252,7 @@ export default function SchoolPage() {
       {/* Title row */}
       <div className="flex items-center justify-between mb-6 gap-3">
         <div>
-          <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] mb-1">
+          <h1 className="text-[22px] font-semibold text-p-text-primary tracking-[-0.03em] mb-1">
             Mi Escuela
           </h1>
           <p className="text-[13.5px] text-p-text-secondary m-0">
@@ -298,7 +298,7 @@ export default function SchoolPage() {
         >
           <div
             className={cn(
-              'w-16 h-16 rounded-[16px] flex items-center justify-center text-[22px] font-extrabold text-white tracking-[-0.03em] transition-[box-shadow] duration-[150ms]',
+              'size-16 rounded-[16px] flex items-center justify-center text-[22px] font-extrabold text-white tracking-[-0.03em] transition-[box-shadow] duration-[150ms]',
               logoHov && editing ? 'shadow-[0_0_0_3px_var(--p-border-strong)]' : 'shadow-none',
             )}
             style={{ background: 'linear-gradient(135deg, oklch(50% 0.08 250), oklch(38% 0.07 260))' }}
@@ -328,7 +328,7 @@ export default function SchoolPage() {
               {errors.name && <div className="text-[12px] text-p-d-500 mt-1">{errors.name.message}</div>}
             </div>
           ) : (
-            <h1 className="text-[24px] font-extrabold text-p-text-primary tracking-[-0.035em] mb-[10px]">
+            <h1 className="text-[24px] font-semibold text-p-text-primary tracking-[-0.035em] mb-[10px]">
               {school?.name || '—'}
             </h1>
           )}

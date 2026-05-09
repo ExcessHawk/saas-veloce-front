@@ -36,7 +36,7 @@ const GradesPage           = lazy(() => import('@/pages/GradesPage'));
 
 const PageFallback = () => (
   <div className="flex h-full items-center justify-center py-20 px-6">
-    <div className="w-6 h-6 rounded-full border-2 border-p-accent border-t-transparent [animation:spin_0.7s_linear_infinite]" />
+    <div className="size-6 rounded-full border-2 border-p-accent border-t-transparent [animation:spin_0.7s_linear_infinite]" />
   </div>
 );
 

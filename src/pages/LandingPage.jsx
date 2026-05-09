@@ -347,7 +347,7 @@ export default function LandingPage() {
               <h2 className="lp-section-title">Diseñado para cómo realmente trabajan las escuelas</h2>
               <p style={{ fontSize: 16, color: 'var(--n-600)', lineHeight: 1.7, marginBottom: 10 }}>Pensum no es un ERP complicado. Es una plataforma simple y poderosa, construida con directores reales.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginTop: 24 }}>
-                {['Inscripciones en segundos — arrastra alumnos a cualquier curso', 'Control de capacidades y alertas de cupo lleno automáticas', 'Asigna docentes a cursos con búsqueda inteligente', 'Los padres monitorean el progreso de sus hijos en tiempo real', 'Implementación en menos de un día laboral'].map(item => (
+                {['Inscripciones en segundos: arrastra alumnos a cualquier curso', 'Control de capacidades y alertas de cupo lleno automáticas', 'Asigna docentes a cursos con búsqueda inteligente', 'Los padres monitorean el progreso de sus hijos en tiempo real', 'Implementación en menos de un día laboral'].map(item => (
                   <div key={item} className="lp-check-item">
                     <div className="lp-check-icon"><CheckIcon /></div>
                     {item}
@@ -527,7 +527,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div style={{ borderTop: '1px solid oklch(99% 0 0/0.07)', paddingTop: 28, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ fontSize: 13, color: 'oklch(42% 0.010 80)' }}>© 2026 Pensum Technologies S.A. de C.V. — Todos los derechos reservados.</p>
+            <p style={{ fontSize: 13, color: 'oklch(42% 0.010 80)' }}>© 2026 Pensum Technologies S.A. de C.V. Todos los derechos reservados.</p>
             <div style={{ fontSize: 13, color: 'oklch(42% 0.010 80)' }}>Hecho con ♥ en México 🇲🇽</div>
           </div>
         </div>

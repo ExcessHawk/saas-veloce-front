@@ -135,7 +135,7 @@ function DotsMenu({ onChangeRole, onDelete, onLinkChildren, isSelf, isParent }) 
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="w-7 h-7 rounded-md border border-transparent bg-transparent cursor-pointer text-p-text-tertiary flex items-center justify-center transition-all duration-100 hover:bg-p-bg-subtle hover:text-p-text-primary"
+        className="size-7 rounded-md border border-transparent bg-transparent cursor-pointer text-p-text-tertiary flex items-center justify-center transition-all duration-100 hover:bg-p-bg-subtle hover:text-p-text-primary"
       >
         <MoreHorizontal size={15} />
       </button>
@@ -280,10 +280,15 @@ function EmptyState({ onAdd, isDirector, query }) {
 function ModalShell({ title, subtitle, onClose, children, width = 480 }) {
   return (
     <div
+      role="presentation"
       onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
       className="fixed inset-0 z-[1000] bg-[oklch(0%_0_0/0.45)] flex items-center justify-center backdrop-blur-[2px] p-4"
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
         onClick={(e) => e.stopPropagation()}
         className="bg-p-bg-base border border-p-border rounded-3xl shadow-p-lg flex flex-col overflow-hidden max-w-[calc(100vw-32px)]"
         style={{ width }}
@@ -302,7 +307,7 @@ function ModalShell({ title, subtitle, onClose, children, width = 480 }) {
           <button
             type="button"
             onClick={onClose}
-            className="w-7 h-7 rounded-[10px] border border-p-border bg-transparent cursor-pointer text-p-text-tertiary flex items-center justify-center"
+            className="size-7 rounded-[10px] border border-p-border bg-transparent cursor-pointer text-p-text-tertiary flex items-center justify-center"
           >
             <X size={14} />
           </button>
@@ -347,7 +352,7 @@ function AddMemberModal({ onClose }) {
     return (
       <ModalShell title="Invitación enviada" onClose={onClose}>
         <div className="px-6 py-6 flex flex-col items-center gap-4 text-center">
-          <div className="w-14 h-14 rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
+          <div className="size-14 rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
             <Mail size={24} />
           </div>
           <div>
@@ -516,7 +521,7 @@ function LinkChildrenModal({ parent, onClose }) {
           </label>
           <div className="flex gap-2">
             <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} className={selectCls}>
-              <option value="">— Seleccionar alumno —</option>
+              <option value="">Seleccionar alumno</option>
               {availableStudents.map((s) => (
                 <option key={s.id} value={s.id}>{s.fullName || s.email}</option>
               ))}
@@ -550,7 +555,7 @@ function LinkChildrenModal({ parent, onClose }) {
                     <button
                       onClick={() => handleUnlink(memberId)}
                       disabled={unlinkChild.isPending}
-                      className="w-7 h-7 rounded-[8px] border border-p-border bg-p-bg-base text-p-text-tertiary flex items-center justify-center cursor-pointer hover:bg-p-d-100 hover:text-p-d-500 hover:border-p-d-500 disabled:opacity-50"
+                      className="size-7 rounded-[8px] border border-p-border bg-p-bg-base text-p-text-tertiary flex items-center justify-center cursor-pointer hover:bg-p-d-100 hover:text-p-d-500 hover:border-p-d-500 disabled:opacity-50"
                     >
                       <X size={12} />
                     </button>
@@ -588,7 +593,7 @@ function DeleteModal({ member, isPending, onClose, onConfirm }) {
         className="w-[420px] max-w-[calc(100vw-32px)] bg-p-bg-base border border-p-border rounded-3xl shadow-p-lg overflow-hidden"
       >
         <div className="px-6 py-5">
-          <div className="w-11 h-11 rounded-2xl bg-p-d-100 flex items-center justify-center text-p-d-500 mb-[14px]">
+          <div className="size-11 rounded-2xl bg-p-d-100 flex items-center justify-center text-p-d-500 mb-[14px]">
             <AlertTriangle size={20} />
           </div>
           <div className="text-[15px] font-bold text-p-text-primary mb-2">
@@ -684,7 +689,7 @@ export default function MembersPage() {
       <div className="flex items-center justify-between mb-[22px] gap-3">
         <div>
           <div className="flex items-center gap-[10px] mb-1">
-            <h1 className="text-[22px] font-extrabold text-p-text-primary tracking-[-0.03em] m-0">
+            <h1 className="text-[22px] font-semibold text-p-text-primary tracking-[-0.03em] m-0">
               Miembros
             </h1>
             <span className="px-[9px] py-[2px] rounded-full text-[13px] font-bold bg-p-bg-muted text-p-text-secondary">

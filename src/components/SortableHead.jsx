@@ -13,10 +13,10 @@ export function SortableHead({ field, label, sorting, className }) {
         {label}
         {isActive ? (
           sorting.dir === 'asc'
-            ? <ChevronUp className="h-3.5 w-3.5" />
-            : <ChevronDown className="h-3.5 w-3.5" />
+            ? <ChevronUp className="size-3.5" />
+            : <ChevronDown className="size-3.5" />
         ) : (
-          <ChevronsUpDown className="h-3.5 w-3.5 text-muted-foreground" />
+          <ChevronsUpDown className="size-3.5 text-muted-foreground" />
         )}
       </div>
     </TableHead>

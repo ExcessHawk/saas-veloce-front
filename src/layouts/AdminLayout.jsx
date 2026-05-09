@@ -32,6 +32,34 @@ const NavItem = ({ item, isActive, onClick }) => {
   );
 };
 
+function SidebarContent({ onItemClick, navItems, isActive, userInitials, userAvatarBg, user, setSidebarOpen }) {
+  return (
+    <>
+      <div className="px-[18px] py-[17px] border-b border-[oklch(99%_0_0/0.07)] flex items-center gap-[10px]">
+        <img src="/logo-pensum.png" alt="Pensum" className="h-7 brightness-0 invert object-contain" />
+        <div className="text-[10.5px] text-p-sidebar-text mt-px">Super Admin</div>
+      </div>
+
+      <nav className="flex-1 p-2 flex flex-col gap-px">
+        {navItems.map((item) => (
+          <NavItem key={item.path} item={item} isActive={isActive(item)} onClick={() => { setSidebarOpen(false); onItemClick?.(); }} />
+        ))}
+      </nav>
+
+      <div className="m-2 px-3 py-[10px] bg-[oklch(99%_0_0/0.06)] rounded-[10px] flex items-center gap-[10px]">
+        <div className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+          style={{ background: userAvatarBg }}>
+          {userInitials}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[12.5px] font-medium text-p-sidebar-text-active truncate">{user?.fullName || user?.email}</div>
+          <div className="text-[10.5px] text-p-sidebar-text">superadmin</div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
@@ -55,31 +83,7 @@ export default function AdminLayout() {
   const userInitials = getInitials(user?.fullName || user?.email || '');
   const userAvatarBg = avatarColor(user?.fullName || user?.email || '');
 
-  const SidebarContent = ({ onItemClick }) => (
-    <>
-      <div className="px-[18px] py-[17px] border-b border-[oklch(99%_0_0/0.07)] flex items-center gap-[10px]">
-        <img src="/logo-pensum.png" alt="Pensum" className="h-7 brightness-0 invert object-contain" />
-        <div className="text-[10.5px] text-p-sidebar-text mt-px">Super Admin</div>
-      </div>
-
-      <nav className="flex-1 p-2 flex flex-col gap-px">
-        {NAV_ITEMS.map((item) => (
-          <NavItem key={item.path} item={item} isActive={isActive(item)} onClick={() => { setSidebarOpen(false); onItemClick?.(); }} />
-        ))}
-      </nav>
-
-      <div className="m-2 px-3 py-[10px] bg-[oklch(99%_0_0/0.06)] rounded-[10px] flex items-center gap-[10px]">
-        <div className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
-          style={{ background: userAvatarBg }}>
-          {userInitials}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-[12.5px] font-medium text-p-sidebar-text-active truncate">{user?.fullName || user?.email}</div>
-          <div className="text-[10.5px] text-p-sidebar-text">superadmin</div>
-        </div>
-      </div>
-    </>
-  );
+  const sidebarProps = { navItems: NAV_ITEMS, isActive, userInitials, userAvatarBg, user, setSidebarOpen };
 
   return (
     <div className="flex h-screen bg-p-bg-app overflow-hidden">
@@ -90,7 +94,7 @@ export default function AdminLayout() {
       )}
 
       <aside className="hidden md:flex w-64 shrink-0 h-screen bg-p-sidebar-bg flex-col border-r border-[oklch(99%_0_0/0.06)] sticky top-0">
-        <SidebarContent />
+        <SidebarContent {...sidebarProps} />
       </aside>
 
       {sidebarOpen && (
@@ -100,7 +104,7 @@ export default function AdminLayout() {
             <div className="px-4 py-3 flex justify-end border-b border-[oklch(99%_0_0/0.07)]">
               <button onClick={() => setSidebarOpen(false)} className="bg-transparent border-0 text-p-sidebar-text cursor-pointer flex p-1"><X size={18} /></button>
             </div>
-            <SidebarContent onItemClick={() => setSidebarOpen(false)} />
+            <SidebarContent {...sidebarProps} onItemClick={() => setSidebarOpen(false)} />
           </aside>
         </div>
       )}

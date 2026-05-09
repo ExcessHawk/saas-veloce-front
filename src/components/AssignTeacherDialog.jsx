@@ -71,7 +71,7 @@ export function AssignTeacherDialog({ open, onOpenChange, course, subjectName, c
             Asignar Docente
           </DialogTitle>
           <div className="text-[13px] text-p-text-secondary mt-[2px]">
-            {subjectName} — {classroomName}
+            {subjectName} · {classroomName}
           </div>
         </DialogHeader>
 
@@ -94,7 +94,7 @@ export function AssignTeacherDialog({ open, onOpenChange, course, subjectName, c
             {currentTeacher ? (
               <div className="flex items-center gap-3 px-[14px] py-3 bg-p-bg-subtle border border-p-border rounded-2xl">
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0"
+                  className="size-10 rounded-full flex items-center justify-center text-[13px] font-bold text-white shrink-0"
                   style={{ background: avatarColor(currentTeacher.fullName || '') }}
                 >
                   {getInitials(currentTeacher.fullName || currentTeacher.email)}
