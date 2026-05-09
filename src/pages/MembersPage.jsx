@@ -516,9 +516,9 @@ function LinkChildrenModal({ parent, onClose }) {
     <ModalShell title="Vincular hijos" subtitle={parent.fullName || parent.email} onClose={onClose}>
       <div className="px-6 py-5 flex flex-col gap-4">
         <div>
-          <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
+          <div className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
             Agregar vínculo
-          </label>
+          </div>
           <div className="flex gap-2">
             <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} className={selectCls}>
               <option value="">Seleccionar alumno</option>
@@ -537,9 +537,9 @@ function LinkChildrenModal({ parent, onClose }) {
         </div>
 
         <div>
-          <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
+          <div className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
             Hijos vinculados
-          </label>
+          </div>
           {children.length === 0 ? (
             <p className="text-[13px] text-p-text-tertiary py-2">No hay hijos vinculados aún.</p>
           ) : (
@@ -764,7 +764,7 @@ export default function MembersPage() {
           <div className="px-5 py-8">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={`skeleton-member-${i}`} className="flex items-center gap-[11px] py-3 border-b border-p-border">
-                <div className="w-[34px] h-[34px] rounded-full bg-p-bg-subtle" />
+                <div className="size-[34px] rounded-full bg-p-bg-subtle" />
                 <div className="flex-1">
                   <div className="h-3 bg-p-bg-subtle rounded w-[40%] mb-[6px]" />
                   <div className="h-[10px] bg-p-bg-subtle rounded w-[60%]" />

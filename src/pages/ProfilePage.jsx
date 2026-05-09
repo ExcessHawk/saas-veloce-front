@@ -369,7 +369,7 @@ function ProfileCard({ profile, role }) {
             {rc.label}
           </span>
           <span className="px-[10px] py-[3px] rounded-full text-[12px] font-bold bg-p-s-100 text-p-s-700 flex items-center gap-[5px]">
-            <span className="w-[6px] h-[6px] rounded-full bg-p-s-500 shrink-0" />
+            <span className="size-[6px] rounded-full bg-p-s-500 shrink-0" />
             {profile?.status === 'active' ? 'Activo' : (profile?.status || 'Activo')}
           </span>
         </div>
@@ -386,7 +386,7 @@ function ProfileCard({ profile, role }) {
           { icon: Hash,     label: 'Total de accesos', value: String(profile?.loginCount ?? 0) },
         ].map((s) => (
           <div key={s.label} className="flex items-start gap-[10px] mb-[14px]">
-            <div className="w-[30px] h-[30px] rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
+            <div className="size-[30px] rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
               <s.icon size={13} />
             </div>
             <div>
@@ -409,7 +409,7 @@ function SkeletonProfile() {
       <div className="h-[14px] bg-p-bg-subtle rounded-[6px] mb-[18px] w-4/5 mx-auto" />
       {[1, 2, 3].map((i) => (
         <div key={`skeleton-stat-${i}`} className="flex gap-[10px] mb-[14px]">
-          <div className="w-[30px] h-[30px] rounded-[10px] bg-p-bg-subtle" />
+          <div className="size-[30px] rounded-[10px] bg-p-bg-subtle" />
           <div className="flex-1">
             <div className="h-[11px] bg-p-bg-subtle rounded-[4px] w-2/5 mb-[5px]" />
             <div className="h-[14px] bg-p-bg-subtle rounded-[4px] w-[70%]" />

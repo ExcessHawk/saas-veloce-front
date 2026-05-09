@@ -86,7 +86,7 @@ export default function GradeLevelsPage() {
     } catch { /* handled */ }
   };
 
-  const sorted = [...(levels ?? [])].sort((a, b) => a.order - b.order);
+  const sorted = (levels ?? []).toSorted((a, b) => a.order - b.order);
 
   return (
     <div className="space-y-5">
@@ -165,10 +165,10 @@ export default function GradeLevelsPage() {
                     {editId !== level.id && (
                       <div className="flex gap-1">
                         <Button variant="ghost" size="icon" onClick={() => setEditId(level.id)}>
-                          <Pencil className="h-4 w-4" />
+                          <Pencil className="size-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => setDeletingItem(level)}>
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="size-4" />
                         </Button>
                       </div>
                     )}

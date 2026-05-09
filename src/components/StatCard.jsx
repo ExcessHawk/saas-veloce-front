@@ -8,7 +8,7 @@ export function StatCard({ label, value, sub, icon: Icon, warn = false, isLoadin
     )}>
       <div className="flex justify-between items-start mb-[14px]">
         <div className={cn(
-          'w-[38px] h-[38px] rounded-[10px] flex items-center justify-center',
+          'size-[38px] rounded-[10px] flex items-center justify-center',
           warn ? 'bg-p-w-100 text-p-w-700' : 'bg-p-bg-subtle text-p-text-secondary'
         )}>
           {Icon && <Icon size={17} />}

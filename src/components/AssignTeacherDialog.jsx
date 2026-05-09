@@ -122,7 +122,7 @@ export function AssignTeacherDialog({ open, onOpenChange, course, subjectName, c
                 </button>
               </div>
             ) : (
-              <div className="px-[14px] py-[14px] bg-p-w-100 border border-dashed border-p-w-500 rounded-2xl text-[13px] text-p-w-700 flex items-center gap-2">
+              <div className="p-[14px] bg-p-w-100 border border-dashed border-p-w-500 rounded-2xl text-[13px] text-p-w-700 flex items-center gap-2">
                 <AlertTriangle size={14} />
                 Este curso no tiene docente asignado
               </div>
@@ -195,7 +195,7 @@ export function AssignTeacherDialog({ open, onOpenChange, course, subjectName, c
                       )}
                     >
                       <div
-                        className="w-[34px] h-[34px] rounded-full flex items-center justify-center text-[12px] font-bold text-white shrink-0"
+                        className="size-[34px] rounded-full flex items-center justify-center text-[12px] font-bold text-white shrink-0"
                         style={{ background: avatarColor(t.fullName || '') }}
                       >
                         {getInitials(t.fullName || t.email)}
@@ -206,7 +206,7 @@ export function AssignTeacherDialog({ open, onOpenChange, course, subjectName, c
                         </div>
                         <div className="flex items-center gap-2 mt-[2px]">
                           <span className="text-[11.5px] text-p-text-tertiary">{t.email}</span>
-                          <span className="w-[3px] h-[3px] rounded-full bg-p-text-tertiary" />
+                          <span className="size-[3px] rounded-full bg-p-text-tertiary" />
                           <span className={cn('text-[11.5px]', cnt === 0 ? 'text-p-s-700' : 'text-p-text-tertiary')}>
                             {cnt === 0 ? 'Sin cursos' : `${cnt} curso${cnt > 1 ? 's' : ''}`}
                           </span>

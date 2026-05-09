@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
@@ -41,9 +41,7 @@ export function AuthTabs({ active }) {
   );
 }
 
-export const AuthInput = forwardRef(function AuthInput(
-  { label, type = 'text', icon: Icon, suffix, error, mono, ...rest }, ref,
-) {
+export function AuthInput({ label, type = 'text', icon: Icon, suffix, error, mono, ref, ...rest }) {
   return (
     <div className="mb-[14px]">
       {label && (
@@ -81,7 +79,7 @@ export const AuthInput = forwardRef(function AuthInput(
       {error && <div className="text-[11.5px] text-p-d-500 mt-[5px]">{error}</div>}
     </div>
   );
-});
+}
 
 export function AuthButton({ children, loading, type = 'button', onClick, disabled, icon: Icon }) {
   return (

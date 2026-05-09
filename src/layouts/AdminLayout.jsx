@@ -47,7 +47,7 @@ function SidebarContent({ onItemClick, navItems, isActive, userInitials, userAva
       </nav>
 
       <div className="m-2 px-3 py-[10px] bg-[oklch(99%_0_0/0.06)] rounded-[10px] flex items-center gap-[10px]">
-        <div className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+        <div className="size-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
           style={{ background: userAvatarBg }}>
           {userInitials}
         </div>

@@ -96,9 +96,9 @@ export default function RegisterPage() {
 
         <p className="text-center text-[12px] text-p-text-tertiary mt-4 mb-0 leading-relaxed">
           Al registrarte aceptas nuestros{' '}
-          <a href="#" className="text-p-text-primary font-medium">Términos y Condiciones</a>{' '}
+          <a href="#terms" className="text-p-text-primary font-medium">Términos y Condiciones</a>{' '}
           y{' '}
-          <a href="#" className="text-p-text-primary font-medium">Política de Privacidad</a>.
+          <a href="#privacy" className="text-p-text-primary font-medium">Política de Privacidad</a>.
         </p>
       </form>
     </AuthLayout>

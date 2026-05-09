@@ -108,7 +108,7 @@ function SectionCard(props) {
   return (
     <div className="bg-p-bg-base border border-p-border rounded-[24px] shadow-p-sm overflow-hidden">
       <div className="px-[22px] py-[16px] pb-[14px] border-b border-p-border flex items-center gap-[9px]">
-        <div className="w-[30px] h-[30px] rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
+        <div className="size-[30px] rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
           <props.icon size={14} />
         </div>
         <span className="text-[13.5px] font-bold text-p-text-primary tracking-[-0.01em]">
@@ -347,7 +347,7 @@ export default function SchoolPage() {
               const s = STATUS[school?.status] ?? STATUS.active;
               return (
                 <span className={`px-[10px] py-[3px] rounded-full text-[12px] font-bold flex items-center gap-[5px] ${s.cls}`}>
-                  <span className={`w-[6px] h-[6px] rounded-full ${s.dot}`} />
+                  <span className={`size-[6px] rounded-full ${s.dot}`} />
                   {s.label}
                 </span>
               );

@@ -50,7 +50,7 @@ const HijoCard = ({ hijo }) => {
         className="px-[22px] py-[18px] flex items-center gap-[14px] cursor-pointer select-none"
       >
         <div
-          className="w-[46px] h-[46px] rounded-full flex items-center justify-center text-[15px] font-bold text-white shrink-0"
+          className="size-[46px] rounded-full flex items-center justify-center text-[15px] font-bold text-white shrink-0"
           style={{ background: bg }}
         >
           {initials}
@@ -59,13 +59,13 @@ const HijoCard = ({ hijo }) => {
           <div className="text-[16px] font-bold text-p-text-primary tracking-[-0.02em]">{nombre}</div>
           <div className="flex items-center gap-[10px] mt-[3px]">
             <span className="text-[12.5px] text-p-text-secondary">{grado}</span>
-            <span className="w-[3px] h-[3px] rounded-full bg-p-text-tertiary" />
+            <span className="size-[3px] rounded-full bg-p-text-tertiary" />
             <span className="text-[12.5px] text-p-text-secondary">{cursos.length} cursos</span>
           </div>
         </div>
         {pendientes > 0 && (
           <div className="flex items-center gap-[6px] px-3 py-[5px] bg-p-w-100 rounded-full border border-p-w-500">
-            <span className="w-[6px] h-[6px] rounded-full bg-p-w-500" />
+            <span className="size-[6px] rounded-full bg-p-w-500" />
             <span className="text-[12px] font-semibold text-p-w-700">
               {pendientes} tarea{pendientes > 1 ? 's' : ''} pendiente{pendientes > 1 ? 's' : ''}
             </span>
@@ -133,7 +133,7 @@ const StatCardMini = ({ label, val, Icon, warn }) => (
     warn ? 'border-p-w-500' : 'border-p-border',
   )}>
     <div className={cn(
-      'w-[38px] h-[38px] rounded-[10px] flex items-center justify-center shrink-0',
+      'size-[38px] rounded-[10px] flex items-center justify-center shrink-0',
       warn ? 'bg-p-w-100 text-p-w-700' : 'bg-p-bg-subtle text-p-text-secondary',
     )}>
       <Icon size={17} />

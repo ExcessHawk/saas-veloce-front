@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Link } from 'react-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useStats, useActivity } from '@/hooks/useDashboard';
 import { useAcademicYears } from '@/hooks/useAcademicYears';
@@ -279,9 +280,9 @@ function TeacherDashboard({ user, currentYearName }) {
             const mc = getMateriaColor(c.name);
             const yearName = c.academicYearId ? (yearMap[c.academicYearId] ?? '') : '';
             return (
-              <a
+              <Link
                 key={c.id}
-                href={`/dashboard/tareas/${c.id}`}
+                to={`/dashboard/tareas/${c.id}`}
                 state={{ curso: c }}
                 className="bg-p-bg-base border border-p-border rounded-2xl shadow-p-sm overflow-hidden no-underline hover:shadow-p-md hover:-translate-y-px transition-all duration-150 flex flex-col"
               >
@@ -293,7 +294,7 @@ function TeacherDashboard({ user, currentYearName }) {
                     Ver tareas →
                   </div>
                 </div>
-              </a>
+              </Link>
             );
           })}
         </div>
@@ -356,15 +357,15 @@ function StudentDashboard({ user, currentYearName }) {
                 const mc = getMateriaColor(c.name);
                 const yearName = c.academicYearId ? (yearMap[c.academicYearId] ?? '') : '';
                 return (
-                  <a key={c.id} href={`/dashboard/tareas/${c.id}`} state={{ curso: c }}
+                  <Link key={c.id} to={`/dashboard/tareas/${c.id}`} state={{ curso: c }}
                     className="flex items-center gap-3 px-5 py-[13px] no-underline hover:bg-p-bg-subtle transition-colors duration-100">
-                    <div className="w-[6px] h-[6px] rounded-full shrink-0" style={{ background: mc.color }} />
+                    <div className="size-[6px] rounded-full shrink-0" style={{ background: mc.color }} />
                     <div className="flex-1">
                       <div className="text-[13.5px] font-medium text-p-text-primary">{c.name}</div>
                       {yearName && <div className="text-[12px] text-p-text-tertiary mt-[1px]">{yearName}</div>}
                     </div>
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--p-text-tertiary)" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
-                  </a>
+                  </Link>
                 );
               })}
             </div>

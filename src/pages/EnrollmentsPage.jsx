@@ -75,7 +75,7 @@ const StudentRow = ({ name, email, onAction, actionLabel, danger, disabled }) =>
   return (
     <div className="flex items-center gap-[10px] py-[9px] border-b border-p-border">
       <div
-        className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+        className="size-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
         style={{ background: bg }}
       >
         {getInitials(name)}
@@ -252,7 +252,7 @@ export default function EnrollmentsPage() {
                 </div>
                 <button
                   onClick={() => setSelected(null)}
-                  className="w-[26px] h-[26px] rounded-lg border border-p-border bg-transparent cursor-pointer text-p-text-tertiary flex items-center justify-center text-[15px] shrink-0"
+                  className="size-[26px] rounded-lg border border-p-border bg-transparent cursor-pointer text-p-text-tertiary flex items-center justify-center text-[15px] shrink-0"
                 >
                   ×
                 </button>
@@ -338,7 +338,7 @@ export default function EnrollmentsPage() {
                         className={cn('flex items-center gap-[9px] px-3 py-2 hover:bg-p-bg-subtle', i > 0 && 'border-t border-p-border')}
                       >
                         <div
-                          className="w-[26px] h-[26px] rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
+                          className="size-[26px] rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
                           style={{ background: avatarColor(s.fullName || s.email) }}
                         >
                           {getInitials(s.fullName || s.email)}

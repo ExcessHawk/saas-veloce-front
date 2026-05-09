@@ -46,7 +46,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handler);
+    window.addEventListener('scroll', handler, { passive: true });
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
@@ -515,15 +515,15 @@ export default function LandingPage() {
             </div>
             <div>
               <h4 style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: 'oklch(55% 0.010 80)', marginBottom: 16 }}>Producto</h4>
-              {['Características', 'Precios', 'Integraciones', 'Novedades', 'Roadmap'].map(l => <a key={l} href="#">{l}</a>)}
+              {['Características', 'Precios', 'Integraciones', 'Novedades', 'Roadmap'].map(l => <a key={l} href={`#${l.toLowerCase().replace(/\s+/g,'-')}`}>{l}</a>)}
             </div>
             <div>
               <h4 style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: 'oklch(55% 0.010 80)', marginBottom: 16 }}>Compañía</h4>
-              {['Nosotros', 'Blog', 'Clientes', 'Prensa', 'Contacto'].map(l => <a key={l} href="#">{l}</a>)}
+              {['Nosotros', 'Blog', 'Clientes', 'Prensa', 'Contacto'].map(l => <a key={l} href={`#${l.toLowerCase().replace(/\s+/g,'-')}`}>{l}</a>)}
             </div>
             <div>
               <h4 style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: 'oklch(55% 0.010 80)', marginBottom: 16 }}>Legal</h4>
-              {['Privacidad', 'Términos de uso', 'Seguridad', 'RGPD / LFPDPPP', 'Cookies'].map(l => <a key={l} href="#">{l}</a>)}
+              {['Privacidad', 'Términos de uso', 'Seguridad', 'RGPD / LFPDPPP', 'Cookies'].map(l => <a key={l} href={`#${l.toLowerCase().replace(/\s+/g,'-')}`}>{l}</a>)}
             </div>
           </div>
           <div style={{ borderTop: '1px solid oklch(99% 0 0/0.07)', paddingTop: 28, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

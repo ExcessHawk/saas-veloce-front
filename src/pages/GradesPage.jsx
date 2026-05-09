@@ -51,7 +51,7 @@ function ScoreCell({ submission, maxScore }) {
 function StatCard({ icon: Icon, label, value }) {
   return (
     <div className="bg-p-bg-base border border-p-border rounded-[16px] px-[18px] py-[14px] flex items-center gap-[12px]">
-      <div className="w-[36px] h-[36px] rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
+      <div className="size-[36px] rounded-[10px] bg-p-bg-subtle flex items-center justify-center text-p-text-secondary shrink-0">
         <Icon size={16} />
       </div>
       <div>
@@ -156,11 +156,11 @@ export default function GradesPage() {
             {yearName && yearName !== '—' && (
               <>
                 <span>{yearName}</span>
-                <span className="w-[3px] h-[3px] rounded-full bg-p-text-tertiary shrink-0" />
+                <span className="size-[3px] rounded-full bg-p-text-tertiary shrink-0" />
               </>
             )}
             <span>{students.length} alumno{students.length !== 1 ? 's' : ''}</span>
-            <span className="w-[3px] h-[3px] rounded-full bg-p-text-tertiary shrink-0" />
+            <span className="size-[3px] rounded-full bg-p-text-tertiary shrink-0" />
             <span>{tasks.length} tarea{tasks.length !== 1 ? 's' : ''}</span>
           </div>
         </div>
@@ -243,7 +243,7 @@ export default function GradesPage() {
                       <td className="px-5 py-[11px]">
                         <div className="flex items-center gap-[10px]">
                           <div
-                            className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+                            className="size-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
                             style={{ background: bg }}
                           >
                             {ini}

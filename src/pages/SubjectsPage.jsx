@@ -208,7 +208,7 @@ export default function SubjectsPage() {
           <Dialog open={open} onOpenChange={(v) => { if (!v) createForm.reset(); setOpen(v); }}>
             <DialogTrigger asChild>
               <Button>
-                <Plus className="mr-1 h-4 w-4" />
+                <Plus className="mr-1 size-4" />
                 Crear Materia
               </Button>
             </DialogTrigger>
@@ -297,10 +297,10 @@ export default function SubjectsPage() {
                   <RoleGate roles={['director']}>
                     <div className="flex gap-1">
                       <Button variant="ghost" size="icon" onClick={() => setEditingItem(subject)}>
-                        <Pencil className="h-4 w-4" />
+                        <Pencil className="size-4" />
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => setDeletingItem(subject)}>
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="size-4" />
                       </Button>
                     </div>
                   </RoleGate>

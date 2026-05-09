@@ -20,9 +20,13 @@ function fmtDate(d) {
   return new Date(d).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+const fmtMXN = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
+const fmtUSD = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'USD' });
+
 function fmtPrice(cents, currency) {
   if (!cents) return 'Gratis';
-  return new Intl.NumberFormat('es-MX', { style: 'currency', currency }).format(cents / 100);
+  const fmt = currency === 'USD' ? fmtUSD : fmtMXN;
+  return fmt.format(cents / 100);
 }
 
 export default function BillingPage() {

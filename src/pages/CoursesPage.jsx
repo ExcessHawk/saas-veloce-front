@@ -63,7 +63,7 @@ function CourseForm({ form, classroomsData, subjectsData, academicYearsData, onS
               {subjectsData?.map((s) => (
                 <SelectItem key={s.id} value={s.id}>
                   <div className="flex items-center gap-2">
-                    {s.color && <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: s.color }} />}
+                    {s.color && <div className="size-2.5 rounded-full shrink-0" style={{ background: s.color }} />}
                     {s.name}
                     {s.code && <span className="text-muted-foreground text-xs">· {s.code}</span>}
                   </div>
@@ -226,7 +226,7 @@ export default function CoursesPage() {
         <RoleGate roles={['director', 'teacher']}>
           <Dialog open={open} onOpenChange={(v) => { if (!v) createForm.reset(); setOpen(v); }}>
             <DialogTrigger asChild>
-              <Button><Plus className="mr-1 h-4 w-4" />Crear Curso</Button>
+              <Button><Plus className="mr-1 size-4" />Crear Curso</Button>
             </DialogTrigger>
             <DialogContent className="max-w-[480px] p-0 overflow-hidden gap-0">
               <DialogHeader className="px-6 pt-6 pb-4 border-b border-p-border">
@@ -305,13 +305,13 @@ export default function CoursesPage() {
                     <RoleGate roles={['director']}>
                       <div className="flex gap-1">
                         <Button variant="ghost" size="icon" title="Asignar docente" onClick={() => setAssigningItem(course)}>
-                          <UserCog className="h-4 w-4" />
+                          <UserCog className="size-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => setEditingItem(course)}>
-                          <Pencil className="h-4 w-4" />
+                          <Pencil className="size-4" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => setDeletingItem(course)}>
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="size-4" />
                         </Button>
                       </div>
                     </RoleGate>

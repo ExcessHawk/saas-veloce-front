@@ -76,7 +76,7 @@ function Stepper({ step }) {
           <div key={s.n} className="flex items-center gap-3 flex-1">
             <div className="flex items-center gap-[10px]">
               <div className={cn(
-                'w-[26px] h-[26px] rounded-full flex items-center justify-center text-[12px] font-bold transition-all duration-150',
+                'size-[26px] rounded-full flex items-center justify-center text-[12px] font-bold transition-all duration-150',
                 done || active
                   ? 'bg-p-accent text-p-accent-text'
                   : 'bg-p-bg-subtle text-p-text-tertiary',
@@ -141,7 +141,7 @@ function PlanCard({ plan, selected, onSelect }) {
         {plan.features.map((f) => (
           <div key={f} className="flex items-start gap-2 text-[12.5px] text-p-text-secondary">
             <span className={cn(
-              'w-[14px] h-[14px] rounded-full flex items-center justify-center flex-shrink-0 mt-px',
+              'size-[14px] rounded-full flex items-center justify-center flex-shrink-0 mt-px',
               selected
                 ? 'bg-p-accent text-p-accent-text'
                 : 'bg-p-bg-muted text-p-text-secondary',
@@ -163,7 +163,7 @@ function PlanCard({ plan, selected, onSelect }) {
             ? 'border-[1.5px] border-p-accent bg-p-accent'
             : 'border-[1.5px] border-p-border-strong bg-transparent',
         )}>
-          {selected && <div className="w-[6px] h-[6px] rounded-full bg-p-accent-text" />}
+          {selected && <div className="size-[6px] rounded-full bg-p-accent-text" />}
         </div>
       </div>
     </button>

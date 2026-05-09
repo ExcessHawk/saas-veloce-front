@@ -20,7 +20,7 @@ const NAV_BY_ROLE = {
     { path: '/dashboard/academic-years', label: 'Años Académicos', icon: Calendar        },
     { path: '/dashboard/inscriptions',   label: 'Inscripciones',   icon: UserPlus        },
     { path: '/dashboard/members',        label: 'Miembros',        icon: Users           },
-    { divider: true },
+    { divider: true, id: 'divider' },
     { path: '/dashboard/billing',        label: 'Facturación',     icon: CreditCard      },
     { path: '/dashboard/school',         label: 'Mi Escuela',      icon: School          },
     { path: '/dashboard/profile',        label: 'Mi Perfil',       icon: UserCircle      },
@@ -28,19 +28,19 @@ const NAV_BY_ROLE = {
   teacher: [
     { path: '/dashboard',            label: 'Dashboard',  icon: LayoutDashboard },
     { path: '/dashboard/mis-cursos', label: 'Mis Cursos', icon: GraduationCap   },
-    { divider: true },
+    { divider: true, id: 'divider' },
     { path: '/dashboard/profile',    label: 'Mi Perfil',  icon: UserCircle      },
   ],
   student: [
     { path: '/dashboard',            label: 'Dashboard',  icon: LayoutDashboard },
     { path: '/dashboard/mis-cursos', label: 'Mis Cursos', icon: GraduationCap   },
-    { divider: true },
+    { divider: true, id: 'divider' },
     { path: '/dashboard/profile',    label: 'Mi Perfil',  icon: UserCircle      },
   ],
   parent: [
     { path: '/dashboard',           label: 'Dashboard', icon: LayoutDashboard },
     { path: '/dashboard/mis-hijos', label: 'Mis Hijos', icon: Users           },
-    { divider: true },
+    { divider: true, id: 'divider' },
     { path: '/dashboard/profile',   label: 'Mi Perfil', icon: UserCircle      },
   ],
 };
@@ -57,10 +57,47 @@ const NavItem = ({ item, isActive, onClick }) => {
       )}>
       <Icon size={15} />
       <span className="flex-1">{item.label}</span>
-      {isActive && <span className="w-[5px] h-[5px] rounded-full bg-p-sidebar-text-active opacity-40" />}
+      {isActive && <span className="size-[5px] rounded-full bg-p-sidebar-text-active opacity-40" />}
     </Link>
   );
 };
+
+function SidebarContent({ navItems, isActive, onItemClick, user, role, userInitials, userAvatarBg }) {
+  return (
+    <>
+      <div className="px-[18px] pt-[14px] pb-3 border-b border-[oklch(99%_0_0/0.07)] flex flex-col gap-[6px]">
+        <img src="/logo-pensum.png" alt="Pensum" className="h-[30px] brightness-0 invert object-contain object-left" />
+        <div className="text-[10.5px] text-p-sidebar-text pl-[2px]">
+          {user?.schoolName || 'Instituto Demo'}
+        </div>
+      </div>
+
+      <nav className="flex-1 p-2 flex flex-col gap-px overflow-y-auto">
+        {navItems.map((item) =>
+          item.divider ? (
+            <div key={item.id} className="my-2 border-t border-[oklch(99%_0_0/0.07)]" />
+          ) : (
+            <NavItem key={item.path} item={item} isActive={isActive(item.path)}
+              onClick={onItemClick} />
+          )
+        )}
+      </nav>
+
+      <div className="m-2 px-3 py-[10px] bg-[oklch(99%_0_0/0.06)] rounded-[10px] flex items-center gap-[10px]">
+        <div className="size-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
+          style={{ background: userAvatarBg }}>
+          {userInitials}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[12.5px] font-medium text-p-sidebar-text-active truncate">
+            {user?.fullName || user?.email || 'Usuario'}
+          </div>
+          <div className="text-[10.5px] text-p-sidebar-text capitalize">{role}</div>
+        </div>
+      </div>
+    </>
+  );
+}
 
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -88,40 +125,7 @@ export default function DashboardLayout() {
   const userInitials = getInitials(user?.fullName || user?.email || '');
   const userAvatarBg = avatarColor(user?.fullName || user?.email || '');
 
-  const SidebarContent = ({ onItemClick }) => (
-    <>
-      <div className="px-[18px] pt-[14px] pb-3 border-b border-[oklch(99%_0_0/0.07)] flex flex-col gap-[6px]">
-        <img src="/logo-pensum.png" alt="Pensum" className="h-[30px] brightness-0 invert object-contain object-left" />
-        <div className="text-[10.5px] text-p-sidebar-text pl-[2px]">
-          {user?.schoolName || 'Instituto Demo'}
-        </div>
-      </div>
-
-      <nav className="flex-1 p-2 flex flex-col gap-px overflow-y-auto">
-        {navItems.map((item, i) =>
-          item.divider ? (
-            <div key={`divider-${i}`} className="my-2 border-t border-[oklch(99%_0_0/0.07)]" />
-          ) : (
-            <NavItem key={item.path} item={item} isActive={isActive(item.path)}
-              onClick={() => { setSidebarOpen(false); onItemClick?.(); }} />
-          )
-        )}
-      </nav>
-
-      <div className="m-2 px-3 py-[10px] bg-[oklch(99%_0_0/0.06)] rounded-[10px] flex items-center gap-[10px]">
-        <div className="w-[30px] h-[30px] rounded-full flex items-center justify-center text-[11px] font-bold text-white shrink-0"
-          style={{ background: userAvatarBg }}>
-          {userInitials}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="text-[12.5px] font-medium text-p-sidebar-text-active truncate">
-            {user?.fullName || user?.email || 'Usuario'}
-          </div>
-          <div className="text-[10.5px] text-p-sidebar-text capitalize">{role}</div>
-        </div>
-      </div>
-    </>
-  );
+  const sidebarProps = { navItems, isActive, user, role, userInitials, userAvatarBg };
 
   return (
     <div className="flex h-screen bg-p-bg-app overflow-hidden">
@@ -133,7 +137,7 @@ export default function DashboardLayout() {
 
       {/* Sidebar desktop */}
       <aside className="hidden md:flex w-64 shrink-0 h-screen bg-p-sidebar-bg flex-col border-r border-[oklch(99%_0_0/0.06)] sticky top-0">
-        <SidebarContent />
+        <SidebarContent {...sidebarProps} />
       </aside>
 
       {/* Sidebar mobile */}
@@ -147,7 +151,7 @@ export default function DashboardLayout() {
                 <X size={18} />
               </button>
             </div>
-            <SidebarContent onItemClick={() => setSidebarOpen(false)} />
+            <SidebarContent {...sidebarProps} onItemClick={() => setSidebarOpen(false)} />
           </aside>
         </div>
       )}
@@ -168,9 +172,9 @@ export default function DashboardLayout() {
 
           <div className="flex-1" />
 
-          <button className="w-[34px] h-[34px] rounded-[10px] border border-p-border bg-transparent flex items-center justify-center cursor-pointer text-p-text-secondary relative">
+          <button className="size-[34px] rounded-[10px] border border-p-border bg-transparent flex items-center justify-center cursor-pointer text-p-text-secondary relative">
             <Bell size={15} />
-            <span className="absolute top-[6px] right-[6px] w-[6px] h-[6px] rounded-full bg-p-d-500 border-[1.5px] border-p-bg-base" />
+            <span className="absolute top-[6px] right-[6px] size-[6px] rounded-full bg-p-d-500 border-[1.5px] border-p-bg-base" />
           </button>
 
           <ModeToggle />

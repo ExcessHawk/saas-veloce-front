@@ -106,7 +106,7 @@ const Btn = ({ children, variant = 'primary', onClick, disabled, icon, size = 'm
 const GhostIcon = ({ name, title, onClick, danger }) => (
   <button title={title} onClick={onClick}
     className={cn(
-      'w-[30px] h-[30px] rounded-md border border-transparent bg-transparent flex items-center justify-center cursor-pointer transition-all duration-100',
+      'size-[30px] rounded-md border border-transparent bg-transparent flex items-center justify-center cursor-pointer transition-all duration-100',
       danger
         ? 'text-p-text-tertiary hover:bg-p-d-100 hover:text-p-d-500'
         : 'text-p-text-tertiary hover:bg-p-bg-subtle hover:text-p-text-primary',
@@ -172,7 +172,7 @@ const Toggle = ({ checked, onChange, label, sub }) => (
         checked ? 'bg-p-accent' : 'bg-p-bg-muted',
       )}>
       <div className={cn(
-        'absolute top-[2px] w-[18px] h-[18px] rounded-full bg-white shadow-[0_1px_3px_oklch(0%_0_0/0.2)] transition-transform duration-200',
+        'absolute top-[2px] size-[18px] rounded-full bg-white shadow-[0_1px_3px_oklch(0%_0_0/0.2)] transition-transform duration-200',
         checked ? 'translate-x-[20px]' : 'translate-x-[2px]',
       )} />
     </button>
@@ -656,12 +656,12 @@ function TeacherView({ cursoId, courseName, curso, tasks, createTask, updateTask
             </h1>
             <div className="flex gap-[14px] flex-wrap">
               <span className="text-[13px] text-p-text-secondary flex items-center gap-[5px]">
-                <span className="w-[7px] h-[7px] rounded-full bg-p-s-500 inline-block" />
+                <span className="size-[7px] rounded-full bg-p-s-500 inline-block" />
                 {activas} activa{activas !== 1 ? 's' : ''}
               </span>
               {borradores > 0 && (
                 <span className="text-[13px] text-p-text-secondary flex items-center gap-[5px]">
-                  <span className="w-[7px] h-[7px] rounded-full bg-p-w-500 inline-block" />
+                  <span className="size-[7px] rounded-full bg-p-w-500 inline-block" />
                   {borradores} borrador{borradores !== 1 ? 'es' : ''}
                 </span>
               )}
@@ -1072,7 +1072,7 @@ const EntregarModal = ({ tarea, courseId, onClose, onSuccess }) => {
 const TabPendientes = ({ tareas, onEntregar }) => {
   if (tareas.length === 0) return (
     <div className="flex flex-col items-center py-[60px] px-6 gap-[14px]">
-      <div className="w-[52px] h-[52px] rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
+      <div className="size-[52px] rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
         <Icon name="check" size={24} />
       </div>
       <div className="text-center">
@@ -1133,7 +1133,7 @@ const TabPendientes = ({ tareas, onEntregar }) => {
 const TabEntregadas = ({ tareas, submissionsByTaskId, onVerEntrega }) => {
   if (tareas.length === 0) return (
     <div className="flex flex-col items-center py-[60px] px-6 gap-[14px]">
-      <div className="w-[52px] h-[52px] rounded-full bg-p-bg-subtle flex items-center justify-center text-p-text-tertiary">
+      <div className="size-[52px] rounded-full bg-p-bg-subtle flex items-center justify-center text-p-text-tertiary">
         <Icon name="upload" size={24} />
       </div>
       <div className="text-center">
@@ -1155,7 +1155,7 @@ const TabEntregadas = ({ tareas, submissionsByTaskId, onVerEntrega }) => {
         return (
           <div key={t.id}
             className="bg-p-bg-base border border-p-border rounded-2xl px-5 py-4 flex gap-[14px] items-center shadow-p-sm transition-[box-shadow] duration-[120ms] hover:shadow-p-md">
-            <div className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center shrink-0"
+            <div className="size-[38px] rounded-[10px] flex items-center justify-center shrink-0"
               style={{ background: tm.bg, color: tm.color }}>
               <Icon name="book" size={16} />
             </div>
@@ -1205,7 +1205,7 @@ const TabEntregadas = ({ tareas, submissionsByTaskId, onVerEntrega }) => {
 const TabVencidas = ({ tareas }) => {
   if (tareas.length === 0) return (
     <div className="flex flex-col items-center py-[60px] px-6 gap-[14px]">
-      <div className="w-[52px] h-[52px] rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
+      <div className="size-[52px] rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
         <Icon name="check" size={24} />
       </div>
       <div className="text-center">
@@ -1330,7 +1330,7 @@ function StudentView({ cursoId, courseName, curso, tasks, mySubmissions }) {
           {teacherName !== '—' && <span className="text-[13px] text-p-text-secondary">{teacherName}</span>}
           {classroomName && classroomName !== '—' && (
             <>
-              <span className="w-[3px] h-[3px] rounded-full bg-p-text-tertiary shrink-0" />
+              <span className="size-[3px] rounded-full bg-p-text-tertiary shrink-0" />
               <span className="text-[13px] text-p-text-secondary">{classroomName}{yearName && yearName !== '—' ? ` · ${yearName}` : ''}</span>
             </>
           )}

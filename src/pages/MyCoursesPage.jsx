@@ -105,7 +105,7 @@ const EstudianteCursoCard = ({ curso, subjectName, classroomName, yearName, teac
         {/* Teacher chip */}
         <div className="flex items-center gap-[7px] px-[10px] py-[6px] bg-p-bg-subtle rounded-[10px] border border-p-border">
           <div
-            className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
+            className="size-[22px] rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0"
             style={{ background: bg }}
           >
             {initials}

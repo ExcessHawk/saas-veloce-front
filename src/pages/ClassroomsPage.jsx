@@ -209,7 +209,7 @@ function GradeLevelsPanel() {
                 <>
                   <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="flex-1 h-7 text-[13px]" />
                   <Input type="number" min={0} value={editOrder} onChange={(e) => setEditOrder(e.target.value)} className="w-[60px] h-7 text-[13px]" />
-                  <Button size="sm" variant="outline" className="h-7 text-[12px]" onClick={() => handleUpdate(l.id)} disabled={updateLevel.isPending}>OK</Button>
+                  <Button size="sm" variant="outline" className="h-7 text-[12px]" onClick={() => handleUpdate(l.id)} disabled={updateLevel.isPending}>Guardar</Button>
                   <Button size="sm" variant="ghost" className="h-7" onClick={() => setEditId(null)}>✕</Button>
                 </>
               ) : (
@@ -395,7 +395,7 @@ export default function ClassroomsPage() {
         <RoleGate roles={['director']}>
           <Dialog open={open} onOpenChange={(v) => setOpen(v)}>
             <DialogTrigger asChild>
-              <Button><Plus className="mr-1 h-4 w-4" />Crear Aula</Button>
+              <Button><Plus className="mr-1 size-4" />Crear Aula</Button>
             </DialogTrigger>
             <DialogContent className="max-w-[460px] p-0 overflow-hidden gap-0">
               <DialogHeader className="px-6 pt-6 pb-4 border-b border-p-border">
@@ -455,10 +455,10 @@ export default function ClassroomsPage() {
                     <TableCell>{c.capacity ? `${c.capacity} alumnos` : '—'}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" onClick={() => setStudentsClassroom(c)} title="Alumnos"><Users className="h-4 w-4" /></Button>
+                        <Button variant="ghost" size="icon" onClick={() => setStudentsClassroom(c)} title="Alumnos"><Users className="size-4" /></Button>
                         <RoleGate roles={['director']}>
-                          <Button variant="ghost" size="icon" onClick={() => setEditingItem(c)}><Pencil className="h-4 w-4" /></Button>
-                          <Button variant="ghost" size="icon" onClick={() => setDeletingItem(c)}><Trash2 className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="icon" onClick={() => setEditingItem(c)}><Pencil className="size-4" /></Button>
+                          <Button variant="ghost" size="icon" onClick={() => setDeletingItem(c)}><Trash2 className="size-4" /></Button>
                         </RoleGate>
                       </div>
                     </TableCell>

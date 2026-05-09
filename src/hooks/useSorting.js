@@ -18,7 +18,7 @@ export function useSorting(initialField = null, initialDir = 'asc') {
   const sort = useCallback(
     (items) => {
       if (!field || !items?.length) return items ?? [];
-      return [...items].sort((a, b) => {
+      return items.toSorted((a, b) => {
         const av = a[field] ?? '';
         const bv = b[field] ?? '';
         const cmp = String(av).localeCompare(String(bv), undefined, { numeric: true });

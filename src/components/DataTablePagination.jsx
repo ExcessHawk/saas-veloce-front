@@ -45,10 +45,10 @@ export function DataTablePagination({ page, setPage, pageSize, setPageSize, tota
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() => setPage(page - 1)}
+            onClick={() => setPage((p) => p - 1)}
             disabled={page <= 1}
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="size-4" />
           </Button>
           <span className="w-16 text-center text-muted-foreground">
             {page} / {totalPages}
@@ -57,10 +57,10 @@ export function DataTablePagination({ page, setPage, pageSize, setPageSize, tota
             variant="outline"
             size="icon"
             className="size-8"
-            onClick={() => setPage(page + 1)}
+            onClick={() => setPage((p) => p + 1)}
             disabled={page >= totalPages}
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="size-4" />
           </Button>
         </div>
       </div>
