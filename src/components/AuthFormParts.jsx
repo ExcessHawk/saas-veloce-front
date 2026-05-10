@@ -141,7 +141,7 @@ export function Tooltip({ text }) {
       {show && (
         <div className="absolute bottom-[calc(100%+7px)] left-1/2 -translate-x-1/2 bg-p-text-primary text-p-accent-text text-[12px] px-[11px] py-[7px] rounded-[10px] max-w-[240px] w-max shadow-[0_4px_12px_oklch(0%_0_0/0.2)] pointer-events-none z-[100] leading-[1.4] font-normal">
           {text}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-r-[5px] border-t-[5px] border-l-transparent border-r-transparent border-t-p-text-primary" />
+          <div className="absolute top-full left-1/2 -translate-x-1/2 size-0 border-l-[5px] border-r-[5px] border-t-[5px] border-l-transparent border-r-transparent border-t-p-text-primary" />
         </div>
       )}
     </span>

@@ -98,7 +98,7 @@ function SubjectForm({ form, onSubmit, loading, submitLabel, onCancel }) {
         </div>
         {selectedColor && (
           <div className="flex items-center gap-2 mt-2 px-3 py-[6px] bg-p-bg-subtle rounded-[8px] border border-p-border">
-            <div className="w-3 h-3 rounded-full shrink-0" style={{ background: selectedColor }} />
+            <div className="size-3 rounded-full shrink-0" style={{ background: selectedColor }} />
             <span className="text-[12px] text-p-text-secondary font-mono">{selectedColor}</span>
             <button type="button" onClick={() => setValue('color', '')} className="ml-auto text-p-text-tertiary text-[13px] border-none bg-transparent cursor-pointer">×</button>
           </div>

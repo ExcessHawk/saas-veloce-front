@@ -151,7 +151,7 @@ export default function LandingPage() {
                 <span style={{ width: 6, height: 6, borderRadius: 99, background: 'var(--s-500)', display: 'inline-block' }} />
                 Usado por más de 200 escuelas en Latinoamérica
               </div>
-              <h1 style={{ fontSize: 'clamp(38px,5vw,58px)', fontWeight: 800, lineHeight: 1.08, letterSpacing: '-0.04em', color: 'var(--n-950)', marginBottom: 22, textWrap: 'balance' }}>
+              <h1 style={{ fontSize: 'clamp(38px,5vw,58px)', fontWeight: 600, lineHeight: 1.08, letterSpacing: '-0.04em', color: 'var(--n-950)', marginBottom: 22, textWrap: 'balance' }}>
                 La plataforma educativa que tu escuela <em style={{ fontStyle: 'normal', background: 'linear-gradient(135deg,var(--n-950),oklch(42% 0.010 80))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>merece</em>
               </h1>
               <p style={{ fontSize: 18, color: 'var(--n-600)', lineHeight: 1.65, maxWidth: 520, marginBottom: 40, fontWeight: 400 }}>
@@ -364,7 +364,7 @@ export default function LandingPage() {
         <div className="lp-container">
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'oklch(42% 0.010 80)', marginBottom: 14 }}>Precios</div>
-            <h2 style={{ fontSize: 'clamp(28px,3.5vw,42px)', fontWeight: 800, color: 'white', letterSpacing: '-.035em', lineHeight: 1.12, marginBottom: 16, textWrap: 'balance' }}>Elige el plan ideal para tu institución</h2>
+            <h2 style={{ fontSize: 'clamp(28px,3.5vw,42px)', fontWeight: 600, color: 'white', letterSpacing: '-.035em', lineHeight: 1.12, marginBottom: 16, textWrap: 'balance' }}>Elige el plan ideal para tu institución</h2>
             <p style={{ fontSize: 17, color: 'oklch(55% 0.010 80)', lineHeight: 1.65, maxWidth: 560, margin: '0 auto 28px' }}>Sin contratos a largo plazo. Cancela cuando quieras.</p>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
               <div className="lp-billing-seg">
@@ -426,7 +426,7 @@ export default function LandingPage() {
                     </div>
                   ))}
                 </div>
-                <Link to="/provision" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, padding: 14, borderRadius: 14, background: 'white', color: 'var(--n-950)', fontSize: 15, fontWeight: 700, fontFamily: 'inherit', textDecoration: 'none', transition: 'all .12s', border: 'none', width: '100%' }}>
+                <Link to="/provision" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, padding: 14, borderRadius: 14, background: 'white', color: 'var(--n-950)', fontSize: 15, fontWeight: 700, fontFamily: 'inherit', textDecoration: 'none', transition: 'background 0.12s, color 0.12s, opacity 0.12s', border: 'none', width: '100%' }}>
                   Empezar con Pro <ArrowIcon />
                 </Link>
               </div>
@@ -485,9 +485,9 @@ export default function LandingPage() {
       <section style={{ background: 'var(--n-950)', padding: '96px 0' }} id="cta">
         <div className="lp-container" style={{ textAlign: 'center' }}>
           <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'oklch(68% 0.010 80)', marginBottom: 20 }}>Para directores con visión</p>
-          <h2 style={{ fontSize: 'clamp(32px,4vw,52px)', fontWeight: 800, color: 'white', letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: 16, textWrap: 'balance' }}>¿Listo para modernizar<br />tu escuela?</h2>
+          <h2 style={{ fontSize: 'clamp(32px,4vw,52px)', fontWeight: 600, color: 'white', letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: 16, textWrap: 'balance' }}>¿Listo para modernizar<br />tu escuela?</h2>
           <p style={{ fontSize: 17, color: 'oklch(68% 0.010 80)', marginBottom: 36 }}>Empieza gratis. Sin tarjeta de crédito.<br />Configuración en menos de 15 minutos.</p>
-          <Link to="/provision" style={{ padding: '14px 32px', borderRadius: 12, fontSize: 15, fontWeight: 700, color: 'var(--n-950)', background: 'white', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'all .12s' }}>
+          <Link to="/provision" style={{ padding: '14px 32px', borderRadius: 12, fontSize: 15, fontWeight: 700, color: 'var(--n-950)', background: 'white', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8, transition: 'background 0.12s, color 0.12s, opacity 0.12s' }}>
             Crear cuenta gratis <ArrowIcon />
           </Link>
           <div style={{ fontSize: 13, color: 'oklch(55% 0.010 80)', marginTop: 14 }}>Ya son más de 200 instituciones en Latinoamérica · Sin contrato</div>
@@ -514,15 +514,15 @@ export default function LandingPage() {
               </div>
             </div>
             <div>
-              <h4 style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: 'oklch(55% 0.010 80)', marginBottom: 16 }}>Producto</h4>
+              <h4 style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: 'oklch(55% 0.010 80)', marginBottom: 16 }}>Producto</h4>
               {['Características', 'Precios', 'Integraciones', 'Novedades', 'Roadmap'].map(l => <a key={l} href={`#${l.toLowerCase().replace(/\s+/g,'-')}`}>{l}</a>)}
             </div>
             <div>
-              <h4 style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: 'oklch(55% 0.010 80)', marginBottom: 16 }}>Compañía</h4>
+              <h4 style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: 'oklch(55% 0.010 80)', marginBottom: 16 }}>Compañía</h4>
               {['Nosotros', 'Blog', 'Clientes', 'Prensa', 'Contacto'].map(l => <a key={l} href={`#${l.toLowerCase().replace(/\s+/g,'-')}`}>{l}</a>)}
             </div>
             <div>
-              <h4 style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: 'oklch(55% 0.010 80)', marginBottom: 16 }}>Legal</h4>
+              <h4 style={{ fontSize: 12, fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase', color: 'oklch(55% 0.010 80)', marginBottom: 16 }}>Legal</h4>
               {['Privacidad', 'Términos de uso', 'Seguridad', 'RGPD / LFPDPPP', 'Cookies'].map(l => <a key={l} href={`#${l.toLowerCase().replace(/\s+/g,'-')}`}>{l}</a>)}
             </div>
           </div>

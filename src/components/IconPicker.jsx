@@ -76,7 +76,7 @@ export function IconPicker({ value, onChange, placeholder = 'Seleccionar ícono'
             e.preventDefault();
             setTimeout(() => searchRef.current?.focus(), 0);
           }}
-          style={{ width: 'max(var(--radix-popover-trigger-width), 320px)', zIndex: 9999 }}
+          style={{ width: 'max(var(--radix-popover-trigger-width), 320px)', zIndex: 50 }}
           className="bg-p-bg-base border border-p-border rounded-[14px] shadow-[0_8px_32px_oklch(0%_0_0/0.16),0_2px_8px_oklch(0%_0_0/0.08)] overflow-hidden [animation:dropIn_0.12s_ease]"
         >
           {/* Search */}

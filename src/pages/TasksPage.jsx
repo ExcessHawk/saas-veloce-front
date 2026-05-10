@@ -916,9 +916,9 @@ const SubmissionFilePicker = ({ file, progress, uploading, error, onPick, onClea
 
   return (
     <div>
-      <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
+      <div className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
         Archivo adjunto <span className="text-p-text-tertiary font-normal">(opcional, hasta 25 MB)</span>
-      </label>
+      </div>
 
       {!file ? (
         <label
@@ -1033,9 +1033,9 @@ const EntregarModal = ({ tarea, courseId, onClose, onSuccess }) => {
         </div>
 
         <div>
-          <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
+          <div className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
             Enlace <span className="text-p-text-tertiary font-normal">(opcional)</span>
-          </label>
+          </div>
           <div className="relative">
             <span className="absolute left-[10px] top-1/2 -translate-y-1/2 text-p-text-tertiary flex pointer-events-none">
               <Icon name="upload" size={14} />
@@ -1050,9 +1050,9 @@ const EntregarModal = ({ tarea, courseId, onClose, onSuccess }) => {
           onPick={onPickFile} onClear={() => { setFile(null); setFileError(null); setProgress(0); }} />
 
         <div>
-          <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
+          <div className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
             Comentarios para el docente
-          </label>
+          </div>
           <textarea value={comentario} onChange={(e) => setComentario(e.target.value)}
             placeholder="Escribe cualquier nota o aclaración sobre tu entrega…" rows={4}
             className={cn(inputCls, 'resize-y leading-[1.55]')} />

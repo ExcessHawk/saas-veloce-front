@@ -216,11 +216,11 @@ function GradeLevelsPanel() {
                 <>
                   <span className="flex-1 text-[13px]">{l.name}</span>
                   <span className="text-[11px] text-[hsl(var(--muted-foreground))]">orden {l.order}</span>
-                  <Button size="sm" variant="ghost" className="h-[26px] w-[26px] p-0"
+                  <Button size="sm" variant="ghost" className="size-[26px] p-0"
                     onClick={() => { setEditId(l.id); setEditName(l.name); setEditOrder(String(l.order)); }}>
                     <Pencil size={12} />
                   </Button>
-                  <Button size="sm" variant="ghost" className="h-[26px] w-[26px] p-0 text-[hsl(var(--destructive))]"
+                  <Button size="sm" variant="ghost" className="size-[26px] p-0 text-[hsl(var(--destructive))]"
                     onClick={() => deleteLevel.mutateAsync(l.id)}>
                     <Trash2 size={12} />
                   </Button>

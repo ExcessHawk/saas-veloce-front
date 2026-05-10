@@ -102,7 +102,7 @@ const HijoCard = ({ hijo }) => {
                   className="grid [grid-template-columns:1fr_1fr_auto] items-center gap-0 px-[22px] py-3 border-t border-p-border transition-[background] duration-[80ms] hover:bg-p-bg-subtle"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: colors.color }} />
+                    <span className="size-2 rounded-full shrink-0" style={{ background: colors.color }} />
                     <span className="text-[13.5px] font-medium text-p-text-primary">{mat}</span>
                   </div>
                   <div className="text-[13px] text-p-text-secondary">{doc}</div>

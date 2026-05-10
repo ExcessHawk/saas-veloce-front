@@ -258,7 +258,7 @@ export default function AcademicYearsPage() {
                 <TableCell>
                   {year.isCurrent ? (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11.5px] font-semibold bg-p-s-100 text-p-s-700">
-                      <span className="w-1.5 h-1.5 rounded-full bg-p-s-500" />
+                      <span className="size-1.5 rounded-full bg-p-s-500" />
                       Actual
                     </span>
                   ) : (

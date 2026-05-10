@@ -351,7 +351,7 @@ function AddMemberModal({ onClose }) {
     });
     return (
       <ModalShell title="Invitación enviada" onClose={onClose}>
-        <div className="px-6 py-6 flex flex-col items-center gap-4 text-center">
+        <div className="p-6 flex flex-col items-center gap-4 text-center">
           <div className="size-14 rounded-full bg-p-s-100 flex items-center justify-center text-p-s-700">
             <Mail size={24} />
           </div>
@@ -387,9 +387,9 @@ function AddMemberModal({ onClose }) {
         <div className="px-6 py-5 flex flex-col gap-4">
           {/* Email */}
           <div>
-            <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
+            <div className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
               Correo electrónico *
-            </label>
+            </div>
             <div className="relative">
               <span className="absolute left-[10px] top-1/2 -translate-y-1/2 text-p-text-tertiary pointer-events-none flex">
                 <Mail size={14} />
@@ -415,9 +415,9 @@ function AddMemberModal({ onClose }) {
 
           {/* Rol */}
           <div>
-            <label className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
+            <div className="block text-[12.5px] font-semibold text-p-text-secondary mb-[6px]">
               Rol
-            </label>
+            </div>
             <div className="grid grid-cols-2 gap-2">
               {ROLES_ORDER.map((k) => {
                 const m = ROLES_META[k];
@@ -436,7 +436,7 @@ function AddMemberModal({ onClose }) {
                     style={active ? { background: m.bgStyle } : undefined}
                   >
                     <span
-                      className="w-2 h-2 rounded-full shrink-0"
+                      className="size-2 rounded-full shrink-0"
                       style={{ background: m.dotStyle }}
                     />
                     <span className={cn(
