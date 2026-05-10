@@ -78,11 +78,9 @@ export function AssignTeacherDialog({ open, onOpenChange, course, subjectName, c
         <div className="max-h-[60vh] overflow-y-auto">
           {/* Chips */}
           <div className="px-6 pt-[14px] flex flex-wrap gap-2">
-            {[subjectName, classroomName, yearName].filter(Boolean).map((label) => (
-              <div key={label} className="inline-flex items-center gap-[6px] px-[10px] py-1 rounded-full bg-p-bg-subtle border border-p-border text-[12.5px] text-p-text-secondary">
-                {label}
-              </div>
-            ))}
+            {[subjectName, classroomName, yearName].flatMap((label) =>
+              label ? [<div key={label} className="inline-flex items-center gap-[6px] px-[10px] py-1 rounded-full bg-p-bg-subtle border border-p-border text-[12.5px] text-p-text-secondary">{label}</div>] : []
+            )}
           </div>
 
           {/* Docente actual */}

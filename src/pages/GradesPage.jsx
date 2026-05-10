@@ -87,17 +87,22 @@ export default function GradesPage() {
 
   /* task averages */
   const taskAvgs = tasks.map((_, ti) => {
-    const scores = students
-      .map((s) => s.submissions[ti]?.score)
-      .filter((sc) => sc !== null && sc !== undefined);
+    const scores = students.reduce((acc, s) => {
+      const sc = s.submissions[ti]?.score;
+      if (sc !== null && sc !== undefined) acc.push(sc);
+      return acc;
+    }, []);
     if (!scores.length) return null;
     return Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 10) / 10;
   });
 
   /* overall class average */
-  const allScores = students.flatMap((s) =>
-    s.submissions.filter((sub) => sub.score !== null && sub.score !== undefined).map((sub) => sub.score),
-  );
+  const allScores = students.reduce((acc, s) => {
+    for (const sub of s.submissions) {
+      if (sub.score !== null && sub.score !== undefined) acc.push(sub.score);
+    }
+    return acc;
+  }, []);
   const classAvg = allScores.length
     ? Math.round((allScores.reduce((a, b) => a + b, 0) / allScores.length) * 10) / 10
     : null;

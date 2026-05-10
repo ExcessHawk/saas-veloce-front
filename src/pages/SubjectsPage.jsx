@@ -56,7 +56,7 @@ function SubjectForm({ form, onSubmit, loading, submitLabel, onCancel }) {
       <Field label="Nombre *" error={errors.name?.message}>
         <div className="relative">
           <BookOpen size={14} className="absolute left-[10px] top-1/2 -translate-y-1/2 text-p-text-tertiary pointer-events-none" />
-          <input placeholder="Ej: Matemáticas" className={cn(inputCls, 'pl-[32px]')} autoFocus {...register('name')} />
+          <input placeholder="Ej: Matemáticas" className={cn(inputCls, 'pl-[32px]')} {...register('name')} />
         </div>
       </Field>
 

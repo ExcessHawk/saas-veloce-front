@@ -27,7 +27,6 @@ function InlineForm({ initial, onSave, onCancel, loading }) {
         onChange={(e) => setName(e.target.value)}
         placeholder="Nombre del nivel"
         className={cn(inputCls, 'flex-1')}
-        autoFocus
       />
       <input
         type="number"

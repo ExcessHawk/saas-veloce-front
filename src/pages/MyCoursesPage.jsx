@@ -181,10 +181,13 @@ export default function MyCoursesPage() {
     if (myCourses.error) showApiError(myCourses.error);
   }, [myCourses.error]);
 
-  const currentYearIds = useMemo(
-    () => new Set((academicYears.data ?? []).filter((y) => y.isCurrent).map((y) => y.id)),
-    [academicYears.data],
-  );
+  const currentYearIds = useMemo(() => {
+    const set = new Set();
+    for (const y of academicYears.data ?? []) {
+      if (y.isCurrent) set.add(y.id);
+    }
+    return set;
+  }, [academicYears.data]);
 
   const isCursoActivo = (c) => !c.academicYearId || currentYearIds.has(c.academicYearId);
 

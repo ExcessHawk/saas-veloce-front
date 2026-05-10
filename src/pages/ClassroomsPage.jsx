@@ -79,7 +79,6 @@ function ClassroomForm({ initial, levels, academicYears, teachers, onSave, onCan
           onChange={(e) => setName(e.target.value)}
           placeholder="Ej: Aula 1-A"
           className={inputCls}
-          autoFocus
         />
       </Field>
       <Field

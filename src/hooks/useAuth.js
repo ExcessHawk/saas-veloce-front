@@ -40,12 +40,6 @@ export function useResetPassword() {
   });
 }
 
-export function useVerifyEmail(token) {
-  return useMutation({
-    mutationFn: () => api.get(`/api/auth/verify-email?token=${token}`).then((r) => r.data),
-  });
-}
-
 export function useAcceptInvitation() {
   return useMutation({
     mutationFn: (data) => api.post('/api/auth/accept-invitation', data).then((r) => r.data),

@@ -50,7 +50,7 @@ function AcademicYearForm({ form, onSubmit, loading, submitLabel, onCancel }) {
       <Field label="Nombre del ciclo *" error={errors.name?.message}>
         <div className="relative">
           <Calendar size={14} className="absolute left-[10px] top-1/2 -translate-y-1/2 text-p-text-tertiary pointer-events-none" />
-          <input placeholder="Ej: 2025–2026" className={cn(inputCls, 'pl-[32px]')} autoFocus {...register('name')} />
+          <input placeholder="Ej: 2025–2026" className={cn(inputCls, 'pl-[32px]')} {...register('name')} />
         </div>
       </Field>
 
