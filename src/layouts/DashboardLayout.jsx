@@ -137,6 +137,7 @@ export default function DashboardLayout() {
 
   const handleLogout = async () => {
     try { await logout.mutateAsync(); } catch { /* ignored */ }
+    queryClient.clear();
     clearAuth();
     navigate('/login');
   };

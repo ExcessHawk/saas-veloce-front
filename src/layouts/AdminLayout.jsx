@@ -5,6 +5,7 @@ import { useLogout } from '@/hooks/useAuth';
 import { ModeToggle } from '@/components/ModeToggle';
 import { getInitials, avatarColor } from '@/lib/materia-colors';
 import { LayoutDashboard, CreditCard, School, LogOut, Menu, X } from 'lucide-react';
+import { queryClient } from '@/lib/queryClient';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
@@ -76,6 +77,7 @@ export default function AdminLayout() {
 
   const handleLogout = async () => {
     try { await logout.mutateAsync(); } catch { /* ignored */ }
+    queryClient.clear();
     clearAuth();
     navigate('/login');
   };
