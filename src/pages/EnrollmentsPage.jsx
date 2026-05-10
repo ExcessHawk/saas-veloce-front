@@ -22,7 +22,10 @@ const CursoCard = ({ curso, subjectName, classroomName, teacherName, totalEnroll
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       className={cn(

@@ -125,9 +125,9 @@ const Modal = ({ open, onClose, title, subtitle, children, width = 520 }) => {
   }, [open, onClose]);
   if (!open) return null;
   return (
-    <div onClick={onClose}
+    <div role="presentation" onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
       className="fixed inset-0 z-[1000] bg-[oklch(0%_0_0/0.45)] flex items-center justify-center backdrop-blur-[2px] p-4">
-      <div onClick={(e) => e.stopPropagation()}
+      <div onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}
         className="max-w-[calc(100vw-32px)] max-h-[90vh] bg-p-bg-base border border-p-border rounded-[24px] shadow-p-lg flex flex-col overflow-hidden"
         style={{ width }}>
         <div className="px-6 pt-[18px] pb-4 border-b border-p-border flex items-start justify-between shrink-0">
@@ -719,7 +719,7 @@ function TeacherView({ cursoId, courseName, curso, tasks, createTask, updateTask
    MI ENTREGA MODAL (student — read-only detail)
    ════════════════════════════════════════════ */
 
-function renderContent(text) {
+function SubmissionContent({ text }) {
   if (!text) return null;
   return text.split('\n\n').map((part, i) => {
     const trimmed = part.trim();
@@ -780,7 +780,7 @@ const MiEntregaModal = ({ tarea, submission, onClose }) => {
               Contenido entregado
             </div>
             <div className="px-[14px] py-3 bg-p-bg-subtle rounded-[12px] border border-p-border flex flex-col gap-[6px]">
-              {renderContent(submission.content)}
+              <SubmissionContent text={submission.content} />
             </div>
           </div>
         )}

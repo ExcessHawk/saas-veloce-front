@@ -290,6 +290,7 @@ function ModalShell({ title, subtitle, onClose, children, width = 480 }) {
         aria-modal="true"
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
         className="bg-p-bg-base border border-p-border rounded-3xl shadow-p-lg flex flex-col overflow-hidden max-w-[calc(100vw-32px)]"
         style={{ width }}
       >
@@ -585,11 +586,14 @@ function DeleteModal({ member, isPending, onClose, onConfirm }) {
   const name = member.fullName || member.email;
   return (
     <div
+      role="presentation"
       onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
       className="fixed inset-0 z-[1000] bg-[oklch(0%_0_0/0.45)] flex items-center justify-center backdrop-blur-[2px] p-4"
     >
       <div
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
         className="w-[420px] max-w-[calc(100vw-32px)] bg-p-bg-base border border-p-border rounded-3xl shadow-p-lg overflow-hidden"
       >
         <div className="px-6 py-5">

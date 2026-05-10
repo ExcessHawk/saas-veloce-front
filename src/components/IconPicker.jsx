@@ -55,7 +55,9 @@ export function IconPicker({ value, onChange, placeholder = 'Seleccionar ícono'
           {value ? (
             <span
               role="button"
+              tabIndex={0}
               onClick={(e) => { e.stopPropagation(); onChange(''); }}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); onChange(''); } }}
               className="text-p-text-tertiary hover:text-p-text-primary cursor-pointer flex"
             >
               <X size={13} />

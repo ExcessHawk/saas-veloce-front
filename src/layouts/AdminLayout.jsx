@@ -99,7 +99,7 @@ export default function AdminLayout() {
 
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
+          <div role="presentation" className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} onKeyDown={(e) => { if (e.key === 'Escape') setSidebarOpen(false); }} />
           <aside className="fixed left-0 top-0 bottom-0 w-64 bg-p-sidebar-bg flex flex-col z-50">
             <div className="px-4 py-3 flex justify-end border-b border-[oklch(99%_0_0/0.07)]">
               <button onClick={() => setSidebarOpen(false)} className="bg-transparent border-0 text-p-sidebar-text cursor-pointer flex p-1"><X size={18} /></button>

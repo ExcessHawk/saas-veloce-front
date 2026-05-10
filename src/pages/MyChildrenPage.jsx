@@ -46,7 +46,10 @@ const HijoCard = ({ hijo }) => {
   return (
     <div className="bg-p-bg-base border border-p-border rounded-[24px] shadow-p-sm overflow-hidden">
       <div
+        role="button"
+        tabIndex={0}
         onClick={() => setExpanded((e) => !e)}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExpanded((prev) => !prev); }}
         className="px-[22px] py-[18px] flex items-center gap-[14px] cursor-pointer select-none"
       >
         <div
