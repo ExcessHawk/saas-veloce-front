@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useMutation } from '@tanstack/react-query';
 import api from '@/lib/axios';
-import { showApiError } from '@/lib/errors';
 
 export const MAX_FILE_SIZE = 25 * 1024 * 1024;
 
@@ -21,19 +19,6 @@ export const ALLOWED_MIME_TYPES = [
   'text/csv',
 ];
 
-export function usePresignUpload() {
-  return useMutation({
-    mutationFn: (body) => api.post('/api/uploads/presign', body).then((r) => r.data),
-    onError: (error) => showApiError(error),
-  });
-}
-
-export function useConfirmUpload() {
-  return useMutation({
-    mutationFn: (body) => api.post('/api/uploads/confirm', body).then((r) => r.data),
-    onError: (error) => showApiError(error),
-  });
-}
 
 /**
  * Sube un File completo: presign → PUT al storage → confirm.

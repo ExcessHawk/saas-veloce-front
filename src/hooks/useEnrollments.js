@@ -44,16 +44,3 @@ export function useRemoveEnrollment(courseId) {
   });
 }
 
-export function useAssignTeacher() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ courseId, teacherMemberId }) =>
-      api.patch(`/api/courses/${courseId}/teacher`, { teacherMemberId }).then((res) => res.data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['courses'] });
-      queryClient.invalidateQueries({ queryKey: ['my-courses'] });
-      showSuccess('Docente asignado exitosamente');
-    },
-    onError: (error) => showApiError(error),
-  });
-}

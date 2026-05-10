@@ -1175,7 +1175,7 @@ const TabEntregadas = ({ tareas, submissionsByTaskId, onVerEntrega }) => {
                     <Icon name="clock" size={12} />Por revisar
                   </span>
                 ) : sub.score === null ? (
-                  <span className="text-[13px] text-p-text-tertiary">—</span>
+                  <span className="text-[13px] text-p-text-tertiary">-</span>
                 ) : (
                   <div className="flex flex-col items-center gap-1">
                     <div className="text-[22px] font-extrabold tracking-[-0.04em] leading-none"

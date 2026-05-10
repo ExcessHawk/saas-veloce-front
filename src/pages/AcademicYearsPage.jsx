@@ -262,7 +262,7 @@ export default function AcademicYearsPage() {
                       Actual
                     </span>
                   ) : (
-                    <span className="text-[12px] text-p-text-tertiary">—</span>
+                    <span className="text-[12px] text-p-text-tertiary">-</span>
                   )}
                 </TableCell>
                 <TableCell>{year.createdAt ? format(new Date(year.createdAt), 'dd/MM/yyyy') : '—'}</TableCell>

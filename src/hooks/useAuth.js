@@ -46,12 +46,6 @@ export function useVerifyEmail(token) {
   });
 }
 
-export function useResendVerification() {
-  return useMutation({
-    mutationFn: () => api.post('/api/auth/resend-verification').then((r) => r.data),
-  });
-}
-
 export function useAcceptInvitation() {
   return useMutation({
     mutationFn: (data) => api.post('/api/auth/accept-invitation', data).then((r) => r.data),

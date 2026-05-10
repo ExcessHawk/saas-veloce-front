@@ -592,6 +592,8 @@ function DeleteModal({ member, isPending, onClose, onConfirm }) {
       className="fixed inset-0 z-[1000] bg-[oklch(0%_0_0/0.45)] flex items-center justify-center backdrop-blur-[2px] p-4"
     >
       <div
+        role="dialog"
+        aria-modal="true"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
         className="w-[420px] max-w-[calc(100vw-32px)] bg-p-bg-base border border-p-border rounded-3xl shadow-p-lg overflow-hidden"

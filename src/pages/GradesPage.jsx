@@ -20,7 +20,7 @@ const TIPO_LABEL = {
 /* ── Score cell ── */
 function ScoreCell({ submission, maxScore }) {
   if (!submission || submission.status === null) {
-    return <span className="text-p-text-tertiary text-[13px]">—</span>;
+    return <span className="text-p-text-tertiary text-[13px]">-</span>;
   }
   if (submission.score === null) {
     return (
@@ -271,7 +271,7 @@ export default function GradesPage() {
                             {student.average}
                           </span>
                         ) : (
-                          <span className="text-p-text-tertiary text-[13px]">—</span>
+                          <span className="text-p-text-tertiary text-[13px]">-</span>
                         )}
                       </td>
                     </tr>
@@ -292,7 +292,7 @@ export default function GradesPage() {
                           {taskAvgs[ti]}/{task.maxScore}
                         </span>
                       ) : (
-                        <span className="text-p-text-tertiary text-[12px]">—</span>
+                        <span className="text-p-text-tertiary text-[12px]">-</span>
                       )}
                     </td>
                   ))}
