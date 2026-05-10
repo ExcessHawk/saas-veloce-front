@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate, useNavigation } from 'react-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useLogout } from '@/hooks/useAuth';
 import { ModeToggle } from '@/components/ModeToggle';
 import { getInitials, avatarColor } from '@/lib/materia-colors';
+import { queryClient } from '@/lib/queryClient';
+import api from '@/lib/axios';
 import {
   LayoutDashboard, DoorOpen, BookOpen, GraduationCap,
   Calendar, School, UserCircle, Users, UserPlus,
@@ -13,42 +15,46 @@ import { cn } from '@/lib/utils';
 
 const NAV_BY_ROLE = {
   director: [
-    { path: '/dashboard',                label: 'Dashboard',       icon: LayoutDashboard },
-    { path: '/dashboard/classrooms',     label: 'Aulas',           icon: DoorOpen        },
-    { path: '/dashboard/subjects',       label: 'Materias',        icon: BookOpen        },
-    { path: '/dashboard/courses',        label: 'Cursos',          icon: GraduationCap   },
-    { path: '/dashboard/academic-years', label: 'Años Académicos', icon: Calendar        },
-    { path: '/dashboard/inscriptions',   label: 'Inscripciones',   icon: UserPlus        },
-    { path: '/dashboard/members',        label: 'Miembros',        icon: Users           },
+    { path: '/dashboard',                label: 'Dashboard',       icon: LayoutDashboard, prefetch: () => import('@/pages/DashboardPage'),     prefetchQuery: () => Promise.all([queryClient.prefetchQuery({ queryKey: ['dashboard','stats'],    queryFn: () => api.get('/api/dashboard/stats').then(r=>r.data)    }), queryClient.prefetchQuery({ queryKey: ['dashboard','activity'], queryFn: () => api.get('/api/dashboard/activity').then(r=>r.data) })]) },
+    { path: '/dashboard/classrooms',     label: 'Aulas',           icon: DoorOpen,        prefetch: () => import('@/pages/ClassroomsPage'),    prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['classrooms'],     queryFn: () => api.get('/api/classrooms?limit=200').then(r=>r.data.data)     }) },
+    { path: '/dashboard/subjects',       label: 'Materias',        icon: BookOpen,        prefetch: () => import('@/pages/SubjectsPage'),      prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['subjects'],       queryFn: () => api.get('/api/subjects?limit=200').then(r=>r.data.data)       }) },
+    { path: '/dashboard/courses',        label: 'Cursos',          icon: GraduationCap,   prefetch: () => import('@/pages/CoursesPage'),       prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['courses'],        queryFn: () => api.get('/api/courses?limit=200').then(r=>r.data.data)        }) },
+    { path: '/dashboard/academic-years', label: 'Años Académicos', icon: Calendar,        prefetch: () => import('@/pages/AcademicYearsPage'), prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['academic-years'], queryFn: () => api.get('/api/academic-years?limit=200').then(r=>r.data.data) }) },
+    { path: '/dashboard/inscriptions',   label: 'Inscripciones',   icon: UserPlus,        prefetch: () => import('@/pages/EnrollmentsPage'),   prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['courses'],        queryFn: () => api.get('/api/courses?limit=200').then(r=>r.data.data)        }) },
+    { path: '/dashboard/members',        label: 'Miembros',        icon: Users,           prefetch: () => import('@/pages/MembersPage'),       prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['members'],        queryFn: () => api.get('/api/members?limit=200').then(r=>r.data.data)        }) },
     { divider: true, id: 'divider' },
-    { path: '/dashboard/billing',        label: 'Facturación',     icon: CreditCard      },
-    { path: '/dashboard/school',         label: 'Mi Escuela',      icon: School          },
-    { path: '/dashboard/profile',        label: 'Mi Perfil',       icon: UserCircle      },
+    { path: '/dashboard/billing',        label: 'Facturación',     icon: CreditCard,      prefetch: () => import('@/pages/BillingPage') },
+    { path: '/dashboard/school',         label: 'Mi Escuela',      icon: School,          prefetch: () => import('@/pages/SchoolPage'),        prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['school'],         queryFn: () => api.get('/api/schools/me').then(r=>r.data)                    }) },
+    { path: '/dashboard/profile',        label: 'Mi Perfil',       icon: UserCircle,      prefetch: () => import('@/pages/ProfilePage'),       prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['profile'],        queryFn: () => api.get('/api/auth/me').then(r=>r.data)                       }) },
   ],
   teacher: [
-    { path: '/dashboard',            label: 'Dashboard',  icon: LayoutDashboard },
-    { path: '/dashboard/mis-cursos', label: 'Mis Cursos', icon: GraduationCap   },
+    { path: '/dashboard',            label: 'Dashboard',  icon: LayoutDashboard, prefetch: () => import('@/pages/DashboardPage'),  prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['my-courses'], queryFn: () => api.get('/api/courses/me').then(r=>r.data) }) },
+    { path: '/dashboard/mis-cursos', label: 'Mis Cursos', icon: GraduationCap,   prefetch: () => import('@/pages/MyCoursesPage'), prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['my-courses'], queryFn: () => api.get('/api/courses/me').then(r=>r.data) }) },
     { divider: true, id: 'divider' },
-    { path: '/dashboard/profile',    label: 'Mi Perfil',  icon: UserCircle      },
+    { path: '/dashboard/profile',    label: 'Mi Perfil',  icon: UserCircle,      prefetch: () => import('@/pages/ProfilePage'),   prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['profile'],    queryFn: () => api.get('/api/auth/me').then(r=>r.data)    }) },
   ],
   student: [
-    { path: '/dashboard',            label: 'Dashboard',  icon: LayoutDashboard },
-    { path: '/dashboard/mis-cursos', label: 'Mis Cursos', icon: GraduationCap   },
+    { path: '/dashboard',            label: 'Dashboard',  icon: LayoutDashboard, prefetch: () => import('@/pages/DashboardPage'),  prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['my-courses'], queryFn: () => api.get('/api/courses/me').then(r=>r.data) }) },
+    { path: '/dashboard/mis-cursos', label: 'Mis Cursos', icon: GraduationCap,   prefetch: () => import('@/pages/MyCoursesPage'), prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['my-courses'], queryFn: () => api.get('/api/courses/me').then(r=>r.data) }) },
     { divider: true, id: 'divider' },
-    { path: '/dashboard/profile',    label: 'Mi Perfil',  icon: UserCircle      },
+    { path: '/dashboard/profile',    label: 'Mi Perfil',  icon: UserCircle,      prefetch: () => import('@/pages/ProfilePage'),   prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['profile'],    queryFn: () => api.get('/api/auth/me').then(r=>r.data)    }) },
   ],
   parent: [
-    { path: '/dashboard',           label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/dashboard/mis-hijos', label: 'Mis Hijos', icon: Users           },
+    { path: '/dashboard',           label: 'Dashboard', icon: LayoutDashboard, prefetch: () => import('@/pages/DashboardPage'),   prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['my-children'], queryFn: () => api.get('/api/members/my-children').then(r=>r.data) }) },
+    { path: '/dashboard/mis-hijos', label: 'Mis Hijos', icon: Users,           prefetch: () => import('@/pages/MyChildrenPage'), prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['my-children'], queryFn: () => api.get('/api/members/my-children').then(r=>r.data) }) },
     { divider: true, id: 'divider' },
-    { path: '/dashboard/profile',   label: 'Mi Perfil', icon: UserCircle      },
+    { path: '/dashboard/profile',   label: 'Mi Perfil', icon: UserCircle,      prefetch: () => import('@/pages/ProfilePage'),    prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['profile'],     queryFn: () => api.get('/api/auth/me').then(r=>r.data)                      }) },
   ],
 };
 
 const NavItem = ({ item, isActive, onClick }) => {
   const Icon = item.icon;
+  const handleHover = () => {
+    item.prefetch?.();
+    item.prefetchQuery?.();
+  };
   return (
-    <Link to={item.path} onClick={onClick}
+    <Link to={item.path} onClick={onClick} onMouseEnter={handleHover}
       className={cn(
         'flex items-center gap-[10px] px-3 py-[7px] rounded-[10px] no-underline transition-all duration-100 text-[13.5px]',
         isActive
@@ -112,6 +118,19 @@ export default function DashboardLayout() {
 
   const role = user?.role ?? 'student';
   const navItems = NAV_BY_ROLE[role] ?? NAV_BY_ROLE.student;
+
+  // Prefetch JS chunks and queries for all nav items in background after mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navItems.forEach((item) => {
+        if (item.divider) return;
+        item.prefetch?.();
+        item.prefetchQuery?.();
+      });
+    }, 1500); // wait 1.5s so the current page renders first
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role]);
 
   const isActive = (path) =>
     path === '/dashboard' ? location.pathname === '/dashboard' : location.pathname.startsWith(path);

@@ -1,13 +1,12 @@
 import { useState, useMemo, useRef } from 'react';
 import { Search, X } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
 import { Popover } from 'radix-ui';
-import { ICON_PICKER_ICONS } from '@/lib/icon-picker-icons';
+import { ICON_PICKER_ICONS, ICON_PICKER_MAP } from '@/lib/icon-picker-icons';
 import { cn } from '@/lib/utils';
 
 export function LucideIcon({ name, size = 16, className, ...props }) {
   if (!name) return null;
-  const Icon = LucideIcons[name];
+  const Icon = ICON_PICKER_MAP[name];
   if (!Icon) return (
     <span className={cn('inline-block rounded bg-p-bg-muted', className)} style={{ width: size, height: size }} />
   );
@@ -32,7 +31,7 @@ export function IconPicker({ value, onChange, placeholder = 'Seleccionar ícono'
     return ICON_PICKER_ICONS.filter((n) => n.toLowerCase().includes(q));
   }, [query]);
 
-  const SelectedIcon = value ? LucideIcons[value] : null;
+  const SelectedIcon = value ? ICON_PICKER_MAP[value] : null;
 
   return (
     <Popover.Root open={open} onOpenChange={handleOpenChange}>
@@ -114,7 +113,7 @@ export function IconPicker({ value, onChange, placeholder = 'Seleccionar ícono'
             ) : (
               <div className="grid gap-0.5" style={{ gridTemplateColumns: `repeat(${COLS}, 1fr)` }}>
                 {filtered.map((name) => {
-                  const Icon = LucideIcons[name];
+                  const Icon = ICON_PICKER_MAP[name];
                   if (!Icon) return null;
                   const isSelected = value === name;
                   return (
