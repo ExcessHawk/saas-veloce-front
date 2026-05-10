@@ -127,7 +127,7 @@ const Modal = ({ open, onClose, title, subtitle, children, width = 520 }) => {
   return (
     <div role="presentation" onClick={onClose} onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
       className="fixed inset-0 z-[1000] bg-[oklch(0%_0_0/0.45)] flex items-center justify-center backdrop-blur-[2px] p-4">
-      <div onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}
+      <div role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}
         className="max-w-[calc(100vw-32px)] max-h-[90vh] bg-p-bg-base border border-p-border rounded-[24px] shadow-p-lg flex flex-col overflow-hidden"
         style={{ width }}>
         <div className="px-6 pt-[18px] pb-4 border-b border-p-border flex items-start justify-between shrink-0">
