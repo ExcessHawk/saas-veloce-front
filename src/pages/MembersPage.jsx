@@ -5,10 +5,10 @@ import { z } from 'zod';
 import { format } from 'date-fns';
 import {
   Plus, MoreHorizontal, Pencil, Trash2, Check, X,
-  Mail, Info, Search, AlertTriangle, Link2,
+  Mail, Info, Search, AlertTriangle, Link2, Download,
 } from 'lucide-react';
 
-import { useMembers, useInviteMember, useUpdateMemberRole, useRemoveMember, useLinkChild, useUnlinkChild } from '@/hooks/useMembers';
+import { useMembers, useInviteMember, useUpdateMemberRole, useRemoveMember, useLinkChild, useUnlinkChild, exportMembers } from '@/hooks/useMembers';
 import { useAuthStore } from '@/stores/authStore';
 import { showApiError } from '@/lib/errors';
 import { avatarColor, getInitials } from '@/lib/materia-colors';
@@ -643,6 +643,7 @@ export default function MembersPage() {
   const [linkParent, setLinkParent] = useState(null);
   const [tabRole, setTabRole] = useState('todos');
   const [query, setQuery] = useState('');
+  const [exporting, setExporting] = useState(false);
 
   const currentUser = useAuthStore((s) => s.user);
   const isDirector = currentUser?.role === 'director';
@@ -707,13 +708,28 @@ export default function MembersPage() {
           </p>
         </div>
         <RoleGate roles={['director']}>
-          <button
-            type="button"
-            onClick={() => setShowAdd(true)}
-            className="inline-flex items-center gap-[6px] px-[18px] py-2 rounded-[10px] border-none bg-p-accent text-p-accent-text text-[13.5px] font-[inherit] font-semibold cursor-pointer"
-          >
-            <Plus size={14} /> Agregar Miembro
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={exporting || data.length === 0}
+              onClick={async () => {
+                setExporting(true);
+                try { await exportMembers(); } catch { /* handled by axios interceptor */ }
+                finally { setExporting(false); }
+              }}
+              className="inline-flex items-center gap-[6px] px-[14px] py-2 rounded-[10px] border border-p-border bg-p-bg-base text-p-text-secondary text-[13.5px] font-[inherit] font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-p-bg-subtle"
+            >
+              <Download size={13} />
+              {exporting ? 'Exportando…' : 'Exportar CSV'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAdd(true)}
+              className="inline-flex items-center gap-[6px] px-[18px] py-2 rounded-[10px] border-none bg-p-accent text-p-accent-text text-[13.5px] font-[inherit] font-semibold cursor-pointer"
+            >
+              <Plus size={14} /> Agregar Miembro
+            </button>
+          </div>
         </RoleGate>
       </div>
 

@@ -65,21 +65,21 @@ const QuickLinks = () => (
     <div className="text-sm font-semibold text-p-text-primary mb-[14px]">Accesos rápidos</div>
     <div className="flex flex-col gap-[2px]">
       {[
-        { icon: DoorOpen,      label: 'Gestionar aulas',     href: '/dashboard/classrooms' },
-        { icon: BookOpen,      label: 'Ver materias',         href: '/dashboard/subjects' },
-        { icon: GraduationCap, label: 'Ver cursos',           href: '/dashboard/courses' },
-        { icon: Users,         label: 'Gestionar miembros',   href: '/dashboard/members' },
-        { icon: ClipboardList, label: 'Niveles de grado',     href: '/dashboard/grade-levels' },
-      ].map(({ icon: Icon, label, href }) => (
-        <a
-          key={href}
-          href={href}
+        { icon: DoorOpen,      label: 'Gestionar aulas',     to: '/dashboard/classrooms' },
+        { icon: BookOpen,      label: 'Ver materias',         to: '/dashboard/subjects' },
+        { icon: GraduationCap, label: 'Ver cursos',           to: '/dashboard/courses' },
+        { icon: Users,         label: 'Gestionar miembros',   to: '/dashboard/members' },
+        { icon: ClipboardList, label: 'Niveles de grado',     to: '/dashboard/grade-levels' },
+      ].map(({ icon: Icon, label, to }) => (
+        <Link
+          key={to}
+          to={to}
           className="flex items-center gap-[10px] px-[10px] py-[9px] rounded-[10px] text-p-text-secondary text-[13.5px] no-underline transition-all duration-100 hover:bg-p-bg-subtle hover:text-p-text-primary"
         >
           <Icon size={15} />
           <span className="flex-1">{label}</span>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
-        </a>
+        </Link>
       ))}
     </div>
   </div>
@@ -177,9 +177,9 @@ function DirectorDashboard({ user, currentYearName }) {
                 {currentYearName ?? 'Ciclo vigente'}
               </div>
             </div>
-            <a href="/dashboard/courses" className="px-3 py-[5px] rounded-lg border border-p-border bg-transparent text-p-text-secondary text-[12.5px] font-medium no-underline hover:bg-p-bg-subtle">
+            <Link to="/dashboard/courses" className="px-3 py-[5px] rounded-lg border border-p-border bg-transparent text-p-text-secondary text-[12.5px] font-medium no-underline hover:bg-p-bg-subtle">
               Ver todos
-            </a>
+            </Link>
           </div>
           {courses.isLoading ? (
             <div className="p-5">{[1, 2, 3].map((i) => <div key={`skeleton-course-dir-${i}`} className="h-11 bg-p-bg-subtle rounded-lg mb-2 animate-pulse" />)}</div>
@@ -214,7 +214,7 @@ function DirectorDashboard({ user, currentYearName }) {
 
         <div className="flex flex-col gap-[14px]">
           {sub && (
-            <a href="/dashboard/billing" className="no-underline">
+            <Link to="/dashboard/billing" className="no-underline">
               <div className="bg-p-bg-base border border-p-border rounded-2xl p-[14px] px-4 flex items-center gap-3">
                 <div className="size-8 rounded-[10px] bg-[oklch(92%_0.020_250)] dark:bg-[oklch(22%_0.020_250)] flex items-center justify-center shrink-0">
                   <CreditCard size={15} color="oklch(35% 0.050 250)" className="dark:hidden" />
@@ -228,7 +228,7 @@ function DirectorDashboard({ user, currentYearName }) {
                 </div>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--p-text-tertiary)" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
               </div>
-            </a>
+            </Link>
           )}
           <QuickLinks />
           <ActivityFeed />

@@ -92,3 +92,20 @@ export function useRemoveMember() {
     onSuccess: () => showSuccess('Miembro eliminado exitosamente'),
   });
 }
+
+/**
+ * Download the full member list as a CSV file.
+ * Uses a direct axios GET with responseType 'blob' so the browser
+ * triggers a file download without navigating away.
+ */
+export async function exportMembers() {
+  const response = await api.get('/api/members/export', { responseType: 'blob' });
+  const url = URL.createObjectURL(new Blob([response.data], { type: 'text/csv' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `miembros-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
