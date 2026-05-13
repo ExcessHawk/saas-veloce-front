@@ -12,6 +12,7 @@ export const useAuthStore = create(
       refreshToken: null,
       user: null,       // { id, email, fullName, role, ... }
       schoolId: null,   // UUID string
+      memberId: null,   // school_members.id for the current session
 
       // ─── Acciones ───
 
@@ -21,10 +22,9 @@ export const useAuthStore = create(
       setAuth: ({ accessToken, refreshToken, user }) =>
         set({ accessToken, refreshToken, user }),
 
-      /**
-       * Establecer el tenant (escuela).
-       */
       setSchoolId: (schoolId) => set({ schoolId }),
+
+      setMemberId: (memberId) => set({ memberId }),
 
       /**
        * Limpiar toda la sesión.
@@ -35,6 +35,7 @@ export const useAuthStore = create(
           refreshToken: null,
           user: null,
           schoolId: null,
+          memberId: null,
         }),
 
       /**

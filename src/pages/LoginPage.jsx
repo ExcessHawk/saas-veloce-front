@@ -18,6 +18,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
   const setSchoolId = useAuthStore((s) => s.setSchoolId);
+  const setMemberId = useAuthStore((s) => s.setMemberId);
   const login = useLogin();
 
   const [showPw, setShowPw] = useState(false);
@@ -33,6 +34,7 @@ export default function LoginPage() {
       const result = await login.mutateAsync(data);
       setAuth(result);
       if (result.schoolId) setSchoolId(result.schoolId);
+      if (result.memberId) setMemberId(result.memberId);
       navigate(result.user?.isGlobalAdmin ? '/admin' : '/dashboard');
     } catch (error) {
       showApiError(error);

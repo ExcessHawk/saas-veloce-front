@@ -33,6 +33,7 @@ const AcceptInvitationPage = lazy(() => import('@/pages/AcceptInvitationPage'));
 const VerifyEmailPage      = lazy(() => import('@/pages/VerifyEmailPage'));
 const GradeLevelsPage      = lazy(() => import('@/pages/GradeLevelsPage'));
 const GradesPage           = lazy(() => import('@/pages/GradesPage'));
+const ChatPage             = lazy(() => import('@/pages/ChatPage'));
 
 const PageFallback = () => (
   <div className="flex h-full items-center justify-center py-20 px-6">
@@ -83,6 +84,8 @@ export const router = createBrowserRouter([
           { path: 'school',               element: wrap(<SchoolPage />) },
           { path: 'profile',              element: wrap(<ProfilePage />) },
           { path: 'billing',              element: wrap(<BillingPage />) },
+          { path: 'chat',                 element: wrap(<ChatPage />) },
+          { path: 'chat/:convId',         element: wrap(<ChatPage />) },
         ],
       },
       {

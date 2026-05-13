@@ -11,7 +11,7 @@ import {
   LayoutDashboard, DoorOpen, BookOpen, GraduationCap,
   Calendar, School, UserCircle, Users, UserPlus,
   LogOut, Menu, X, Bell, Search, CreditCard, ListOrdered,
-  ClipboardList, CheckCircle,
+  ClipboardList, CheckCircle, MessageSquare,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -33,6 +33,7 @@ const NAV_BY_ROLE = {
   teacher: [
     { path: '/dashboard',            label: 'Dashboard',  icon: LayoutDashboard, prefetch: () => import('@/pages/DashboardPage'),  prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['my-courses'], queryFn: () => api.get('/api/courses/me').then(r=>r.data) }) },
     { path: '/dashboard/mis-cursos', label: 'Mis Cursos', icon: GraduationCap,   prefetch: () => import('@/pages/MyCoursesPage'), prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['my-courses'], queryFn: () => api.get('/api/courses/me').then(r=>r.data) }) },
+    { path: '/dashboard/chat',       label: 'Chat',       icon: MessageSquare,   prefetch: () => import('@/pages/ChatPage'),      prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['chat-conversations'], queryFn: () => api.get('/api/chat/conversations').then(r=>r.data) }) },
     { divider: true, id: 'divider' },
     { path: '/dashboard/profile',    label: 'Mi Perfil',  icon: UserCircle,      prefetch: () => import('@/pages/ProfilePage'),   prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['profile'],    queryFn: () => api.get('/api/auth/me').then(r=>r.data)    }) },
   ],
@@ -45,6 +46,7 @@ const NAV_BY_ROLE = {
   parent: [
     { path: '/dashboard',           label: 'Dashboard', icon: LayoutDashboard, prefetch: () => import('@/pages/DashboardPage'),   prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['my-children'], queryFn: () => api.get('/api/members/my-children').then(r=>r.data) }) },
     { path: '/dashboard/mis-hijos', label: 'Mis Hijos', icon: Users,           prefetch: () => import('@/pages/MyChildrenPage'), prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['my-children'], queryFn: () => api.get('/api/members/my-children').then(r=>r.data) }) },
+    { path: '/dashboard/chat',      label: 'Chat',      icon: MessageSquare,   prefetch: () => import('@/pages/ChatPage'),       prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['chat-conversations'], queryFn: () => api.get('/api/chat/conversations').then(r=>r.data) }) },
     { divider: true, id: 'divider' },
     { path: '/dashboard/profile',   label: 'Mi Perfil', icon: UserCircle,      prefetch: () => import('@/pages/ProfilePage'),    prefetchQuery: () => queryClient.prefetchQuery({ queryKey: ['profile'],     queryFn: () => api.get('/api/auth/me').then(r=>r.data)                      }) },
   ],
