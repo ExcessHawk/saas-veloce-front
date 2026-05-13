@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/stores/authStore';
 import { useChat } from '@/hooks/useChat';
-import { useMembers } from '@/hooks/useMembers';
 import { avatarColor, getInitials } from '@/lib/materia-colors';
 import { cn } from '@/lib/utils';
-import { Send, MessageSquare, ArrowLeft, Wifi, WifiOff } from 'lucide-react';
+import { Send, MessageSquare, ArrowLeft, Wifi, WifiOff, BookOpen, Users } from 'lucide-react';
 import { format, isToday, isYesterday } from 'date-fns';
 import { es } from 'date-fns/locale';
+import api from '@/lib/axios';
 
 /* ── helpers ── */
 function fmtTime(iso) {
@@ -37,12 +38,20 @@ function Av({ name, size = 36 }) {
 }
 
 /* ── Conversation list item ── */
-function ConvItem({ conv, isActive, onClick, myMemberId }) {
+function ConvItem({ conv, isActive, onClick }) {
   const other = conv.otherMember;
   const name = other?.fullName ?? other?.email ?? 'Usuario';
   const preview = conv.lastMessage?.body ?? 'Sin mensajes';
   const time = conv.lastMessageAt ? fmtTime(conv.lastMessageAt) : '';
   const unread = conv.unreadCount ?? 0;
+
+  // Subtitle: subjects if teacher, children if parent
+  let subtitle = '';
+  if (other?.role === 'teacher' && other?.subjects?.length > 0) {
+    subtitle = other.subjects.join(', ');
+  } else if (other?.role === 'parent' && other?.children?.length > 0) {
+    subtitle = `Padre de ${other.children.join(', ')}`;
+  }
 
   return (
     <button
@@ -68,7 +77,10 @@ function ConvItem({ conv, isActive, onClick, myMemberId }) {
           </span>
           {time && <span className="text-[11px] text-p-text-tertiary shrink-0">{time}</span>}
         </div>
-        <div className={cn('text-[12.5px] truncate mt-[1px]', unread > 0 ? 'font-medium text-p-text-secondary' : 'text-p-text-tertiary')}>
+        {subtitle && (
+          <div className="text-[11.5px] text-p-accent truncate mt-[1px] font-medium">{subtitle}</div>
+        )}
+        <div className={cn('text-[12px] truncate', subtitle ? 'mt-[1px]' : 'mt-[1px]', unread > 0 ? 'font-medium text-p-text-secondary' : 'text-p-text-tertiary')}>
           {preview}
         </div>
       </div>
@@ -107,12 +119,17 @@ function Bubble({ msg, isMine, showDay, dayLabel }) {
 }
 
 /* ── New conversation modal ── */
-function NewConvModal({ members, myMemberId, onStart, onClose }) {
+function NewConvModal({ onStart, onClose }) {
   const [search, setSearch] = useState('');
-  const eligible = members.filter((m) =>
-    m.id !== myMemberId &&
-    ['teacher', 'director', 'parent'].includes(m.role) &&
-    (m.fullName || m.email || '').toLowerCase().includes(search.toLowerCase()),
+
+  const { data: contacts = [], isLoading } = useQuery({
+    queryKey: ['chat-contacts'],
+    queryFn: () => api.get('/api/chat/contacts').then((r) => r.data),
+  });
+
+  const filtered = contacts.filter((c) =>
+    (c.fullName || '').toLowerCase().includes(search.toLowerCase()) ||
+    (c.context || '').toLowerCase().includes(search.toLowerCase()),
   );
 
   const ROLE_LABEL = { teacher: 'Docente', director: 'Director', parent: 'Padre/Madre', student: 'Estudiante' };
@@ -127,7 +144,7 @@ function NewConvModal({ members, myMemberId, onStart, onClose }) {
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-[400px] bg-p-bg-base border border-p-border rounded-2xl shadow-p-lg overflow-hidden [animation:dropIn_0.15s_ease]"
+        className="w-full max-w-[420px] bg-p-bg-base border border-p-border rounded-2xl shadow-p-lg overflow-hidden [animation:dropIn_0.15s_ease]"
       >
         <div className="px-5 py-4 border-b border-p-border">
           <div className="text-[14px] font-bold text-p-text-primary mb-3">Nueva conversación</div>
@@ -135,26 +152,46 @@ function NewConvModal({ members, myMemberId, onStart, onClose }) {
             autoFocus
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar miembro…"
+            placeholder="Buscar por nombre o materia…"
             className="w-full px-3 py-[8px] rounded-[10px] border border-p-border bg-p-bg-subtle text-[13.5px] text-p-text-primary outline-none focus:border-p-border-strong"
           />
         </div>
-        <div className="max-h-[300px] overflow-y-auto py-1">
-          {eligible.length === 0 ? (
+        <div className="max-h-[360px] overflow-y-auto py-1">
+          {isLoading ? (
+            <div className="flex justify-center py-8">
+              <div className="size-5 rounded-full border-2 border-p-accent border-t-transparent [animation:spin_0.7s_linear_infinite]" />
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="px-5 py-8 text-center text-[13px] text-p-text-tertiary">Sin resultados</div>
           ) : (
-            eligible.map((m) => (
+            filtered.map((contact) => (
               <button
-                key={m.id}
+                key={contact.memberId}
                 type="button"
-                onClick={() => onStart(m.id)}
+                onClick={() => onStart(contact.memberId)}
                 className="w-full flex items-center gap-3 px-5 py-[11px] border-none bg-transparent cursor-pointer hover:bg-p-bg-subtle transition-colors"
               >
-                <Av name={m.fullName || m.email} size={36} />
-                <div className="flex-1 text-left">
-                  <div className="text-[13.5px] font-medium text-p-text-primary">{m.fullName || m.email}</div>
-                  <div className="text-[12px] text-p-text-tertiary">{ROLE_LABEL[m.role] ?? m.role}</div>
+                <Av name={contact.fullName} size={38} />
+                <div className="flex-1 text-left min-w-0">
+                  <div className="text-[13.5px] font-medium text-p-text-primary">{contact.fullName}</div>
+                  {contact.context ? (
+                    <div className="text-[12px] text-p-text-secondary truncate mt-[1px]">{contact.context}</div>
+                  ) : (
+                    <div className="text-[12px] text-p-text-tertiary">{ROLE_LABEL[contact.role] ?? contact.role}</div>
+                  )}
                 </div>
+                {contact.role === 'teacher' && contact.subjects?.length > 0 && (
+                  <div className="flex items-center gap-[4px] shrink-0">
+                    <BookOpen size={11} className="text-p-text-tertiary" />
+                    <span className="text-[11px] text-p-text-tertiary">{contact.subjects[0]}</span>
+                  </div>
+                )}
+                {contact.role === 'parent' && contact.children?.length > 0 && (
+                  <div className="flex items-center gap-[4px] shrink-0">
+                    <Users size={11} className="text-p-text-tertiary" />
+                    <span className="text-[11px] text-p-text-tertiary">{contact.children.length}</span>
+                  </div>
+                )}
               </button>
             ))
           )}
@@ -170,13 +207,12 @@ export default function ChatPage() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const myMemberId = useAuthStore((s) => s.memberId) ?? '';
+  const myRole = user?.role ?? '';
 
   const {
     conversations, messages, activeConvId, connected, loading,
     joinConversation, leaveConversation, sendMessage, startConversation,
   } = useChat();
-
-  const { data: allMembers = [] } = useMembers();
 
   const [input, setInput] = useState('');
   const [showNewConv, setShowNewConv] = useState(false);
@@ -198,6 +234,9 @@ export default function ChatPage() {
 
   const activeConv = conversations.find((c) => c.id === activeConvId);
   const otherName = activeConv?.otherMember?.fullName ?? activeConv?.otherMember?.email ?? 'Usuario';
+  const otherRole = activeConv?.otherMember?.role ?? '';
+  const otherSubjects = activeConv?.otherMember?.subjects ?? [];
+  const otherChildren = activeConv?.otherMember?.children ?? [];
   const activeMessages = messages[activeConvId] ?? [];
 
   const handleSend = () => {
@@ -294,7 +333,6 @@ export default function ChatPage() {
                     key={conv.id}
                     conv={conv}
                     isActive={conv.id === activeConvId}
-                    myMemberId={myMemberId}
                     onClick={() => handleSelectConv(conv.id)}
                   />
                 ))
@@ -330,10 +368,26 @@ export default function ChatPage() {
                   <ArrowLeft size={16} />
                 </button>
                 <Av name={otherName} size={36} />
-                <div>
+                <div className="flex-1 min-w-0">
                   <div className="text-[14px] font-bold text-p-text-primary">{otherName}</div>
-                  <div className="text-[12px] text-p-text-tertiary capitalize">
-                    {activeConv?.otherMember?.role ?? ''}
+                  <div className="flex items-center gap-[10px] flex-wrap">
+                    {otherRole && (
+                      <span className="text-[12px] text-p-text-tertiary capitalize">
+                        {otherRole === 'teacher' ? 'Docente' : otherRole === 'parent' ? 'Padre/Madre' : otherRole}
+                      </span>
+                    )}
+                    {otherSubjects.length > 0 && (
+                      <span className="flex items-center gap-[4px] text-[12px] text-p-accent font-medium">
+                        <BookOpen size={11} />
+                        {otherSubjects.join(', ')}
+                      </span>
+                    )}
+                    {otherChildren.length > 0 && (
+                      <span className="flex items-center gap-[4px] text-[12px] text-p-text-secondary">
+                        <Users size={11} />
+                        Padre de {otherChildren.join(', ')}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -391,8 +445,6 @@ export default function ChatPage() {
 
       {showNewConv && (
         <NewConvModal
-          members={allMembers}
-          myMemberId={myMemberId}
           onStart={handleStartConv}
           onClose={() => setShowNewConv(false)}
         />

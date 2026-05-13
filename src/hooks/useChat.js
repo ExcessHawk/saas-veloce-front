@@ -34,6 +34,21 @@ export function useChat() {
   const schoolId = useAuthStore((s) => s.schoolId);
   const memberId = useAuthStore((s) => s.memberId) ?? '';
   const user = useAuthStore((s) => s.user);
+  const setMemberId = useAuthStore((s) => s.setMemberId);
+
+  // If memberId is missing (old session), fetch it from /api/members and store it
+  useEffect(() => {
+    if (!token || !schoolId || memberId) return;
+    api.get('/api/members?limit=1')
+      .then(({ data }) => {
+        // The current user's member is identified by matching userId from /api/auth/me
+        return api.get('/api/auth/me').then(({ data: me }) => {
+          const myMember = (data.data ?? []).find((m) => m.userId === me.id);
+          if (myMember?.id) setMemberId(myMember.id);
+        });
+      })
+      .catch(() => {});
+  }, [token, schoolId, memberId, setMemberId]);
 
   // ── Load conversations via REST ───────────────────────────────────────────
   const loadConversations = useCallback(async () => {
@@ -172,12 +187,10 @@ export function useChat() {
 
   const startConversation = useCallback(async (otherMemberId) => {
     const { data } = await api.post('/api/chat/conversations', { otherMemberId });
-    setConversations((prev) => {
-      if (prev.find((c) => c.id === data.id)) return prev;
-      return [{ ...data, unreadCount: 0, lastMessage: null }, ...prev];
-    });
+    // Reload full enriched list so otherMember info is populated
+    await loadConversations();
     return data;
-  }, []);
+  }, [loadConversations]);
 
   const totalUnread = conversations.reduce((sum, c) => sum + (c.unreadCount ?? 0), 0);
 
