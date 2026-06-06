@@ -5,7 +5,7 @@ import { showSuccess, showApiError } from '@/lib/errors';
 export function useMySubmissions(enabled = true) {
   return useQuery({
     queryKey: ['submissions', 'mine'],
-    queryFn: () => api.get('/api/submissions/mine').then((r) => r.data),
+    queryFn: () => api.get('/api/submissions/mine?limit=200').then((r) => r.data.data),
     enabled,
   });
 }
