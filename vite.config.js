@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -10,6 +11,15 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
+  },
+
+  // Vitest configuration — runs unit + component tests with jsdom + RTL.
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/test/setup.js'],
+    css: false,
+    include: ['src/**/*.{test,spec}.{js,jsx}'],
   },
 
   // Pre-bundle heavy deps in dev so the browser doesn't stall on first load

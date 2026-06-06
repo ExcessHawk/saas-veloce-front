@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router';
-import { Mail, Lock, Eye, EyeOff, Building2, ArrowRight, Check } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Check } from 'lucide-react';
 
 import { registerSchema } from '@/schemas/auth';
 import { useAuthStore } from '@/stores/authStore';
@@ -10,8 +10,9 @@ import { useRegister } from '@/hooks/useAuth';
 import { showApiError } from '@/lib/errors';
 import AuthLayout from '@/layouts/AuthLayout';
 import {
-  AuthHeader, AuthTabs, AuthInput, AuthButton, Tooltip, PwStrengthMeter,
+  AuthHeader, AuthTabs, AuthInput, AuthButton, PwStrengthMeter,
 } from '@/components/AuthFormParts';
+import { SchoolCombobox } from '@/components/SchoolCombobox';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function RegisterPage() {
   const [showPw, setShowPw] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const { register: formRegister, handleSubmit, watch, formState: { errors } } = useForm({
+  const { register: formRegister, control, handleSubmit, watch, formState: { errors } } = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: { email: '', password: '', confirmPassword: '', schoolId: '' },
   });
@@ -82,11 +83,16 @@ export default function RegisterPage() {
         />
 
         <div className="mb-[22px]">
-          <AuthInput
-            label={<>ID de Escuela <Tooltip text="UUID único de tu institución. Solicítalo a tu director." /></>}
-            placeholder="550e8400-e29b-41d4-a716-446655440000"
-            icon={Building2} autoComplete="off" mono error={errors.schoolId?.message}
-            {...formRegister('schoolId')}
+          <Controller
+            name="schoolId"
+            control={control}
+            render={({ field }) => (
+              <SchoolCombobox
+                value={field.value}
+                onChange={field.onChange}
+                error={errors.schoolId?.message}
+              />
+            )}
           />
         </div>
 

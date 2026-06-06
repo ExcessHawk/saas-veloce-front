@@ -30,6 +30,17 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // 402 Payment Required — backend tenant gate returns this when the
+    // subscription is past_due / canceled / paused or trial expired. Redirect
+    // the user to billing instead of letting them stare at a toast.
+    if (error.response?.status === 402) {
+      const onBilling = typeof window !== 'undefined' && window.location.pathname.startsWith('/dashboard/billing');
+      if (!onBilling && typeof window !== 'undefined') {
+        window.location.href = '/dashboard/billing?reason=payment_required';
+      }
+      return Promise.reject(error);
+    }
+
     if (error.response?.status !== 401 || originalRequest._retry) {
       return Promise.reject(error);
     }

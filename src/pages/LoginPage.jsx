@@ -11,7 +11,6 @@ import { showApiError } from '@/lib/errors';
 import AuthLayout from '@/layouts/AuthLayout';
 import {
   AuthHeader, AuthTabs, AuthInput, AuthButton, AuthCheckbox,
-  Divider, GoogleBtn,
 } from '@/components/AuthFormParts';
 
 export default function LoginPage() {
@@ -72,9 +71,6 @@ export default function LoginPage() {
         <AuthButton type="submit" loading={login.isPending} icon={!login.isPending ? ArrowRight : undefined}>
           {login.isPending ? 'Iniciando sesión…' : 'Iniciar sesión'}
         </AuthButton>
-
-        <Divider>o continúa con</Divider>
-        <GoogleBtn label="Continuar con Google" />
 
         <p className="text-center text-[13px] text-p-text-tertiary mt-[22px] mb-0">
           ¿Eres una nueva escuela?{' '}

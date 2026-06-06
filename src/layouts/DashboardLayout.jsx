@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useLogout } from '@/hooks/useAuth';
 import { useNotifications } from '@/hooks/useNotifications';
 import { ModeToggle } from '@/components/ModeToggle';
+import { DashboardBanners } from '@/components/DashboardBanners';
 import { getInitials, avatarColor } from '@/lib/materia-colors';
 import { queryClient } from '@/lib/queryClient';
 import api from '@/lib/axios';
@@ -517,6 +518,7 @@ export default function DashboardLayout() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-6">
+          <DashboardBanners />
           <Outlet />
         </main>
       </div>

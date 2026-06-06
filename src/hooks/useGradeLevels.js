@@ -7,7 +7,7 @@ const KEY = ['grade-levels'];
 export function useGradeLevels() {
   return useQuery({
     queryKey: KEY,
-    queryFn: () => api.get('/api/grade-levels').then((r) => r.data),
+    queryFn: () => api.get('/api/grade-levels?limit=200').then((r) => r.data.data),
   });
 }
 

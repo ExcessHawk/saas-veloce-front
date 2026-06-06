@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { format } from 'date-fns';
 import {
   Pencil, X, Check, Camera, Mail, Phone, Globe, Clock, MapPin,
-  Zap, Users, BookOpen, DoorOpen, Lock, Star, ArrowRight,
+  Zap, Users, BookOpen, DoorOpen, Lock, Star, ArrowRight, Search,
 } from 'lucide-react';
 
 import { useNavigate } from 'react-router';
@@ -393,6 +393,45 @@ export default function SchoolPage() {
             onChange={(v) => setValue('country', v, { shouldDirty: true })}
             placeholder="México" />
         </SectionCard>
+
+        {/* Directorio público */}
+        {isDirector && (
+          <SectionCard title="Directorio público" icon={Search}>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex-1">
+                <div className="text-[13.5px] font-medium text-p-text-primary mb-[3px]">
+                  Visible en búsqueda de registro
+                </div>
+                <div className="text-[12px] text-p-text-secondary leading-[1.5]">
+                  Cuando está activo, los nuevos usuarios pueden encontrar tu escuela al registrarse. Si está desactivado, solo podrán unirse con invitación directa.
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await updateSchool.mutateAsync({ searchable: !school?.searchable });
+                  } catch { /* handled */ }
+                }}
+                disabled={updateSchool.isPending}
+                className={cn(
+                  'relative shrink-0 w-[42px] h-[24px] rounded-full border-none cursor-pointer transition-colors duration-200',
+                  school?.searchable
+                    ? 'bg-p-accent'
+                    : 'bg-p-border',
+                  updateSchool.isPending && 'opacity-50 cursor-not-allowed',
+                )}
+              >
+                <span
+                  className={cn(
+                    'absolute top-[3px] size-[18px] rounded-full bg-white shadow-sm transition-[left] duration-200',
+                    school?.searchable ? 'left-[21px]' : 'left-[3px]',
+                  )}
+                />
+              </button>
+            </div>
+          </SectionCard>
+        )}
 
         {/* Plan */}
         <SectionCard title="Plan actual" icon={Zap}>
