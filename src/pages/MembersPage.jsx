@@ -181,7 +181,7 @@ function MemberRow({ member, isSelf, isDirector, onRoleChange, onDelete, onLinkC
 
   return (
     <tr className="border-t border-p-border transition-[background] duration-[0.08s] hover:bg-p-bg-subtle">
-      <td className="px-5 py-[13px]">
+      <td data-label="Nombre" className="px-5 py-[13px]">
         <div className="flex items-center gap-[11px]">
           <Av nombre={member.fullName || member.email} size={34} />
           <div className="flex items-center gap-[7px]">
@@ -197,13 +197,13 @@ function MemberRow({ member, isSelf, isDirector, onRoleChange, onDelete, onLinkC
         </div>
       </td>
 
-      <td className="px-5 py-[13px]">
+      <td data-label="Email" className="px-5 py-[13px]">
         <span className="text-[13px] text-p-text-secondary font-['Geist_Mono',monospace]">
           {member.email}
         </span>
       </td>
 
-      <td className="px-5 py-[13px]">
+      <td data-label="Rol" className="px-5 py-[13px]">
         <div className="relative inline-block">
           <button
             type="button"
@@ -226,11 +226,11 @@ function MemberRow({ member, isSelf, isDirector, onRoleChange, onDelete, onLinkC
         </div>
       </td>
 
-      <td className="px-5 py-[13px]">
+      <td data-label="Miembro desde" className="px-5 py-[13px]">
         <span className="text-[13px] text-p-text-secondary">{desde}</span>
       </td>
 
-      <td className="px-5 py-[13px]">
+      <td data-label="" className="px-5 py-[13px]">
         {isDirector && (
           <DotsMenu
             isSelf={isSelf}
@@ -798,7 +798,7 @@ export default function MembersPage() {
         ) : filtered.length === 0 ? (
           <EmptyState onAdd={() => setShowAdd(true)} isDirector={isDirector} query={query} />
         ) : (
-          <div className="overflow-x-auto">
+          <div data-stack className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-p-bg-subtle border-b border-p-border">

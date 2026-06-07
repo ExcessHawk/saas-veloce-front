@@ -52,7 +52,7 @@ export default function AdminSchoolsPage() {
       {isLoading ? (
         <div className="h-20 bg-p-bg-base rounded-[14px] border border-p-border" />
       ) : (
-        <div className="bg-p-bg-base border border-p-border rounded-[14px] overflow-hidden">
+        <div data-stack className="bg-p-bg-base border border-p-border rounded-[14px] overflow-hidden">
           <table className="w-full border-collapse text-[13px]">
             <thead>
               <tr className="border-b border-p-border">
@@ -66,19 +66,19 @@ export default function AdminSchoolsPage() {
                 const sc = STATUS_CLS[school.status] ?? STATUS_CLS.inactive;
                 return (
                   <tr key={school.id} className="border-b border-p-border">
-                    <td className="px-4 py-3">
+                    <td data-label="Escuela" className="px-4 py-3">
                       <div className="font-semibold text-p-text-primary">{school.name}</div>
                       <div className="text-[11px] text-p-text-tertiary mt-px">{school.slug}</div>
                     </td>
-                    <td className="px-4 py-3 text-p-text-secondary">{school.planName ?? '—'}</td>
-                    <td className="px-4 py-3">
+                    <td data-label="Plan" className="px-4 py-3 text-p-text-secondary">{school.planName ?? '—'}</td>
+                    <td data-label="Estado" className="px-4 py-3">
                       <span className={cn('text-[12px] font-semibold px-2 py-[3px] rounded-full', STATUS_CLS[school.status] ?? STATUS_CLS.inactive)}>
                         {school.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-p-text-secondary">{school.subscriptionStatus ?? '—'}</td>
-                    <td className="px-4 py-3 text-p-text-secondary">{fmtDate(school.createdAt)}</td>
-                    <td className="px-4 py-3">
+                    <td data-label="Suscripción" className="px-4 py-3 text-p-text-secondary">{school.subscriptionStatus ?? '—'}</td>
+                    <td data-label="Creada" className="px-4 py-3 text-p-text-secondary">{fmtDate(school.createdAt)}</td>
+                    <td data-label="Acción" className="px-4 py-3">
                       <select
                         value={school.status}
                         onChange={(e) => handleStatus(school.id, e.target.value)}

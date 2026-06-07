@@ -258,7 +258,7 @@ export default function CoursesPage() {
 
       <SearchInput value={query} onChange={setQuery} placeholder="Buscar por aula, materia o año..." />
 
-      <Table>
+      <Table stack>
         <TableHeader>
           <TableRow>
             <TableHead>Aula</TableHead>
@@ -292,16 +292,16 @@ export default function CoursesPage() {
               const teacherMember = members.data?.find((m) => m.id === course.teacherMemberId);
               return (
                 <TableRow key={course.id}>
-                  <TableCell>{findName(classrooms.data, course.classroomId)}</TableCell>
-                  <TableCell>{findName(subjects.data, course.subjectId)}</TableCell>
-                  <TableCell>{findName(academicYears.data, course.academicYearId)}</TableCell>
-                  <TableCell className="text-muted-foreground">
+                  <TableCell data-label="Aula">{findName(classrooms.data, course.classroomId)}</TableCell>
+                  <TableCell data-label="Materia">{findName(subjects.data, course.subjectId)}</TableCell>
+                  <TableCell data-label="Año Académico">{findName(academicYears.data, course.academicYearId)}</TableCell>
+                  <TableCell data-label="Docente" className="text-muted-foreground">
                     {teacherMember ? `Prof. ${teacherMember.fullName}` : <span className="italic">Sin asignar</span>}
                   </TableCell>
-                  <TableCell>
+                  <TableCell data-label="Creación">
                     {course.createdAt ? format(new Date(course.createdAt), 'dd/MM/yyyy') : '—'}
                   </TableCell>
-                  <TableCell>
+                  <TableCell data-label="">
                     <RoleGate roles={['director']}>
                       <div className="flex gap-1">
                         <Button variant="ghost" size="icon" title="Asignar docente" onClick={() => setAssigningItem(course)}>

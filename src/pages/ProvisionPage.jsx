@@ -313,7 +313,7 @@ export default function ProvisionPage() {
 
         {step === 2 && (
           <>
-            <div className="grid grid-cols-3 gap-[14px] mt-2 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-[14px] mt-2 mb-6">
               {PLANS.map((p) => (
                 <PlanCard
                   key={p.code}

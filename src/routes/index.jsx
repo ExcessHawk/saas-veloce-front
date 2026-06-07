@@ -1,7 +1,8 @@
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router';
+import { createBrowserRouter } from 'react-router';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { PublicRoute } from '@/components/PublicRoute';
+import { AdminRoute } from '@/components/AdminRoute';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import AdminLayout from '@/layouts/AdminLayout';
 
@@ -34,6 +35,7 @@ const VerifyEmailPage      = lazy(() => import('@/pages/VerifyEmailPage'));
 const GradeLevelsPage      = lazy(() => import('@/pages/GradeLevelsPage'));
 const GradesPage           = lazy(() => import('@/pages/GradesPage'));
 const ChatPage             = lazy(() => import('@/pages/ChatPage'));
+const NotFoundPage         = lazy(() => import('@/pages/NotFoundPage'));
 
 const PageFallback = () => (
   <div className="flex h-full items-center justify-center py-20 px-6">
@@ -90,15 +92,20 @@ export const router = createBrowserRouter([
       },
       {
         path: '/admin',
-        element: <AdminLayout />,
+        element: <AdminRoute />,
         children: [
-          { index: true,          element: wrap(<AdminDashboardPage />) },
-          { path: 'plans',        element: wrap(<AdminPlansPage />) },
-          { path: 'schools',      element: wrap(<AdminSchoolsPage />) },
+          {
+            element: <AdminLayout />,
+            children: [
+              { index: true,          element: wrap(<AdminDashboardPage />) },
+              { path: 'plans',        element: wrap(<AdminPlansPage />) },
+              { path: 'schools',      element: wrap(<AdminSchoolsPage />) },
+            ],
+          },
         ],
       },
     ],
   },
 
-  { path: '*', element: <Navigate to="/dashboard" replace /> },
+  { path: '*', element: wrap(<NotFoundPage />) },
 ]);

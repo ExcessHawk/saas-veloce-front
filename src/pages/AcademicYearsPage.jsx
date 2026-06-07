@@ -219,7 +219,7 @@ export default function AcademicYearsPage() {
 
       <SearchInput value={query} onChange={setQuery} placeholder="Buscar por nombre..." />
 
-      <Table>
+      <Table stack>
         <TableHeader>
           <TableRow>
             <SortableHead field="name" label="Nombre" sorting={sorting} />
@@ -252,10 +252,10 @@ export default function AcademicYearsPage() {
           ) : (
             pagination.paginated.map((year) => (
               <TableRow key={year.id}>
-                <TableCell className="font-medium">{year.name}</TableCell>
-                <TableCell>{year.startDate ? format(new Date(year.startDate), 'dd/MM/yyyy') : '—'}</TableCell>
-                <TableCell>{year.endDate ? format(new Date(year.endDate), 'dd/MM/yyyy') : '—'}</TableCell>
-                <TableCell>
+                <TableCell data-label="Nombre" className="font-medium">{year.name}</TableCell>
+                <TableCell data-label="Inicio">{year.startDate ? format(new Date(year.startDate), 'dd/MM/yyyy') : '—'}</TableCell>
+                <TableCell data-label="Fin">{year.endDate ? format(new Date(year.endDate), 'dd/MM/yyyy') : '—'}</TableCell>
+                <TableCell data-label="Estado">
                   {year.isCurrent ? (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11.5px] font-semibold bg-p-s-100 text-p-s-700">
                       <span className="size-1.5 rounded-full bg-p-s-500" />
@@ -265,8 +265,8 @@ export default function AcademicYearsPage() {
                     <span className="text-[12px] text-p-text-tertiary">-</span>
                   )}
                 </TableCell>
-                <TableCell>{year.createdAt ? format(new Date(year.createdAt), 'dd/MM/yyyy') : '—'}</TableCell>
-                <TableCell>
+                <TableCell data-label="Creado">{year.createdAt ? format(new Date(year.createdAt), 'dd/MM/yyyy') : '—'}</TableCell>
+                <TableCell data-label="">
                   <RoleGate roles={['director']}>
                     <div className="flex gap-1">
                       <Button variant="ghost" size="icon" onClick={() => setEditingItem(year)}>

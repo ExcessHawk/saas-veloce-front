@@ -6,10 +6,18 @@ import { cn } from "@/lib/utils"
 
 function Table({
   className,
+  stack = false,
   ...props
 }) {
+  // `stack`: on mobile (<640px) the rows render as stacked cards instead of a
+  // horizontally-scrolling grid. Each <TableCell> shows its column label from
+  // `data-label` (see the `[data-stack]` rules in index.css). Desktop unchanged.
   return (
-    <div data-slot="table-container" className="relative w-full overflow-x-auto">
+    <div
+      data-slot="table-container"
+      data-stack={stack ? "" : undefined}
+      className="relative w-full overflow-x-auto"
+    >
       <table
         data-slot="table"
         className={cn("w-full caption-bottom text-sm", className)}

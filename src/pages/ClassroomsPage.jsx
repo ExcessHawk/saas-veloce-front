@@ -198,7 +198,7 @@ function GradeLevelsPanel() {
 
       {isLoading ? (
         <Skeleton className="h-8 w-full" />
-      ) : levels?.length === 0 ? (
+      ) : !Array.isArray(levels) || levels.length === 0 ? (
         <p className="text-[13px] text-[hsl(var(--muted-foreground))]">Sin niveles. Crea el primero arriba.</p>
       ) : (
         <div className="flex flex-col gap-[6px]">
@@ -420,7 +420,7 @@ export default function ClassroomsPage() {
         <div className="space-y-4">
           <SearchInput value={query} onChange={setQuery} placeholder="Buscar por nombre o nivel…" />
 
-          <Table>
+          <Table stack>
             <TableHeader>
               <TableRow>
                 <SortableHead field="name" label="Nombre" sorting={sorting} />
@@ -447,12 +447,12 @@ export default function ClassroomsPage() {
               ) : (
                 pagination.paginated.map((c) => (
                   <TableRow key={c.id}>
-                    <TableCell className="font-medium">{c.name}</TableCell>
-                    <TableCell>{levelMap[c.gradeLevelId] ?? '—'}</TableCell>
-                    <TableCell>{c.academicYearId ? (yearMap[c.academicYearId] ?? '—') : '—'}</TableCell>
-                    <TableCell>{c.tutorMemberId ? (memberMap[c.tutorMemberId] ?? '—') : '—'}</TableCell>
-                    <TableCell>{c.capacity ? `${c.capacity} alumnos` : '—'}</TableCell>
-                    <TableCell>
+                    <TableCell data-label="Nombre" className="font-medium">{c.name}</TableCell>
+                    <TableCell data-label="Nivel">{levelMap[c.gradeLevelId] ?? '—'}</TableCell>
+                    <TableCell data-label="Año">{c.academicYearId ? (yearMap[c.academicYearId] ?? '—') : '—'}</TableCell>
+                    <TableCell data-label="Tutor">{c.tutorMemberId ? (memberMap[c.tutorMemberId] ?? '—') : '—'}</TableCell>
+                    <TableCell data-label="Capacidad">{c.capacity ? `${c.capacity} alumnos` : '—'}</TableCell>
+                    <TableCell data-label="">
                       <div className="flex gap-1">
                         <Button variant="ghost" size="icon" onClick={() => setStudentsClassroom(c)} title="Alumnos"><Users className="size-4" /></Button>
                         <RoleGate roles={['director']}>

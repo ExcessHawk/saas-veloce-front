@@ -205,3 +205,46 @@
     @apply font-sans;
   }
 }
+
+/* Responsive "stack to cards" tables (<Table stack>). On phones each row becomes
+   a bordered card and every cell shows its column label from data-label. */
+@media (max-width: 639px) {
+  [data-stack] table,
+  [data-stack] tbody,
+  [data-stack] tr,
+  [data-stack] td {
+    display: block;
+    width: 100%;
+  }
+  [data-stack] thead {
+    display: none;
+  }
+  [data-stack] tr {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 6px 12px;
+    margin-bottom: 10px;
+    background: var(--card);
+  }
+  [data-stack] td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 0;
+    border: 0;
+    text-align: right;
+    white-space: normal;
+  }
+  [data-stack] td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--muted-foreground);
+    text-align: left;
+  }
+  /* Cells with an empty data-label (e.g. the actions column) drop the label. */
+  [data-stack] td[data-label=""]::before {
+    content: none;
+  }
+}

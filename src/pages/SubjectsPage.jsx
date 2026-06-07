@@ -239,7 +239,7 @@ export default function SubjectsPage() {
 
       <SearchInput value={query} onChange={setQuery} placeholder="Buscar por nombre o código..." />
 
-      <Table>
+      <Table stack>
         <TableHeader>
           <TableRow>
             <SortableHead field="name" label="Nombre" sorting={sorting} />
@@ -272,9 +272,9 @@ export default function SubjectsPage() {
           ) : (
             pagination.paginated.map((subject) => (
               <TableRow key={subject.id}>
-                <TableCell>{subject.name}</TableCell>
-                <TableCell>{subject.code || '—'}</TableCell>
-                <TableCell>
+                <TableCell data-label="Nombre">{subject.name}</TableCell>
+                <TableCell data-label="Código">{subject.code || '—'}</TableCell>
+                <TableCell data-label="Color">
                   {subject.color ? (
                       <div className="flex items-center gap-2">
                       <div className="size-4 rounded-full border border-p-border shrink-0" style={{ background: subject.color }} />
@@ -282,7 +282,7 @@ export default function SubjectsPage() {
                     </div>
                   ) : '—'}
                 </TableCell>
-                <TableCell>
+                <TableCell data-label="Ícono">
                   {subject.icon ? (
                     <div className="flex items-center gap-2">
                       <LucideIcon name={subject.icon} size={15} className="text-p-text-secondary shrink-0" />
@@ -290,10 +290,10 @@ export default function SubjectsPage() {
                     </div>
                   ) : '—'}
                 </TableCell>
-                <TableCell>
+                <TableCell data-label="Creación">
                   {subject.createdAt ? format(new Date(subject.createdAt), 'dd/MM/yyyy') : '—'}
                 </TableCell>
-                <TableCell>
+                <TableCell data-label="">
                   <RoleGate roles={['director']}>
                     <div className="flex gap-1">
                       <Button variant="ghost" size="icon" onClick={() => setEditingItem(subject)}>

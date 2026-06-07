@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { CreditCard, ExternalLink, CheckCircle2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { CreditCard, ExternalLink, CheckCircle2, Check, Users, GraduationCap, BookOpen } from 'lucide-react';
 import { useSubscription, useCheckout, usePortal } from '@/hooks/useBilling';
 import { useAdminPlans } from '@/hooks/useAdminPlans';
 import { showApiError } from '@/lib/errors';
@@ -29,24 +28,36 @@ function fmtPrice(cents, currency) {
   return fmt.format(cents / 100);
 }
 
+/** Human-readable limits/features for a plan card. */
+function planFeatures(plan) {
+  return [
+    { icon: Users,         label: plan.maxStudents ? `Hasta ${plan.maxStudents} alumnos` : 'Alumnos ilimitados' },
+    { icon: GraduationCap, label: plan.maxTeachers ? `Hasta ${plan.maxTeachers} docentes` : 'Docentes ilimitados' },
+    { icon: BookOpen,      label: plan.maxCourses  ? `Hasta ${plan.maxCourses} cursos`   : 'Cursos ilimitados' },
+  ];
+}
+
 export default function BillingPage() {
   const { data: sub, isLoading: loadingSub } = useSubscription();
   const { data: plans, isLoading: loadingPlans } = useAdminPlans();
   const checkout = useCheckout();
   const portal = usePortal();
 
-  const [selectedPlan, setSelectedPlan] = useState('');
   const [currency, setCurrency] = useState('MXN');
+  const [pendingCode, setPendingCode] = useState(null);
 
-  const activePlans = plans?.filter((p) => p.isActive && (p.stripePriceIdMxn || p.stripePriceIdUsd)) ?? [];
+  const activePlans = (plans ?? [])
+    .filter((p) => p.isActive && (p.stripePriceIdMxn || p.stripePriceIdUsd))
+    .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
 
-  const handleCheckout = async () => {
-    if (!selectedPlan) { toast.error('Selecciona un plan'); return; }
+  const goCheckout = async (planCode) => {
+    setPendingCode(planCode);
     try {
-      const { url } = await checkout.mutateAsync({ planCode: selectedPlan, currency });
+      const { url } = await checkout.mutateAsync({ planCode, currency });
       window.location.href = url;
     } catch (err) {
       showApiError(err);
+      setPendingCode(null);
     }
   };
 
@@ -62,16 +73,16 @@ export default function BillingPage() {
   const statusStyle = STATUS_STYLE[sub?.status] ?? STATUS_STYLE.active;
 
   return (
-    <div className="max-w-[720px] mx-auto">
+    <div className="max-w-[920px] mx-auto">
       <div className="mb-7">
         <h1 className="text-[22px] font-semibold text-p-text-primary m-0">Facturación</h1>
         <p className="text-[13.5px] text-p-text-secondary mt-1">
-          Gestiona tu suscripción y métodos de pago.
+          Gestiona tu suscripción y método de pago.
         </p>
       </div>
 
       {/* Current subscription */}
-      <div className="bg-p-bg-base border border-p-border rounded-[14px] p-6 mb-5">
+      <div className="bg-p-bg-base border border-p-border rounded-[14px] p-6 mb-6">
         <div className="flex items-center gap-[10px] mb-[18px]">
           <CheckCircle2 size={16} className="text-p-text-secondary" />
           <span className="text-[14px] font-semibold text-p-text-primary">Suscripción actual</span>
@@ -87,9 +98,7 @@ export default function BillingPage() {
             </div>
             <div>
               <div className="text-[11px] text-p-text-tertiary mb-[3px]">Estado</div>
-              <span
-                className={cn("text-[12px] font-semibold px-2 py-[3px] rounded-full", statusStyle.cls)}
-              >
+              <span className={cn('text-[12px] font-semibold px-2 py-[3px] rounded-full', statusStyle.cls)}>
                 {statusStyle.label}
               </span>
             </div>
@@ -111,90 +120,109 @@ export default function BillingPage() {
             <button
               onClick={handlePortal}
               disabled={portal.isPending}
-              className="inline-flex items-center gap-[6px] px-[14px] py-[7px] rounded-lg border border-p-border bg-p-bg-base text-p-text-primary text-[13px] font-medium font-sans cursor-pointer hover:bg-p-bg-subtle transition-colors"
+              className="inline-flex items-center gap-[6px] px-[14px] py-[7px] rounded-lg border border-p-border bg-p-bg-base text-p-text-primary text-[13px] font-medium font-sans cursor-pointer hover:bg-p-bg-subtle transition-colors disabled:opacity-50"
             >
               <ExternalLink size={13} />
               {portal.isPending ? 'Abriendo…' : 'Gestionar pagos y facturas'}
             </button>
+            <p className="text-[12px] text-p-text-tertiary mt-2 m-0">
+              Facturas, método de pago y cancelación se gestionan de forma segura en el portal de Stripe.
+            </p>
           </div>
         )}
       </div>
 
-      {/* Checkout */}
-      <div className="bg-p-bg-base border border-p-border rounded-[14px] p-6">
-        <div className="flex items-center gap-[10px] mb-[18px]">
+      {/* Plans */}
+      <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+        <div className="flex items-center gap-[10px]">
           <CreditCard size={16} className="text-p-text-secondary" />
-          <span className="text-[14px] font-semibold text-p-text-primary">Cambiar plan</span>
+          <span className="text-[14px] font-semibold text-p-text-primary">Planes disponibles</span>
         </div>
+        {/* Currency toggle (segmented) */}
+        <div className="inline-flex rounded-lg border border-p-border bg-p-bg-base p-[2px]">
+          {['MXN', 'USD'].map((c) => (
+            <button
+              key={c}
+              onClick={() => setCurrency(c)}
+              className={cn(
+                'px-3 py-[5px] rounded-md text-[12.5px] font-semibold font-sans cursor-pointer transition-colors',
+                currency === c ? 'bg-p-accent text-p-accent-text' : 'bg-transparent text-p-text-secondary hover:text-p-text-primary',
+              )}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+      </div>
 
-        {loadingPlans ? (
-          <div className="h-20 bg-p-bg-subtle rounded-lg" />
-        ) : activePlans.length === 0 ? (
+      {loadingPlans ? (
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => <div key={i} className="h-[280px] bg-p-bg-subtle rounded-[14px] animate-pulse" />)}
+        </div>
+      ) : activePlans.length === 0 ? (
+        <div className="bg-p-bg-base border border-p-border rounded-[14px] p-6">
           <p className="text-[13.5px] text-p-text-secondary m-0">
             No hay planes disponibles aún. El administrador debe configurarlos primero.
           </p>
-        ) : (
-          <>
-            <div className="flex flex-col gap-[10px] mb-4">
-              {activePlans.map((plan) => (
-                <label
-                  key={plan.id}
-                  className={cn(
-                    'flex items-center gap-3 px-4 py-3 rounded-[10px] cursor-pointer border-[1.5px] transition-colors',
-                    selectedPlan === plan.code
-                      ? 'border-p-accent bg-p-bg-subtle'
-                      : 'border-p-border bg-p-bg-base hover:bg-p-bg-subtle',
-                  )}
-                >
-                  <input
-                    type="radio"
-                    name="plan"
-                    value={plan.code}
-                    checked={selectedPlan === plan.code}
-                    onChange={() => setSelectedPlan(plan.code)}
-                    className="accent-p-accent"
-                  />
-                  <div className="flex-1">
-                    <div className="text-[14px] font-semibold text-p-text-primary">{plan.name}</div>
-                    {plan.description && (
-                      <div className="text-[12px] text-p-text-secondary mt-[2px]">{plan.description}</div>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <div className="text-[14px] font-bold text-p-text-primary">
-                      {currency === 'MXN' ? fmtPrice(plan.priceMonthlyMxn, 'MXN') : fmtPrice(plan.priceMonthlyUsd, 'USD')}
-                    </div>
-                    <div className="text-[11px] text-p-text-tertiary">/ mes</div>
-                  </div>
-                </label>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-[10px]">
-              <select
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-                className="px-[10px] py-[7px] rounded-lg border border-p-border bg-p-bg-base text-p-text-primary text-[13px] font-sans cursor-pointer"
-              >
-                <option value="MXN">MXN</option>
-                <option value="USD">USD</option>
-              </select>
-
-              <button
-                onClick={handleCheckout}
-                disabled={checkout.isPending || !selectedPlan}
+        </div>
+      ) : (
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {activePlans.map((plan) => {
+            const isCurrent = !!sub?.planName && sub.planName === plan.name;
+            const cents = currency === 'MXN' ? plan.priceMonthlyMxn : plan.priceMonthlyUsd;
+            const busy = pendingCode === plan.code;
+            return (
+              <div
+                key={plan.id}
                 className={cn(
-                  'inline-flex items-center gap-[6px] px-[18px] py-2 rounded-lg bg-p-accent text-p-accent-text border-none text-[13.5px] font-semibold font-sans transition-opacity hover:bg-p-accent-hover',
-                  checkout.isPending || !selectedPlan ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
+                  'relative flex flex-col rounded-[14px] border bg-p-bg-base p-5 transition-shadow',
+                  isCurrent ? 'border-p-accent ring-1 ring-p-accent shadow-p-md' : 'border-p-border shadow-p-sm hover:shadow-p-md',
                 )}
               >
-                <CreditCard size={14} />
-                {checkout.isPending ? 'Redirigiendo…' : 'Ir a pagar'}
-              </button>
-            </div>
-          </>
-        )}
-      </div>
+                {isCurrent && (
+                  <span className="absolute -top-[10px] left-5 px-2 py-[2px] rounded-full text-[11px] font-bold bg-p-accent text-p-accent-text">
+                    Plan actual
+                  </span>
+                )}
+                <div className="mb-1 text-[16px] font-bold text-p-text-primary tracking-[-0.02em]">{plan.name}</div>
+                {plan.description && (
+                  <div className="text-[12.5px] text-p-text-secondary leading-[1.5] mb-3 min-h-[34px]">{plan.description}</div>
+                )}
+                <div className="flex items-baseline gap-1 mb-4">
+                  <span className="text-[26px] font-extrabold text-p-text-primary tracking-[-0.04em] leading-none">
+                    {fmtPrice(cents, currency)}
+                  </span>
+                  {cents ? <span className="text-[12.5px] text-p-text-tertiary">/ mes</span> : null}
+                </div>
+                <ul className="flex flex-col gap-[9px] mb-5 flex-1">
+                  {planFeatures(plan).map((f, i) => (
+                    <li key={i} className="flex items-center gap-2 text-[13px] text-p-text-secondary">
+                      <span className="size-[18px] rounded-full bg-p-s-100 text-p-s-700 flex items-center justify-center shrink-0">
+                        <Check size={11} strokeWidth={3} />
+                      </span>
+                      {f.label}
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => goCheckout(plan.code)}
+                  disabled={isCurrent || !!pendingCode}
+                  className={cn(
+                    'w-full inline-flex items-center justify-center gap-[6px] px-[18px] py-2 rounded-lg text-[13.5px] font-semibold font-sans transition-colors border',
+                    isCurrent
+                      ? 'border-p-border bg-p-bg-subtle text-p-text-tertiary cursor-not-allowed'
+                      : pendingCode
+                        ? 'border-transparent bg-p-accent text-p-accent-text opacity-50 cursor-not-allowed'
+                        : 'border-transparent bg-p-accent text-p-accent-text cursor-pointer hover:bg-p-accent-hover',
+                  )}
+                >
+                  {isCurrent ? 'Plan actual' : busy ? 'Redirigiendo…' : 'Elegir plan'}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

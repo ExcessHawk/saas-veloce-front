@@ -107,7 +107,7 @@ export default function GradeLevelsPage() {
         </div>
       </RoleGate>
 
-      <Table>
+      <Table stack>
         <TableHeader>
           <TableRow>
             <TableHead className="w-10">#</TableHead>
@@ -134,8 +134,8 @@ export default function GradeLevelsPage() {
           ) : (
             sorted.map((level, idx) => (
               <TableRow key={level.id}>
-                <TableCell className="text-p-text-tertiary text-[13px]">{idx + 1}</TableCell>
-                <TableCell>
+                <TableCell data-label="#" className="text-p-text-tertiary text-[13px]">{idx + 1}</TableCell>
+                <TableCell data-label="Nombre">
                   {editId === level.id ? (
                     <InlineForm
                       initial={level}
@@ -152,14 +152,14 @@ export default function GradeLevelsPage() {
                     </div>
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell data-label="Orden">
                   {editId !== level.id && (
                     <span className="text-[12px] font-mono text-p-text-secondary bg-p-bg-subtle px-2 py-[2px] rounded">
                       {level.order}
                     </span>
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell data-label="">
                   <RoleGate roles={['director']}>
                     {editId !== level.id && (
                       <div className="flex gap-1">

@@ -1148,7 +1148,9 @@ const TabEntregadas = ({ tareas, submissionsByTaskId, onVerEntrega }) => {
       {tareas.map((t) => {
         const tm  = TIPO_META[t.type] || TIPO_META.tarea;
         const sub = submissionsByTaskId.get(t.id);
-        const graded = sub?.status === 'graded';
+        // 'returned' is also graded (returned to the student) — without it, a
+        // graded+returned submission wrongly showed "Por revisar" in the list.
+        const graded = sub?.status === 'graded' || sub?.status === 'returned';
         const pct = graded && sub.score !== null ? Math.round((sub.score / t.maxScore) * 100) : null;
         const aprobado = pct !== null && pct >= 60;
 
