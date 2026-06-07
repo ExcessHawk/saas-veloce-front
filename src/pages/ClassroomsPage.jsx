@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ConfirmDeleteDialog } from '@/components/ConfirmDeleteDialog';
 import { SearchInput } from '@/components/SearchInput';
 import { DataTablePagination } from '@/components/DataTablePagination';
+import { EmptyState } from '@/components/EmptyState';
 import { RoleGate } from '@/components/RoleGate';
 import { SortableHead } from '@/components/SortableHead';
 import { usePagination } from '@/hooks/usePagination';
@@ -440,8 +441,12 @@ export default function ClassroomsPage() {
                 ))
               ) : filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                    {query ? `Sin resultados para "${query}"` : 'No hay aulas registradas'}
+                  <TableCell colSpan={6} className="p-0">
+                    <EmptyState
+                      icon={DoorOpen}
+                      title={query ? 'Sin resultados' : 'No hay aulas'}
+                      description={query ? `No encontramos aulas para "${query}".` : 'Crea la primera aula de tu escuela.'}
+                    />
                   </TableCell>
                 </TableRow>
               ) : (
@@ -454,10 +459,10 @@ export default function ClassroomsPage() {
                     <TableCell data-label="Capacidad">{c.capacity ? `${c.capacity} alumnos` : '—'}</TableCell>
                     <TableCell data-label="">
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" onClick={() => setStudentsClassroom(c)} title="Alumnos"><Users className="size-4" /></Button>
+                        <Button variant="ghost" size="icon" onClick={() => setStudentsClassroom(c)} title="Alumnos" aria-label="Ver alumnos"><Users className="size-4" /></Button>
                         <RoleGate roles={['director']}>
-                          <Button variant="ghost" size="icon" onClick={() => setEditingItem(c)}><Pencil className="size-4" /></Button>
-                          <Button variant="ghost" size="icon" onClick={() => setDeletingItem(c)}><Trash2 className="size-4" /></Button>
+                          <Button variant="ghost" size="icon" onClick={() => setEditingItem(c)} title="Editar" aria-label="Editar aula"><Pencil className="size-4" /></Button>
+                          <Button variant="ghost" size="icon" onClick={() => setDeletingItem(c)} title="Eliminar" aria-label="Eliminar aula"><Trash2 className="size-4" /></Button>
                         </RoleGate>
                       </div>
                     </TableCell>

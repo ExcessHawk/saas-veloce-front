@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Plus, Pencil, Trash2, GraduationCap } from 'lucide-react';
 import { useGradeLevels, useCreateGradeLevel, useUpdateGradeLevel, useDeleteGradeLevel } from '@/hooks/useGradeLevels';
 import { ConfirmDeleteDialog } from '@/components/ConfirmDeleteDialog';
+import { EmptyState } from '@/components/EmptyState';
 import { RoleGate } from '@/components/RoleGate';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -127,8 +128,12 @@ export default function GradeLevelsPage() {
             ))
           ) : sorted.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                No hay niveles de grado registrados
+              <TableCell colSpan={4} className="p-0">
+                <EmptyState
+                  icon={GraduationCap}
+                  title="No hay niveles de grado"
+                  description="Crea el primer nivel (ej. 1° Primaria) para organizar las aulas."
+                />
               </TableCell>
             </TableRow>
           ) : (
@@ -163,10 +168,10 @@ export default function GradeLevelsPage() {
                   <RoleGate roles={['director']}>
                     {editId !== level.id && (
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" onClick={() => setEditId(level.id)}>
+                        <Button variant="ghost" size="icon" title="Editar" aria-label="Editar nivel" onClick={() => setEditId(level.id)}>
                           <Pencil className="size-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => setDeletingItem(level)}>
+                        <Button variant="ghost" size="icon" title="Eliminar" aria-label="Eliminar nivel" onClick={() => setDeletingItem(level)}>
                           <Trash2 className="size-4" />
                         </Button>
                       </div>

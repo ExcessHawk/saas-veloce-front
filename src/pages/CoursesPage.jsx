@@ -18,6 +18,7 @@ import { SortableHead } from '@/components/SortableHead';
 import { ConfirmDeleteDialog } from '@/components/ConfirmDeleteDialog';
 import { SearchInput } from '@/components/SearchInput';
 import { DataTablePagination } from '@/components/DataTablePagination';
+import { EmptyState } from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -283,8 +284,12 @@ export default function CoursesPage() {
             ))
           ) : filtered.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                {query ? `Sin resultados para "${query}"` : 'No hay cursos registrados'}
+              <TableCell colSpan={6} className="p-0">
+                <EmptyState
+                  icon={BookOpen}
+                  title={query ? 'Sin resultados' : 'No hay cursos'}
+                  description={query ? `No encontramos cursos para "${query}".` : 'Crea el primer curso para este ciclo.'}
+                />
               </TableCell>
             </TableRow>
           ) : (
@@ -304,13 +309,13 @@ export default function CoursesPage() {
                   <TableCell data-label="">
                     <RoleGate roles={['director']}>
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" title="Asignar docente" onClick={() => setAssigningItem(course)}>
+                        <Button variant="ghost" size="icon" title="Asignar docente" aria-label="Asignar docente" onClick={() => setAssigningItem(course)}>
                           <UserCog className="size-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => setEditingItem(course)}>
+                        <Button variant="ghost" size="icon" title="Editar" aria-label="Editar curso" onClick={() => setEditingItem(course)}>
                           <Pencil className="size-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => setDeletingItem(course)}>
+                        <Button variant="ghost" size="icon" title="Eliminar" aria-label="Eliminar curso" onClick={() => setDeletingItem(course)}>
                           <Trash2 className="size-4" />
                         </Button>
                       </div>

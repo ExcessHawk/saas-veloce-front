@@ -14,6 +14,7 @@ import { ConfirmDeleteDialog } from '@/components/ConfirmDeleteDialog';
 import { SearchInput } from '@/components/SearchInput';
 import { DataTablePagination } from '@/components/DataTablePagination';
 import { IconPicker, LucideIcon } from '@/components/IconPicker';
+import { EmptyState } from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -265,8 +266,12 @@ export default function SubjectsPage() {
             ))
           ) : filtered.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                {query ? `Sin resultados para "${query}"` : 'No hay materias registradas'}
+              <TableCell colSpan={6} className="p-0">
+                <EmptyState
+                  icon={BookOpen}
+                  title={query ? 'Sin resultados' : 'No hay materias'}
+                  description={query ? `No encontramos materias para "${query}".` : 'Crea la primera materia.'}
+                />
               </TableCell>
             </TableRow>
           ) : (
@@ -296,10 +301,10 @@ export default function SubjectsPage() {
                 <TableCell data-label="">
                   <RoleGate roles={['director']}>
                     <div className="flex gap-1">
-                      <Button variant="ghost" size="icon" onClick={() => setEditingItem(subject)}>
+                      <Button variant="ghost" size="icon" title="Editar" aria-label="Editar materia" onClick={() => setEditingItem(subject)}>
                         <Pencil className="size-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => setDeletingItem(subject)}>
+                      <Button variant="ghost" size="icon" title="Eliminar" aria-label="Eliminar materia" onClick={() => setDeletingItem(subject)}>
                         <Trash2 className="size-4" />
                       </Button>
                     </div>

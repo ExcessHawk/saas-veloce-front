@@ -13,6 +13,7 @@ import { SortableHead } from '@/components/SortableHead';
 import { ConfirmDeleteDialog } from '@/components/ConfirmDeleteDialog';
 import { SearchInput } from '@/components/SearchInput';
 import { DataTablePagination } from '@/components/DataTablePagination';
+import { EmptyState } from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -245,8 +246,12 @@ export default function AcademicYearsPage() {
             ))
           ) : filtered.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                {query ? `Sin resultados para "${query}"` : 'No hay años académicos registrados'}
+              <TableCell colSpan={6} className="p-0">
+                <EmptyState
+                  icon={CalendarRange}
+                  title={query ? 'Sin resultados' : 'No hay años académicos'}
+                  description={query ? `No encontramos años para "${query}".` : 'Crea el primer año académico.'}
+                />
               </TableCell>
             </TableRow>
           ) : (
@@ -269,10 +274,10 @@ export default function AcademicYearsPage() {
                 <TableCell data-label="">
                   <RoleGate roles={['director']}>
                     <div className="flex gap-1">
-                      <Button variant="ghost" size="icon" onClick={() => setEditingItem(year)}>
+                      <Button variant="ghost" size="icon" title="Editar" aria-label="Editar año académico" onClick={() => setEditingItem(year)}>
                         <Pencil className="size-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => setDeletingItem(year)}>
+                      <Button variant="ghost" size="icon" title="Eliminar" aria-label="Eliminar año académico" onClick={() => setDeletingItem(year)}>
                         <Trash2 className="size-4" />
                       </Button>
                     </div>

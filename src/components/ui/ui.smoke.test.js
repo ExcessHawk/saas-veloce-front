@@ -14,6 +14,13 @@ import {
 import {
   Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage,
 } from './form';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from './tooltip';
+import { Popover, PopoverTrigger, PopoverContent } from './popover';
+import { Sheet, SheetTrigger, SheetClose, SheetContent } from './sheet';
+import {
+  Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator,
+} from './breadcrumb';
+import { EmptyState } from '../EmptyState';
 
 // Import-only smoke test: validates the new primitives resolve their imports
 // (radix-ui namespaces, lucide, cn) and are valid components. No rendering, so
@@ -26,6 +33,11 @@ describe('ui primitives barrel', () => {
       DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
       DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup,
       Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage,
+      Tooltip, TooltipTrigger, TooltipContent, TooltipProvider,
+      Popover, PopoverTrigger, PopoverContent,
+      Sheet, SheetTrigger, SheetClose, SheetContent,
+      Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator,
+      EmptyState,
     ]) {
       expect(typeof C).toBe('function');
     }

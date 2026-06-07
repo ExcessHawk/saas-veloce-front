@@ -22,7 +22,7 @@ Leyenda estado: ⬜ pendiente · 🟦 en progreso · ✅ hecho
 - ✅ **Página 404** — `NotFoundPage.jsx` creada y cableada en el catch-all (ya no redirige silencioso).
 - ✅ **Guard de rol en `/admin`** — `AdminRoute.jsx` (solo `isGlobalAdmin`, si no → `/dashboard`), envuelve las rutas admin.
 - ⬜ **Estados inconsistentes** — varias páginas sin skeleton (GradeLevels, Subjects), sin `EmptyState` unificado, sin error state. Estandarizar (hay buenos ejemplos: Grades, Dashboard).
-- ⬜ **Campanita de notificaciones** en la nav: el hook existe pero no está cableado en la UI.
+- ✅ **Campanita de notificaciones** — CORRECCIÓN: ya estaba cableada (DashboardLayout: `useNotifications` + badge unread "9+" + `NotificationsPanel` con lista/empty/markRead/markAllRead/navigate + aria-label). El audit erró.
 
 ## 🎨 Design system — primitivos faltantes
 
@@ -30,8 +30,8 @@ Hoy hay 8 (`button, badge, dialog, input, select, skeleton, sonner, table`). Se 
 
 - ✅ **Alto:** `Card`, `Label`, `Textarea`, `Checkbox`, `Form` (wrapper react-hook-form) — creados.
 - ✅ **Medio:** `Avatar`, `Tabs`, `DropdownMenu`, `Switch` — creados. ⬜ `Tooltip` pendiente.
-- ⬜ **Bajo:** `Popover`, `Breadcrumb`, `Sheet/Drawer` (mobile), `Pagination` genérico.
-- ⬜ **Aplicarlos** (reemplazar `<input>`/`<label>`/divs crudos) — hacer página por página CON revisión visual (no blind, para no romper layouts que ya funcionan).
+- ✅ **Bajo:** `Tooltip`, `Popover`, `Sheet/Drawer`, `Breadcrumb` — creados. ⬜ `Pagination` genérico (existe `DataTablePagination`).
+- 🟨 **Aplicarlos** — `EmptyState` aplicado en CoursesPage (referencia); resto de páginas rueda con revisión visual. Forms (Label/Input/Form) pendientes de aplicar por página.
 
 ## 🟡 Consistencia / polish
 
@@ -69,3 +69,8 @@ Los primitivos nuevos no requieren zustand.
 - ⬜ Aplicar primitivos a páginas (con revisión visual) · `Tooltip`/`Popover`/`Breadcrumb`/`Drawer`.
 - ✅ Billing Success/Cancel enriquecidos: countdown, referencia de orden, botones (panel/facturación/reintentar), nota de email, link soporte, aria-live (2026-06-06)
 - ✅ Card-view en 7 tablas (mecanismo `stack`/`data-stack` + CSS) (2026-06-06)
+- ✅ Primitivos: `Tooltip`, `Popover`, `Sheet`, `Breadcrumb` + `EmptyState` (2026-06-06)
+- ✅ #1 Campanita: ya existía (verificado)
+- ✅ #2/#4: EmptyState + aria-labels en botones-ícono aplicado a las 5 CRUD (Courses, Classrooms, AcademicYears, Subjects, GradeLevels)
+- ⬜ #2 forms (Label/Form en formularios) + aria en Members (DotsMenu) — pendiente
+- ⬜ #6 Polish: tokens duplicados (Landing `--n-*` vs `p-*`), AuthLayout colores, layouts huérfanos → refactor visual, hacer con revisión (no blind)
