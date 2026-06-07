@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
+import { useTenantStore } from '@/stores/tenantStore';
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
@@ -11,7 +12,11 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const { accessToken, schoolId } = useAuthStore.getState();
   if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
-  if (schoolId) config.headers['X-School-ID'] = schoolId;
+  // The subdomain tenant (Model A) is authoritative when present; fall back to
+  // the school stored at login for single-URL / apex mode.
+  const tenantSchoolId = useTenantStore.getState().schoolId;
+  const effectiveSchoolId = tenantSchoolId ?? schoolId;
+  if (effectiveSchoolId) config.headers['X-School-ID'] = effectiveSchoolId;
   return config;
 });
 

@@ -13,6 +13,12 @@ export default defineConfig({
     },
   },
 
+  // Allow per-school subdomains in dev (Model A): acme.localhost:5173 resolves
+  // to 127.0.0.1 in Chrome/Edge/Firefox; this lets Vite accept that Host header.
+  server: {
+    allowedHosts: ['.localhost'],
+  },
+
   // Vitest configuration — runs unit + component tests with jsdom + RTL.
   test: {
     environment: 'jsdom',

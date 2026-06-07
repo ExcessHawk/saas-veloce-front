@@ -8,6 +8,8 @@ import { loginSchema } from '@/schemas/auth';
 import { useAuthStore } from '@/stores/authStore';
 import { useLogin } from '@/hooks/useAuth';
 import { showApiError } from '@/lib/errors';
+import { getSchoolSlug, schoolOrigin } from '@/lib/tenant';
+import { buildHandoffHash } from '@/lib/authHandoff';
 import AuthLayout from '@/layouts/AuthLayout';
 import {
   AuthHeader, AuthTabs, AuthInput, AuthButton, AuthCheckbox,
@@ -31,10 +33,22 @@ export default function LoginPage() {
   const onSubmit = async (data) => {
     try {
       const result = await login.mutateAsync(data);
+
+      // Per-school subdomain redirect (Model B): if the school has a slug and
+      // we're not already on its subdomain, hand the session off to the school
+      // URL (acme.localhost / acme.tudominio.com). Global admins stay on the
+      // current host (they're cross-tenant).
+      const slug = result.schoolSlug;
+      const isGlobalAdmin = result.user?.isGlobalAdmin;
+      if (slug && !isGlobalAdmin && getSchoolSlug() !== slug) {
+        window.location.href = `${schoolOrigin(slug)}/dashboard#${buildHandoffHash(result)}`;
+        return;
+      }
+
       setAuth(result);
       if (result.schoolId) setSchoolId(result.schoolId);
       if (result.memberId) setMemberId(result.memberId);
-      navigate(result.user?.isGlobalAdmin ? '/admin' : '/dashboard');
+      navigate(isGlobalAdmin ? '/admin' : '/dashboard');
     } catch (error) {
       showApiError(error);
     }

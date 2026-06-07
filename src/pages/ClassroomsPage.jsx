@@ -352,10 +352,10 @@ export default function ClassroomsPage() {
 
   useEffect(() => { if (classrooms.error) showApiError(classrooms.error); }, [classrooms.error]);
 
-  const levelMap = useMemo(() => Object.fromEntries((levels ?? []).map((l) => [l.id, l.name])), [levels]);
-  const yearMap = useMemo(() => Object.fromEntries((academicYears ?? []).map((y) => [y.id, y.name])), [academicYears]);
-  const memberMap = useMemo(() => Object.fromEntries((allMembers ?? []).map((m) => [m.id, m.fullName || m.email])), [allMembers]);
-  const teachers = useMemo(() => (allMembers ?? []).filter((m) => m.role === 'teacher'), [allMembers]);
+  const levelMap = useMemo(() => Object.fromEntries((Array.isArray(levels) ? levels : []).map((l) => [l.id, l.name])), [levels]);
+  const yearMap = useMemo(() => Object.fromEntries((Array.isArray(academicYears) ? academicYears : []).map((y) => [y.id, y.name])), [academicYears]);
+  const memberMap = useMemo(() => Object.fromEntries((Array.isArray(allMembers) ? allMembers : []).map((m) => [m.id, m.fullName || m.email])), [allMembers]);
+  const teachers = useMemo(() => (Array.isArray(allMembers) ? allMembers : []).filter((m) => m.role === 'teacher'), [allMembers]);
 
   const sorting = useSorting('name');
 
